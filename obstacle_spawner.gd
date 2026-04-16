@@ -1,8 +1,8 @@
 extends Node3D
 
 @export var obstacle_scene: PackedScene
-@export var spawn_z     := -60.0
-@export var ground_y    := 1.5
+@export var spawn_z     := -80.0
+@export var ground_y    := 1.0
 var scroll_speed        := 80.0
 
 const LANES := [-8.0, 0.0, 8.0]

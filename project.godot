@@ -15,6 +15,10 @@ run/main_scene="uid://bfe31ovbpb0ua"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[global_group]
+
+obstacle="u die from it"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

@@ -1,4 +1,7 @@
-[gd_scene format=3 uid="uid://cmtktmohct1sa"]
+[gd_scene format=3 uid="uid://cagg3qd8b6vml"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kofmg"]
+size = Vector3(26.516602, 1, 9.631836)
 
 [node name="Chunks" type="Node3D" unique_id=1297379566]
 
@@ -17,6 +20,12 @@ outer_radius = 9.85844
 sides = 23
 ring_sides = 13
 
+[node name="StaticBody3D" type="StaticBody3D" parent="1/CSGTorus3D" unique_id=1489441056 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="1/CSGTorus3D/StaticBody3D" unique_id=361872939]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.536743e-06, -3.4260266)
+shape = SubResource("BoxShape3D_kofmg")
+
 [node name="2" type="CSGBox3D" parent="." unique_id=1833429375]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29.675678, 0.4995, -14.718084)
 size = Vector3(25, 0.001, 40)
@@ -26,6 +35,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4477541, 0)
 radius = 5.3569336
 height = 5.1591797
 
+[node name="StaticBody3D" type="StaticBody3D" parent="2/CSGCylinder3D" unique_id=1587002941 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="2/CSGCylinder3D/StaticBody3D" unique_id=560871714]
+transform = Transform3D(1, 0, 0, 0, 0.16404916, -0.98645216, 0, 0.98645216, 0.16404916, 0, -9.536743e-06, -3.4260273)
+shape = SubResource("BoxShape3D_kofmg")
+
 [node name="3" type="CSGBox3D" parent="." unique_id=2015076074]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29.888628, 0.4995, -14.718084)
 size = Vector3(25, 0.001, 40)
@@ -34,6 +49,12 @@ size = Vector3(25, 0.001, 40)
 radius = 9.079507
 radial_segments = 21
 rings = 15
+
+[node name="StaticBody3D" type="StaticBody3D" parent="3/CSGSphere3D" unique_id=1988438539 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="3/CSGSphere3D/StaticBody3D" unique_id=9512412]
+transform = Transform3D(1, 0, 0, 0, -0.104788855, -0.9944945, 0, 0.9944945, -0.104788855, 0, 1.3316741, -3.4260273)
+shape = SubResource("BoxShape3D_kofmg")
 
 [node name="4" type="CSGBox3D" parent="." unique_id=2124235458]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.063263, 0.4995, -14.718084)

@@ -5,9 +5,13 @@ const JUMP_FORCE   := 30.0
 const LANE_SPEED   := 10.0
 const LANES        := [-8.0, 0.0, 8.0]
 
-var current_lane   := 1  # 0 = left, 1 = center, 2 = right
+var current_lane   := 1
+var alive          := true
 
 func _physics_process(delta: float) -> void:
+	if not alive:
+		return
+
 	if not is_on_floor():
 		velocity.y -= GRAVITY * delta
 
@@ -22,3 +26,12 @@ func _physics_process(delta: float) -> void:
 	position.x = lerp(position.x, LANES[current_lane], LANE_SPEED * delta)
 
 	move_and_slide()
+
+	for i in get_slide_collision_count():
+		var col = get_slide_collision(i)
+		if col.get_collider().is_in_group("obstacle"):
+			die()
+
+func die() -> void:
+	alive = false
+	print("Lumi hit an obstacle!")
