@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b43lpoogo11tt"]
+[gd_scene format=3 uid="uid://bfe31ovbpb0ua"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
 sky_top_color = Color(0.44839734, 0.44303516, 0.48449987, 1)
