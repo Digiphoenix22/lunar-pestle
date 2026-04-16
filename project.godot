@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="LunarPestle"
+run/main_scene="uid://bfe31ovbpb0ua"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 

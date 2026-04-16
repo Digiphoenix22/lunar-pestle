@@ -1,5 +1,10 @@
 [gd_scene format=3 uid="uid://bfe31ovbpb0ua"]
 
+[ext_resource type="Script" uid="uid://tjciujqunr0v" path="res://ground_scroller.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://bsrl00t5o608m" path="res://camera_3d.gd" id="1_1bvp3"]
+[ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://c1yykwatc62a1" path="res://ground_chunk.tscn" id="2_h2yge"]
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
 sky_top_color = Color(0.44839734, 0.44303516, 0.48449987, 1)
 sky_horizon_color = Color(0.6788479, 0.66975737, 0.6711235, 1)
@@ -22,6 +27,11 @@ glow_enabled = true
 
 [node name="WorldRoot" type="Node3D" unique_id=1626412060]
 
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1791450035]
+transform = Transform3D(1, 0, 0, 0, 0.96174127, 0.27395922, 0, -0.27395922, 0.96174127, 0.060658436, 8.648586, 7.319722)
+script = ExtResource("1_1bvp3")
+target = NodePath("../Lumi")
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=334163119]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 6.3448744, 0)
 shadow_enabled = true
@@ -29,18 +39,23 @@ shadow_enabled = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1781889181]
 environment = SubResource("Environment_0pku2")
 
-[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1657644139]
-transform = Transform3D(2.005, 0, 0, 0, 2.005, 0, 0, 0, 2.005, 0, 2, 0)
+[node name="Lumi" type="CharacterBody3D" parent="." unique_id=1657644139]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2.2, 0)
+script = ExtResource("1_h2yge")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=1904145169]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Lumi" unique_id=1904145169]
 shape = SubResource("CapsuleShape3D_3sann")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=1785403627]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Lumi" unique_id=1785403627]
 mesh = SubResource("CapsuleMesh_xuhna")
 
-[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" unique_id=1791450035]
-transform = Transform3D(0.49875307, 0, 0, 0, 0.47967145, 0.13663802, 0, -0.13663802, 0.47967145, 0.030329218, 3.2242932, 3.659861)
+[node name="GroundScroller" type="Node3D" parent="." unique_id=1633350001]
+script = ExtResource("1_0xm2m")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=5443066]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58541155, -0.50415516, -20.372505)
-size = Vector3(25, 1, 40)
+[node name="GroundChunk" parent="GroundScroller" unique_id=2108205701 instance=ExtResource("2_h2yge")]
+
+[node name="GroundChunk2" parent="GroundScroller" unique_id=520728338 instance=ExtResource("2_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+
+[node name="GroundChunk3" parent="GroundScroller" unique_id=1196576519 instance=ExtResource("2_h2yge")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -80)
