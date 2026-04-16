@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://c1yykwatc62a1" path="res://ground_chunk.tscn" id="2_h2yge"]
 [ext_resource type="Script" uid="uid://cqqtgxuvsahfx" path="res://obstacle_spawner.gd" id="5_7mycd"]
+[ext_resource type="PackedScene" uid="uid://cmtktmohct1sa" path="res://chunks.tscn" id="5_272bh"]
 [ext_resource type="PackedScene" uid="uid://dlmohlkwbbkir" path="res://obstacle.tscn" id="6_272bh"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
@@ -61,6 +62,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
 
 [node name="GroundChunk3" parent="GroundScroller" unique_id=1196576519 instance=ExtResource("2_h2yge")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -80)
+
+[node name="Chunks" parent="GroundScroller" unique_id=1297379566 instance=ExtResource("5_272bh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -19.911245, 0)
 
 [node name="ObstacleSpawner" type="Node3D" parent="." unique_id=1583810459]
 transform = Transform3D(1, 0, 0, 0, 0.9617413, 0.27395928, 0, -0.27395925, 0.9617413, 0.060658436, 8.648586, 7.319722)

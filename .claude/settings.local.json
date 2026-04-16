@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(npx --version)",
+      "Bash(npx -y @coding-solo/godot-mcp --help)",
+      "Bash(npx @coding-solo/godot-mcp)"
     ]
   }
 }
