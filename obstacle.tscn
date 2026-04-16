@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dlmohlkwbbkir"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qcbvg"]
+
+[node name="StaticBody3D" type="StaticBody3D" unique_id=1805890575]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0689309, 0)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=2048520967]
+size = Vector3(1, 2, 1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=248369625]
+shape = SubResource("BoxShape3D_qcbvg")
