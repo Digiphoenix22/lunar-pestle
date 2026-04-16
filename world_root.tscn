@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://b43lpoogo11tt"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
+sky_top_color = Color(0.44839734, 0.44303516, 0.48449987, 1)
+sky_horizon_color = Color(0.6788479, 0.66975737, 0.6711235, 1)
+ground_horizon_color = Color(0.6788479, 0.66975737, 0.6711235, 1)
+
+[sub_resource type="Sky" id="Sky_fo4su"]
+sky_material = SubResource("ProceduralSkyMaterial_m3tyl")
+
+[sub_resource type="Environment" id="Environment_0pku2"]
+background_mode = 2
+background_energy_multiplier = 1.27
+sky = SubResource("Sky_fo4su")
+sky_custom_fov = 59.5
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_xuhna"]
+
+[node name="WorldRoot" type="Node3D" unique_id=1626412060]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=334163119]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 6.3448744, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1781889181]
+environment = SubResource("Environment_0pku2")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." unique_id=1657644139]
+transform = Transform3D(2.005, 0, 0, 0, 2.005, 0, 0, 0, 2.005, 0, 2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D" unique_id=1904145169]
+shape = SubResource("CapsuleShape3D_3sann")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D" unique_id=1785403627]
+mesh = SubResource("CapsuleMesh_xuhna")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D" unique_id=1791450035]
+transform = Transform3D(0.49875307, 0, 0, 0, 0.47967145, 0.13663802, 0, -0.13663802, 0.47967145, 0.030329218, 3.2242932, 3.659861)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=5443066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58541155, -0.50415516, -20.372505)
+size = Vector3(25, 1, 40)
