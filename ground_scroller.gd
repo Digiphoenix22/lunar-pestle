@@ -4,6 +4,8 @@ const CHUNK_LENGTH    := 40.0
 const CHUNK_COUNT     := 5
 const OBSTACLE_CHANCE := 0.4
 var scroll_speed      := 80.0
+var target_speed      := 80.0
+const SPEED_EASE      := 3.0
 
 var plain_template: Node3D = null
 var obstacle_templates: Array[Node3D] = []
@@ -36,6 +38,7 @@ func _place_chunk(z: float) -> void:
 	add_child(chunk)
 
 func _process(delta: float) -> void:
+	scroll_speed = lerp(scroll_speed, target_speed, SPEED_EASE * delta)
 	for child in get_children():
 		child.position.z += scroll_speed * delta
 		if child.position.z > CHUNK_LENGTH:
