@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/mcdmg.mp3-96c985405a2b1043b68903612a8209e2.mp
 [params]
 
 loop=false
-loop_offset=0
-bpm=0
+loop_offset=0.0
+bpm=0.0
 beat_count=0
 bar_beats=4

@@ -3,12 +3,13 @@
 [ext_resource type="Script" uid="uid://tjciujqunr0v" path="res://ground_scroller.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bsrl00t5o608m" path="res://camera_3d.gd" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
-[ext_resource type="Script" uid="uid://cqqtgxuvsahfx" path="res://obstacle_spawner.gd" id="5_7mycd"]
-[ext_resource type="PackedScene" uid="uid://dlmohlkwbbkir" path="res://obstacle.tscn" id="6_272bh"]
 [ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="7_272bh"]
 [ext_resource type="Material" uid="uid://cfmp11q8yrqe5" path="res://Materials/TestMat.tres" id="8_5vw27"]
 [ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="8_kek77"]
 [ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="9_4c57u"]
+[ext_resource type="Texture2D" uid="uid://bnpnd1efxjklp" path="res://images/cornerHUD.png" id="9_efxa6"]
+[ext_resource type="Texture2D" uid="uid://dxtjvgn2w0veu" path="res://images/buni.png" id="10_dg77c"]
+[ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
 sky_top_color = Color(0.44839734, 0.44303516, 0.48449987, 1)
@@ -25,6 +26,11 @@ sky = SubResource("Sky_fo4su")
 sky_custom_fov = 59.5
 tonemap_mode = 2
 glow_enabled = true
+fog_enabled = true
+fog_light_color = Color(0.6716999, 0.6373163, 0.872377, 1)
+fog_density = 0.0
+fog_sky_affect = 0.3
+volumetric_fog_albedo = Color(0.87253416, 0.7442837, 0.9837994, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
 
@@ -74,15 +80,13 @@ mesh = SubResource("CapsuleMesh_xuhna")
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="Lumi" unique_id=852244107]
 
+[node name="BoostSound" type="AudioStreamPlayer2D" parent="Lumi" unique_id=-1289967295]
+
 [node name="GroundScroller" type="Node3D" parent="." unique_id=1633350001]
 script = ExtResource("1_0xm2m")
 
-[node name="ObstacleSpawner" type="Node3D" parent="." unique_id=1583810459]
-transform = Transform3D(1, 0, 0, 0, 0.9617413, 0.27395928, 0, -0.27395925, 0.9617413, 0.060658436, 8.648586, 7.319722)
-script = ExtResource("5_7mycd")
-obstacle_scene = ExtResource("6_272bh")
-
-[node name="Timer" type="Timer" parent="ObstacleSpawner" unique_id=721361821]
+[node name="BlockDropper" type="Node3D" parent="." unique_id=-1290967295]
+script = ExtResource("11_blkdp")
 
 [node name="DevStuff" type="Node3D" parent="." unique_id=368281543]
 visible = false
@@ -112,6 +116,120 @@ shape = SubResource("WorldBoundaryShape3D_272bh")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1334622461]
 process_mode = 3
 
+[node name="HUD" type="Control" parent="CanvasLayer" unique_id=-1293967295]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SlowIndicator" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1293967292]
+layout_mode = 0
+offset_left = 941.0
+offset_top = 599.0
+offset_right = 1148.0
+offset_bottom = 651.0
+pivot_offset = Vector2(103.5, 26)
+color = Color(0.64664716, 0.6376494, 0.9812682, 0.7490196)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/HUD/SlowIndicator" unique_id=-1291967295]
+
+[node name="SlowLabel" type="Label" parent="CanvasLayer/HUD/SlowIndicator" unique_id=-1293967291]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 28
+text = "Slowed!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomHud" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1855218268]
+layout_mode = 0
+offset_left = -4.0
+offset_top = 473.0
+offset_right = 647.0
+offset_bottom = 666.0
+texture = ExtResource("9_efxa6")
+expand_mode = 1
+
+[node name="LumiRect" type="TextureRect" parent="CanvasLayer/HUD" unique_id=797308432]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 515.0
+offset_right = 108.0
+offset_bottom = 610.7373
+texture = ExtResource("10_dg77c")
+expand_mode = 1
+
+[node name="Pip1" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1293967294]
+layout_mode = 0
+offset_left = 132.0
+offset_top = 570.0
+offset_right = 172.0
+offset_bottom = 610.0
+color = Color(0.2, 1, 0.3, 1)
+
+[node name="Pip2" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1293967293]
+layout_mode = 0
+offset_left = 188.0
+offset_top = 570.0
+offset_right = 228.0
+offset_bottom = 610.0
+color = Color(0.2, 1, 0.3, 1)
+
+[node name="WhiteFlash" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1292967295]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PauseMenu" type="Control" parent="CanvasLayer" unique_id=821865285]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Paused" type="Label" parent="CanvasLayer/PauseMenu" unique_id=1555868494]
+layout_mode = 0
+offset_left = 418.0
+offset_top = 132.0
+offset_right = 743.0
+offset_bottom = 252.0
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 77
+text = "Paused"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=849204658]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 243.0
+offset_right = 747.0
+offset_bottom = 341.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
+text = "resume"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
+layout_mode = 0
+offset_left = 413.0
+offset_top = 348.0
+offset_right = 745.0
+offset_bottom = 446.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
+text = "exit"
+
 [node name="DeathScreen" type="Control" parent="CanvasLayer" unique_id=796683479]
 visible = false
 layout_mode = 3
@@ -136,42 +254,3 @@ offset_top = 270.0
 offset_right = 812.0
 offset_bottom = 368.0
 text = "restart"
-
-[node name="PauseMenu" type="Control" parent="CanvasLayer" unique_id=821865285]
-visible = false
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="Paused" type="Label" parent="CanvasLayer/PauseMenu" unique_id=1555868494]
-layout_mode = 0
-offset_left = 484.0
-offset_top = 151.0
-offset_right = 809.0
-offset_bottom = 271.0
-theme_override_fonts/font = ExtResource("8_kek77")
-theme_override_font_sizes/font_size = 77
-text = "Paused"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="ResumeButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=849204658]
-layout_mode = 0
-offset_left = 481.0
-offset_top = 262.0
-offset_right = 813.0
-offset_bottom = 360.0
-theme_override_fonts/font = ExtResource("9_4c57u")
-theme_override_font_sizes/font_size = 35
-text = "resume"
-
-[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
-layout_mode = 0
-offset_left = 479.0
-offset_top = 367.0
-offset_right = 811.0
-offset_bottom = 465.0
-theme_override_fonts/font = ExtResource("9_4c57u")
-theme_override_font_sizes/font_size = 35
-text = "exit"

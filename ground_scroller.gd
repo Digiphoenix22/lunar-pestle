@@ -20,7 +20,7 @@ func _ready() -> void:
 	chunks_root.free()
 
 	for i in CHUNK_COUNT:
-		_place_chunk(-i * CHUNK_LENGTH)
+		_place_chunk(-i * CHUNK_LENGTH, false)
 
 func _make_chunk() -> Node3D:
 	var template: Node3D
@@ -32,10 +32,14 @@ func _make_chunk() -> Node3D:
 	chunk.position = Vector3.ZERO
 	return chunk
 
-func _place_chunk(z: float) -> void:
+func _place_chunk(z: float, fade: bool = true) -> void:
 	var chunk = _make_chunk()
 	chunk.position.z = z
 	add_child(chunk)
+	if fade:
+		chunk.scale = Vector3.ZERO
+		create_tween().tween_property(chunk, "scale", Vector3.ONE, 0.6)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 func _process(delta: float) -> void:
 	scroll_speed = lerp(scroll_speed, target_speed, SPEED_EASE * delta)

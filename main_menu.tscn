@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://ch3u8o6d6hr78"]
+
+[ext_resource type="Script" uid="uid://d33c6x66sgwwv" path="res://main_menu.gd" id="1_mmgd"]
+[ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="2_bold"]
+[ext_resource type="Texture2D" uid="uid://df1ji22355dmc" path="res://images/LunarNew.png" id="2_jix8l"]
+[ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="3_reg"]
+
+[node name="MainMenuRoot" type="Control" unique_id=1629364145]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mmgd")
+
+[node name="Background" type="ColorRect" parent="." unique_id=504017870]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.22, 0.08, 0.65, 1)
+
+[node name="LogoRect" type="TextureRect" parent="." unique_id=1212163539]
+layout_mode = 0
+offset_left = 275.0
+offset_top = 94.0
+offset_right = 868.2476
+offset_bottom = 319.0
+texture = ExtResource("2_jix8l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayButton" type="Button" parent="." unique_id=527759521]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 349.0
+offset_right = 775.0
+offset_bottom = 449.0
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 52
+text = "Play"
+
+[node name="QuitButton" type="Button" parent="." unique_id=1695361462]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 474.0
+offset_right = 775.0
+offset_bottom = 564.0
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 38
+text = "Quit"
