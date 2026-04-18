@@ -28,6 +28,8 @@ glow_enabled = true
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_xuhna"]
 
+[sub_resource type="QuadMesh" id="QuadMesh_272bh"]
+
 [node name="WorldRoot" type="Node3D" unique_id=1626412060]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1791450035]
@@ -72,3 +74,8 @@ script = ExtResource("5_7mycd")
 obstacle_scene = ExtResource("6_272bh")
 
 [node name="Timer" type="Timer" parent="ObstacleSpawner" unique_id=721361821]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1562893853]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 3.0266232, 3.237687, -2.400521)
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_272bh")

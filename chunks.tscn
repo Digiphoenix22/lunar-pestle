@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://cmtktmohct1sa"]
 
+[ext_resource type="PackedScene" uid="uid://by4fjkfjkd6vn" path="res://base.tscn" id="1_p7nim"]
+
 [node name="Chunks" type="Node3D" unique_id=1297379566]
 
-[node name="Base" type="CSGBox3D" parent="." unique_id=530942410]
+[node name="Base" parent="." unique_id=1889422053 instance=ExtResource("1_p7nim")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11462879, 0.4995, 27.10488)
-size = Vector3(25, 0.001, 40)
 
 [node name="1" type="CSGBox3D" parent="." unique_id=382717965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11462879, 0.4995, -14.718084)
