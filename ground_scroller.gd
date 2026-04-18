@@ -3,9 +3,9 @@ extends Node3D
 const CHUNK_LENGTH    := 40.0
 const CHUNK_COUNT     := 5
 const OBSTACLE_CHANCE := 0.4
-var scroll_speed      := 80.0
+var scroll_speed      := 0.0
 var target_speed      := 80.0
-const SPEED_EASE      := 3.0
+const SPEED_EASE      := 0.5
 
 var plain_template: Node3D = null
 var obstacle_templates: Array[Node3D] = []
@@ -19,7 +19,11 @@ func _ready() -> void:
 			obstacle_templates.append(child.duplicate())
 	chunks_root.free()
 
-	for i in CHUNK_COUNT:
+	# First chunk always plain so player never spawns on an obstacle
+	var first = plain_template.duplicate()
+	first.position.z = 0.0
+	add_child(first)
+	for i in range(1, CHUNK_COUNT):
 		_place_chunk(-i * CHUNK_LENGTH, false)
 
 func _make_chunk() -> Node3D:

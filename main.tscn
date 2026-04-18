@@ -69,6 +69,7 @@ shadow_enabled = true
 environment = SubResource("Environment_0pku2")
 
 [node name="Lumi" type="CharacterBody3D" parent="." unique_id=1657644139]
+process_mode = 3
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2.2, 0)
 script = ExtResource("1_h2yge")
 
@@ -192,11 +193,23 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
+[node name="BlurOverlay" type="ColorRect" parent="CanvasLayer" unique_id=-1288967295]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 0, 0.12, 0.35)
+
 [node name="PauseMenu" type="Control" parent="CanvasLayer" unique_id=821865285]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Paused" type="Label" parent="CanvasLayer/PauseMenu" unique_id=1555868494]
 layout_mode = 0

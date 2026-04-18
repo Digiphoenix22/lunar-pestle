@@ -32,11 +32,12 @@ const BOOST_MULT     := 5.0
 @onready var lumi_rect       = $"../CanvasLayer/HUD/LumiRect"
 @onready var bottom_hud      = $"../CanvasLayer/HUD/BottomHud"
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
+@onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
 
 const LUMI_RECT_REST_Y := 515.0
 const LUMI_RECT_JUMP_Y := 462.0
-const HUD_PURPLE       := Color(0.55, 0.08, 0.85, 1.0)
+const HUD_PURPLE       := Color(0.75, 0.507, 0.994, 1.0)
 const HUD_INDIGO       := Color(0.22, 0.08, 0.65, 1.0)
 
 const HIT_SOUNDS := [
@@ -52,9 +53,39 @@ func _ready() -> void:
 	pause_menu.get_node("ResumeButton").pressed.connect(_resume)
 	pause_menu.get_node("ExitButton").pressed.connect(func():
 		get_tree().paused = false
-		get_tree().change_scene_to_file("res://main_menu.tscn"))
+		Transition.change_scene("res://main_menu.tscn"))
 	_start_bottom_hud_tween()
 	_build_slow_anim()
+	_setup_blur_overlay()
+
+func _setup_blur_overlay() -> void:
+	var shader = load("res://blur.gdshader")
+	var mat = ShaderMaterial.new()
+	mat.shader = shader
+	blur_overlay.material = mat
+
+func _show_menu(menu: Control) -> void:
+	blur_overlay.visible = true
+	blur_overlay.modulate.a = 0.0
+	menu.pivot_offset = Vector2(960, 540)
+	menu.scale = Vector2(0.92, 0.92)
+	menu.modulate.a = 0.0
+	menu.visible = true
+	var t = create_tween().set_parallel(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	t.tween_property(blur_overlay, "modulate:a", 1.0, 0.18).set_ease(Tween.EASE_OUT)
+	t.tween_property(menu, "scale", Vector2.ONE, 0.22)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	t.tween_property(menu, "modulate:a", 1.0, 0.16).set_ease(Tween.EASE_OUT)
+
+func _hide_menu(menu: Control) -> void:
+	var t = create_tween().set_parallel(true)
+	t.tween_property(blur_overlay, "modulate:a", 0.0, 0.14).set_ease(Tween.EASE_IN)
+	t.tween_property(menu, "scale", Vector2(0.92, 0.92), 0.14)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(menu, "modulate:a", 0.0, 0.12).set_ease(Tween.EASE_IN)
+	await t.finished
+	menu.visible = false
+	blur_overlay.visible = false
 
 func _build_slow_anim() -> void:
 	var anim = Animation.new()
@@ -92,7 +123,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			_resume()
 		elif alive:
 			get_tree().paused = true
-			pause_menu.visible = true
+			_show_menu(pause_menu)
 	elif event.keycode == KEY_B:
 		_toggle_boost()
 	elif event.keycode == KEY_PERIOD and alive:
@@ -100,10 +131,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _resume() -> void:
 	get_tree().paused = false
-	pause_menu.visible = false
+	_hide_menu(pause_menu)
 
 func _physics_process(delta: float) -> void:
-	if not alive:
+	if not alive or get_tree().paused:
 		return
 
 	if invincible_timer > 0:
@@ -208,7 +239,7 @@ func die() -> void:
 	_do_flash(Color(1, 1, 1, 1), 0.35)
 	# TODO: trigger ragdoll on model when ready
 	await get_tree().create_timer(1.5).timeout
-	death_screen.visible = true
+	_show_menu(death_screen)
 	death_screen.get_node("RestartButton").pressed.connect(
-		func(): get_tree().reload_current_scene()
+		func(): Transition.reload_scene()
 	)
