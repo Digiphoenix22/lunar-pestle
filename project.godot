@@ -11,9 +11,17 @@ config_version=5
 [application]
 
 config/name="LunarPestle"
-run/main_scene="uid://bfe31ovbpb0ua"
+run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[global_group]
+
+obstacle="u die from it"
+
+[gui]
+
+theme/custom_font="uid://c7ub575ac38xa"
 
 [physics]
 

@@ -13,3 +13,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	var goal = _target_node.global_position + offset
 	global_position = lerp(global_position, goal, lag_speed * delta)
+
+func death_zoom() -> void:
+	var t = create_tween()
+	t.tween_property(self, "fov", 45.0, 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(self, "fov", 88.0, 3.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
