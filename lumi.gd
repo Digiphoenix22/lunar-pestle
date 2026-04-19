@@ -93,6 +93,9 @@ var _dash_sound:       AudioStreamPlayer
 var _dash_cooldown     := 0.0
 var _heart_anim        := false
 var _music:            AudioStreamPlayer
+var _music_lpf:        AudioEffectLowPassFilter
+
+static var _death_restart := false
 
 func _ready() -> void:
 	pause_menu.visible = false
@@ -104,6 +107,7 @@ func _ready() -> void:
 	options_btn.pressed.connect(_open_options)
 	exit_btn.pressed.connect(func():
 		get_tree().paused = false
+		_clear_lpf()
 		Transition.change_scene("res://main_menu.tscn"))
 	hit_sound.bus   = "SFX"
 	boost_sound.bus = "SFX"
@@ -121,10 +125,21 @@ func _ready() -> void:
 	_music.bus       = "Music"
 	_music.volume_db = -80.0
 	add_child(_music)
+	_music_lpf = AudioEffectLowPassFilter.new()
+	_music_lpf.cutoff_hz = 20500.0
+	var music_idx = AudioServer.get_bus_index("Music")
+	AudioServer.add_bus_effect(music_idx, _music_lpf)
 	_music.finished.connect(func(): if alive: _music.play())
 	_music.play()
-	create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
-		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	if _death_restart:
+		_death_restart = false
+		_music.volume_db = 0.0
+		_music.pitch_scale = 0.72
+		create_tween().tween_property(_music, "pitch_scale", 1.0, 3.0)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
+	else:
+		create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	_build_hearts()
 	_start_bottom_hud_tween()
 	_build_slow_anim()
@@ -175,7 +190,7 @@ func _open_options() -> void:
 func _close_options() -> void:
 	if not _options_instance:
 		return
-	await _hide_menu(_options_instance)
+	await _hide_menu(_options_instance, not pause_menu.visible)
 	_options_instance.queue_free()
 	_options_instance = null
 
@@ -213,15 +228,17 @@ func _show_menu(menu: Control) -> void:
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	t.tween_property(menu, "modulate:a", 1.0, 0.16).set_ease(Tween.EASE_OUT)
 
-func _hide_menu(menu: Control) -> void:
+func _hide_menu(menu: Control, hide_blur: bool = true) -> void:
 	var t = create_tween().set_parallel(true)
-	t.tween_property(blur_overlay, "modulate:a", 0.0, 0.14).set_ease(Tween.EASE_IN)
+	if hide_blur:
+		t.tween_property(blur_overlay, "modulate:a", 0.0, 0.14).set_ease(Tween.EASE_IN)
 	t.tween_property(menu, "scale", Vector2(0.92, 0.92), 0.14)\
 		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	t.tween_property(menu, "modulate:a", 0.0, 0.12).set_ease(Tween.EASE_IN)
 	await t.finished
 	menu.visible = false
-	blur_overlay.visible = false
+	if hide_blur:
+		blur_overlay.visible = false
 
 func _build_slow_anim() -> void:
 	var anim = Animation.new()
@@ -262,6 +279,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif alive:
 			get_tree().paused = true
 			_show_menu(pause_menu)
+			_tween_lpf(400.0, 0.45)
 	elif event.keycode == KEY_B:
 		_toggle_boost()
 	elif event.keycode == KEY_PERIOD and alive:
@@ -282,6 +300,19 @@ func _unhandled_input(event: InputEvent) -> void:
 func _resume() -> void:
 	get_tree().paused = false
 	_hide_menu(pause_menu)
+	_tween_lpf(20500.0, 1.4)
+
+func _tween_lpf(target_hz: float, duration: float) -> void:
+	var t = create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	t.tween_method(func(hz: float): _music_lpf.cutoff_hz = hz,
+		_music_lpf.cutoff_hz, target_hz, duration)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+
+func _clear_lpf() -> void:
+	var idx = AudioServer.get_bus_index("Music")
+	for i in range(AudioServer.get_bus_effect_count(idx) - 1, -1, -1):
+		if AudioServer.get_bus_effect(idx, i) is AudioEffectLowPassFilter:
+			AudioServer.remove_bus_effect(idx, i)
 
 func _base_speed() -> float:
 	if sleepy_timer > 0 or recover_timer > 0:
@@ -582,6 +613,7 @@ func _trigger_win() -> void:
 	, CONNECT_ONE_SHOT)
 	quit_btn.pressed.connect(func():
 		get_tree().paused = false
+		_clear_lpf()
 		Transition.change_scene("res://main_menu.tscn")
 	, CONNECT_ONE_SHOT)
 	await Transition.wipe_out()
@@ -591,8 +623,8 @@ func die() -> void:
 	alive = false
 	_animate_hearts_die()
 	var mt = create_tween().set_parallel(true)
-	mt.tween_property(_music, "pitch_scale", 0.6, 2.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-	mt.tween_property(_music, "volume_db", -80.0, 8.5).set_ease(Tween.EASE_IN)
+	mt.tween_property(_music, "pitch_scale", 0.72, 1.8).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	mt.tween_property(_music, "volume_db", -9.0, 1.8).set_ease(Tween.EASE_IN)
 	ground_scroller.target_speed = 0.0
 	camera.death_zoom()
 	_do_flash(Color(1, 1, 1, 1), 0.35)
@@ -605,5 +637,11 @@ func die() -> void:
 	var restart_btn = death_screen.get_node("RestartButton")
 	var quit_btn    = death_screen.get_node("QuitButton")
 	Transition.wire_buttons([restart_btn, quit_btn])
-	restart_btn.pressed.connect(func(): Transition.reload_scene(), CONNECT_ONE_SHOT)
-	quit_btn.pressed.connect(func(): Transition.change_scene("res://main_menu.tscn"), CONNECT_ONE_SHOT)
+	restart_btn.pressed.connect(func():
+		_death_restart = true
+		Transition.reload_scene(), CONNECT_ONE_SHOT)
+	quit_btn.pressed.connect(func():
+		_clear_lpf()
+		create_tween().tween_property(_music, "volume_db", -80.0, 0.6).set_ease(Tween.EASE_IN)
+		await get_tree().create_timer(0.6).timeout
+		Transition.change_scene("res://main_menu.tscn"), CONNECT_ONE_SHOT)
