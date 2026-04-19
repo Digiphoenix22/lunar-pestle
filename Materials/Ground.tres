@@ -13,6 +13,7 @@ gradient = SubResource("Gradient_i3xm6")
 [resource]
 render_priority = 0
 shader = ExtResource("1_i3xm6")
+shader_parameter/globe_multiplier = 1.0
 shader_parameter/albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
 shader_parameter/shadow_color = Color(0.5, 0.4, 0.8, 1)
 shader_parameter/use_ramp = true
