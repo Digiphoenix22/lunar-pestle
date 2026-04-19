@@ -14,6 +14,7 @@ shape = SubResource("ConcavePolygonShape3D_e0nn6")
 
 [node name="Block2" type="CSGBox3D" parent="." unique_id=1645272212]
 transform = Transform3D(3.71, 0, 0, 0, 3.71, 0, 0, 0, 3.71, 0, 0, 0)
+visible = false
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Block2" unique_id=1284042191]
 

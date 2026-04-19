@@ -18,7 +18,9 @@ var _timer := 0.0
 func _ready() -> void:
 	var root = load("res://spawn_blocks.tscn").instantiate()
 	for child in root.get_children():
-		templates.append(child.duplicate())
+		var t = child.duplicate()
+		_apply_danger_material(t)
+		templates.append(t)
 	root.free()
 	_timer = spawn_interval + start_delay
 
@@ -46,6 +48,19 @@ func _spawn() -> void:
 	add_child(block)
 	create_tween().tween_property(block, "scale", Vector3.ONE, 0.35)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+
+func _apply_danger_material(node: Node) -> void:
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color               = Color(0.55, 0.0, 0.0, 1.0)
+	mat.emission_enabled           = true
+	mat.emission                   = Color(0.8, 0.0, 0.0, 1.0)
+	mat.emission_energy_multiplier = 20.0
+	if node is CSGShape3D:
+		node.material = mat
+	elif node is GeometryInstance3D:
+		node.material_override = mat
+	for child in node.get_children():
+		_apply_danger_material(child)
 
 func _tag_obstacles(node: Node) -> void:
 	if node is StaticBody3D:

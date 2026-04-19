@@ -36,19 +36,30 @@ stretch_mode = 5
 [node name="PlayButton" type="Button" parent="." unique_id=527759521]
 layout_mode = 0
 offset_left = 375.0
-offset_top = 349.0
+offset_top = 337.0
 offset_right = 775.0
-offset_bottom = 449.0
+offset_bottom = 437.0
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 52
 text = "Play"
 
+[node name="OptionsButton" type="Button" parent="." unique_id=1013297348]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 447.0
+offset_right = 775.0
+offset_bottom = 537.0
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 38
+text = "options
+"
+
 [node name="QuitButton" type="Button" parent="." unique_id=1695361462]
 layout_mode = 0
 offset_left = 375.0
-offset_top = 474.0
+offset_top = 546.0
 offset_right = 775.0
-offset_bottom = 564.0
+offset_bottom = 636.0
 theme_override_fonts/font = ExtResource("3_reg")
 theme_override_font_sizes/font_size = 38
 text = "Quit"
