@@ -56,6 +56,7 @@ var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
 @onready var victory_screen  = $"../CanvasLayer/VictoryScreen"
 @onready var stage_label     = $"../CanvasLayer/HUD/StageLabel"
 @onready var score_label     = $"../CanvasLayer/HUD/ScoreLabel"
+@onready var best_label      = $"../CanvasLayer/HUD/BestLabel"
 @onready var time_label      = $"../CanvasLayer/HUD/TimeLabel"
 @onready var dist_label      = $"../CanvasLayer/HUD/DistLabel"
 @onready var mochi_label     = $"../CanvasLayer/HUD/MochiLabel"
@@ -352,6 +353,7 @@ func _update_hud() -> void:
 	lumi_rect.position.y = clampf(remap(position.y, 2.2, 8.0, LUMI_RECT_REST_Y, LUMI_RECT_JUMP_Y), LUMI_RECT_JUMP_Y, LUMI_RECT_REST_Y)
 	lumi_rect.texture = _lumi_tex_hurt if hit_count > 0 else _lumi_tex_normal
 	score_label.text  = "%d" % score
+	best_label.text   = "Best: %d" % SaveData.get_high_score()
 	stage_label.text  = "Stage %d" % current_stage
 	var mins := int(elapsed_time) / 60
 	var secs := int(elapsed_time) % 60
@@ -426,7 +428,11 @@ func _trigger_win() -> void:
 	slow_tween.kill()
 	Engine.time_scale = 1.0
 	get_tree().paused = true
-	victory_screen.get_node("ScoreText").text = "Score: %d" % score
+	var is_best = SaveData.submit_score(score)
+	var score_txt = "Score: %d" % score
+	if is_best:
+		score_txt += "  —  NEW BEST!"
+	victory_screen.get_node("ScoreText").text = score_txt
 	_show_menu(victory_screen)
 	var cont_btn = victory_screen.get_node("ContinueButton")
 	var quit_btn = victory_screen.get_node("QuitButton")
@@ -448,7 +454,10 @@ func die() -> void:
 	camera.death_zoom()
 	_do_flash(Color(1, 1, 1, 1), 0.35)
 	# TODO: trigger ragdoll on model when ready
+	SaveData.submit_score(score)
 	await get_tree().create_timer(1.5).timeout
+	var death_text = death_screen.get_node("DeathText")
+	death_text.text = "Score: %d   Best: %d" % [score, SaveData.get_high_score()]
 	_show_menu(death_screen)
 	var restart_btn = death_screen.get_node("RestartButton")
 	var quit_btn    = death_screen.get_node("QuitButton")
