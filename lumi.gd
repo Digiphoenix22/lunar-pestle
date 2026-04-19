@@ -46,8 +46,6 @@ var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
 @onready var ground_scroller = $"../GroundScroller"
 @onready var hit_sound       = $HitSound
 @onready var boost_sound     = $BoostSound
-@onready var pip1            = $"../CanvasLayer/HUD/Pip1"
-@onready var pip2            = $"../CanvasLayer/HUD/Pip2"
 @onready var slow_indicator  = $"../CanvasLayer/HUD/SlowIndicator"
 @onready var slow_label      = $"../CanvasLayer/HUD/SlowIndicator/SlowLabel"
 @onready var slow_anim       = $"../CanvasLayer/HUD/SlowIndicator/AnimationPlayer"
@@ -66,10 +64,19 @@ var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
 
-const LUMI_RECT_REST_Y := 515.0
-const LUMI_RECT_JUMP_Y := 462.0
-const HUD_PURPLE       := Color(0.75, 0.507, 0.994, 1.0)
-const HUD_INDIGO       := Color(0.22, 0.08, 0.65, 1.0)
+const LUMI_RECT_REST_Y  := 515.0
+const LUMI_RECT_JUMP_Y  := 462.0
+const HUD_PURPLE        := Color(0.75, 0.507, 0.994, 1.0)
+const HUD_INDIGO        := Color(0.22, 0.08, 0.65, 1.0)
+const HEART_JADE        := Color(0.1,  0.9,  0.35, 1.0)
+const HEART_DEAD        := Color(0.0,  0.0,  0.0,  1.0)
+const HEART_X           := 136.0
+const HEART_Y           := 598.0
+const HEART_SIZE        := 40.0
+const HEART_SPACING     := 56.0
+
+var max_health  := 2
+var _hearts: Array = []
 
 const HIT_SOUNDS := [
 	"res://sounds/death/terrariahurt.mp3",
@@ -84,6 +91,7 @@ var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
 var _dash_sound:       AudioStreamPlayer
 var _dash_cooldown     := 0.0
+var _heart_anim        := false
 
 func _ready() -> void:
 	pause_menu.visible = false
@@ -107,9 +115,42 @@ func _ready() -> void:
 	_dash_sound.stream = load("res://sounds/sfx/dash.mp3")
 	_dash_sound.bus = "SFX"
 	add_child(_dash_sound)
+	_build_hearts()
 	_start_bottom_hud_tween()
 	_build_slow_anim()
 	_setup_blur_overlay()
+
+func _build_hearts() -> void:
+	for h in _hearts:
+		h.queue_free()
+	_hearts.clear()
+	var tex = load("res://images/heart.png")
+	var hud = get_node("../CanvasLayer/HUD")
+	for i in max_health:
+		var h := TextureRect.new()
+		h.texture = tex
+		h.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		h.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		h.layout_mode = 0
+		h.offset_left   = HEART_X + i * HEART_SPACING
+		h.offset_top    = HEART_Y
+		h.offset_right  = HEART_X + i * HEART_SPACING + HEART_SIZE
+		h.offset_bottom = HEART_Y + HEART_SIZE
+		h.pivot_offset  = Vector2(HEART_SIZE * 0.5, HEART_SIZE * 0.5)
+		h.modulate = HEART_JADE
+		hud.add_child(h)
+		_hearts.append(h)
+
+func add_heart() -> void:
+	max_health += 1
+	_build_hearts()
+	_hearts[-1].modulate = HEART_DEAD
+	_hearts[-1].scale = Vector2.ZERO
+	var t = create_tween().set_parallel(true)
+	t.tween_property(_hearts[-1], "modulate", HEART_JADE, 0.4).set_ease(Tween.EASE_OUT)
+	t.tween_property(_hearts[-1], "scale", Vector2(1.3, 1.3), 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await t.finished
+	create_tween().tween_property(_hearts[-1], "scale", Vector2.ONE, 0.2).set_ease(Tween.EASE_OUT)
 
 func _open_options() -> void:
 	if _options_instance:
@@ -376,8 +417,9 @@ func _update_hud() -> void:
 			slow_indicator.scale = Vector2.ONE
 			slow_indicator.modulate = Color(1, 1, 1, 1)
 		slow_label.text = "Slowed!"
-	pip1.color = Color(0.2, 1.0, 0.3, 1.0) if hit_count == 0 else Color(0.3, 0.3, 0.3, 1.0)
-	pip2.color = Color(0.2, 1.0, 0.3, 1.0) if hit_count == 0 else Color(1.0, 0.3, 0.1, 1.0)
+	if not _heart_anim:
+		for i in _hearts.size():
+			_hearts[i].modulate = HEART_JADE if i < (max_health - hit_count) else HEART_DEAD
 	lumi_rect.position.y = clampf(remap(position.y, 2.2, 8.0, LUMI_RECT_REST_Y, LUMI_RECT_JUMP_Y), LUMI_RECT_JUMP_Y, LUMI_RECT_REST_Y)
 	lumi_rect.texture = _lumi_tex_hurt if hit_count > 0 else _lumi_tex_normal
 	score_label.text  = "%d" % score
@@ -420,11 +462,14 @@ func collect_orb(orb_type: String) -> void:
 			if boost_timer <= 0:
 				ground_scroller.target_speed = SLEEPY_SPEED
 		"jade":
+			var was_hit = hit_count > 0
 			hit_count    = 0
 			recover_timer  = 0.0
 			sleepy_timer   = 0.0
 			invincible_timer = 0.0
 			_do_flash(Color(0.1, 1.0, 0.4, 0.5), 0.3)
+			if was_hit:
+				_animate_heart_heal()
 			if boost_timer <= 0:
 				ground_scroller.target_speed = NORMAL_SPEED
 		"maya":
@@ -441,7 +486,7 @@ func take_hit() -> void:
 		return
 	hit_count += 1
 	_play_random_hit()
-	if hit_count >= 2:
+	if hit_count >= max_health:
 		die()
 	else:
 		_do_flash(Color(1, 0.15, 0.15, 0.45), 0.2)
@@ -449,6 +494,25 @@ func take_hit() -> void:
 			ground_scroller.target_speed = SLOW_SPEED
 		invincible_timer = INVINCIBILITY
 		recover_timer    = RECOVER_TIME
+
+func _animate_heart_heal() -> void:
+	_heart_anim = true
+	var t = create_tween().set_parallel(true)
+	for h in _hearts:
+		t.tween_property(h, "modulate", HEART_JADE, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		t.tween_property(h, "scale", Vector2(1.4, 1.4), 0.15).set_ease(Tween.EASE_OUT)
+	await t.finished
+	var t2 = create_tween().set_parallel(true)
+	for h in _hearts:
+		t2.tween_property(h, "scale", Vector2.ONE, 0.25).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
+	await t2.finished
+	_heart_anim = false
+
+func _animate_hearts_die() -> void:
+	_heart_anim = true
+	var t = create_tween().set_parallel(true)
+	for h in _hearts:
+		t.tween_property(h, "modulate", HEART_DEAD, 0.3).set_ease(Tween.EASE_IN)
 
 func _play_dash() -> void:
 	if _dash_cooldown > 0:
@@ -502,6 +566,7 @@ func _trigger_win() -> void:
 func die() -> void:
 	Engine.time_scale = 1.0
 	alive = false
+	_animate_hearts_die()
 	ground_scroller.target_speed = 0.0
 	camera.death_zoom()
 	_do_flash(Color(1, 1, 1, 1), 0.35)
