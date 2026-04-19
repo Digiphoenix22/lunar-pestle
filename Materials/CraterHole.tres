@@ -1,0 +1,21 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://buocudrhkd4px"]
+
+[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_s2tbe"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_s2tbe")
+shader_parameter/globe_multiplier = 0.02000000095
+shader_parameter/albedo_color = Color(0.22793484, 0.12518415, 0.25851798, 1)
+shader_parameter/shadow_color = Color(0.5, 0.4, 0.8, 1)
+shader_parameter/use_ramp = false
+shader_parameter/shadow_bands = 8
+shader_parameter/shadow_fill_strength = 0.12
+shader_parameter/rim_color = Color(1, 1, 1, 1)
+shader_parameter/rim_size = 0.4
+shader_parameter/rim_strength = 0.0
+shader_parameter/specular_color = Color(1, 1, 1, 1)
+shader_parameter/glossiness = 32.0
+shader_parameter/specular_strength = 0.0
+shader_parameter/ambient_color = Color(0.1, 0.1, 0.15, 1)
+shader_parameter/ambient_strength = 0.0

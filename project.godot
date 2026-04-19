@@ -35,3 +35,10 @@ theme/custom_font="uid://c7ub575ac38xa"
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+
+[shader_globals]
+
+globe_curvature={
+"type": "float",
+"value": 0.0
+}
