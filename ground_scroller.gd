@@ -1,9 +1,10 @@
 extends Node3D
 
-const CHUNK_LENGTH    := 40.0
-const CHUNK_COUNT     := 5
-const OBSTACLE_CHANCE := 0.4
-var scroll_speed      := 0.0
+const CHUNK_LENGTH := 40.0
+const CHUNK_COUNT  := 5
+const STAGE_OBSTACLE_CHANCE := [0.4, 0.55, 0.65, 0.75, 0.85, 0.90]
+var obstacle_chance := 0.4
+var scroll_speed    := 0.0
 var target_speed      := 80.0
 const SPEED_EASE      := 0.5
 
@@ -26,9 +27,13 @@ func _ready() -> void:
 	for i in range(1, CHUNK_COUNT):
 		_place_chunk(-i * CHUNK_LENGTH, false)
 
+func set_stage(stage: int) -> void:
+	var idx = clampi(stage - 1, 0, STAGE_OBSTACLE_CHANCE.size() - 1)
+	obstacle_chance = STAGE_OBSTACLE_CHANCE[idx]
+
 func _make_chunk() -> Node3D:
 	var template: Node3D
-	if obstacle_templates.is_empty() or randf() > OBSTACLE_CHANCE:
+	if obstacle_templates.is_empty() or randf() > obstacle_chance:
 		template = plain_template
 	else:
 		template = obstacle_templates[randi() % obstacle_templates.size()]
