@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bnpnd1efxjklp" path="res://images/cornerHUD.png" id="9_efxa6"]
 [ext_resource type="Texture2D" uid="uid://dxtjvgn2w0veu" path="res://images/buni.png" id="10_dg77c"]
 [ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
+[ext_resource type="Shader" uid="uid://duwn7cwga3ysb" path="res://Shaders/GlobeThing.gdshader" id="11_efxa6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
 sky_top_color = Color(0.44839734, 0.44303516, 0.48449987, 1)
@@ -53,6 +54,12 @@ emission_energy_multiplier = 9.55
 material = SubResource("StandardMaterial3D_4c57u")
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_272bh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dg77c"]
+render_priority = 0
+shader = ExtResource("11_efxa6")
+
+[sub_resource type="QuadMesh" id="QuadMesh_ycdy4"]
 
 [node name="WorldRoot" type="Node3D" unique_id=1626412060]
 
@@ -267,3 +274,10 @@ offset_top = 270.0
 offset_right = 812.0
 offset_bottom = 368.0
 text = "restart"
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=511996847]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+material_override = SubResource("ShaderMaterial_dg77c")
+cast_shadow = 0
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_ycdy4")
