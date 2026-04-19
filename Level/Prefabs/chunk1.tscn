@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://cokbpi1bfi2kr"]
+
+[ext_resource type="PackedScene" uid="uid://c2hls8mvie8i5" path="res://Level/Models/Chunk1.glb" id="1_xibk1"]
+[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_ujxjh"]
+[ext_resource type="Material" uid="uid://c5hwbssv2rrt5" path="res://Materials/Crater.tres" id="3_p176i"]
+[ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="4_ujxjh"]
+
+[node name="Chunk1" unique_id=2049937168 instance=ExtResource("1_xibk1")]
+
+[node name="Base2_002" parent="." index="0" unique_id=927361482]
+material_override = ExtResource("2_ujxjh")
+
+[node name="Circle_001" parent="." index="1" unique_id=1155536933]
+transform = Transform3D(-7.8861327, 0, -0.51826686, 0, 7.9031444, 0, 0.51826686, 0, -7.8861327, -3.7969408, 0.085745335, 2.7571328)
+surface_material_override/0 = ExtResource("3_p176i")
+surface_material_override/1 = ExtResource("4_ujxjh")

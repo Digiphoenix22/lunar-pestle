@@ -1,5 +1,8 @@
 shader_type spatial;
-render_mode ambient_light_disabled;
+render_mode ambient_light_disabled, shadows_disabled;
+
+group_uniforms Globe;
+uniform float globe_multiplier : hint_range(0.0, 1.0) = 1.0;
 
 group_uniforms Base;
 uniform vec4 albedo_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
@@ -25,6 +28,16 @@ uniform float specular_strength : hint_range(0.0, 2.0) = 1.0;
 group_uniforms Ambient;
 uniform vec4 ambient_color : source_color = vec4(0.1, 0.1, 0.15, 1.0);
 uniform float ambient_strength : hint_range(0.0, 1.0) = 0.3;
+
+global uniform float globe_curvature;
+
+void vertex() {
+	vec4 world_pos = MODEL_MATRIX * vec4(VERTEX, 1.0);
+	vec2 flat_offset = world_pos.xz - CAMERA_POSITION_WORLD.xz;
+	float disp = dot(flat_offset, flat_offset) * globe_curvature;
+	vec3 local_up = vec3(MODEL_NORMAL_MATRIX[0][1], MODEL_NORMAL_MATRIX[1][1], MODEL_NORMAL_MATRIX[2][1]);
+	VERTEX -= disp * local_up * globe_multiplier;
+}
 
 void fragment() {
 	vec4 albedo = texture(albedo_texture, UV) * albedo_color;

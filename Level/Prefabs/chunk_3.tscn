@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://diqqpmvxk0pd4"]
+
+[ext_resource type="PackedScene" uid="uid://bkics1rmmbio" path="res://Level/Models/Chunk3.glb" id="1_3ec7x"]
+[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_kmr64"]
+[ext_resource type="Material" uid="uid://cloafoqswfycn" path="res://Materials/Arch.tres" id="3_tp8x8"]
+
+[node name="Chunk3" unique_id=1549515789 instance=ExtResource("1_3ec7x")]
+
+[node name="Base2_005" parent="." index="0" unique_id=290152104]
+material_override = ExtResource("2_kmr64")
+
+[node name="Middle thing_001" parent="." index="1" unique_id=1913109531]
+material_override = ExtResource("3_tp8x8")

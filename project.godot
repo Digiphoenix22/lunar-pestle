@@ -18,12 +18,10 @@ config/icon="res://icon.svg"
 [autoload]
 
 Transition="*res://transition.gd"
-GlobeManager="*res://globe_manager.gd"
 
 [global_group]
 
 obstacle="u die from it"
-globe=""
 
 [gui]
 
