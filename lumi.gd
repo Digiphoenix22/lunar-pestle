@@ -287,11 +287,24 @@ func _check_stage() -> void:
 		current_stage = new_stage
 		_on_stage_up()
 
+func _get_sky_mat() -> ShaderMaterial:
+	var env = get_node("../WorldEnvironment").environment
+	if env and env.sky:
+		return env.sky.sky_material as ShaderMaterial
+	return null
+
 func _on_stage_up() -> void:
 	ground_scroller.set_stage(current_stage)
 	if boost_timer <= 0:
 		ground_scroller.target_speed = _base_speed()
 	_do_flash(Color(0.863, 0.714, 0.937, 0.45), 0.4)
+	var sky_mat = _get_sky_mat()
+	if sky_mat:
+		var from = float(sky_mat.get_shader_parameter("sky_rotation"))
+		var to   = from + 0.35
+		create_tween().tween_method(
+			func(v: float): sky_mat.set_shader_parameter("sky_rotation", v),
+			from, to, 4.0).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 	var snd = AudioStreamPlayer.new()
 	snd.stream = load("res://sounds/sfx/sfx6.mp3")
 	snd.bus = "SFX"
