@@ -38,7 +38,8 @@ func _spawn() -> void:
 	var orb      = _orb_scene.instantiate()
 	orb.orb_type = "mochi"
 	orb.position = Vector3(LANES[randi() % 3], FLOAT_Y, SPAWN_Z)
-	orb.scale    = Vector3.ZERO
 	add_child(orb)
-	create_tween().tween_property(orb, "scale", Vector3.ONE, 0.3)\
+	var target_scale = orb.scale
+	orb.scale = Vector3.ZERO
+	create_tween().tween_property(orb, "scale", target_scale, 0.3)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)

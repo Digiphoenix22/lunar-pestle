@@ -86,3 +86,5 @@ height = 1.0648193
 
 [node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="5/CSGCylinder3D/StaticBody3D" unique_id=1079640647]
 shape = SubResource("ConcavePolygonShape3D_7scjo")
+
+[node name="Node3D" type="Node3D" parent="." unique_id=2003422499]
