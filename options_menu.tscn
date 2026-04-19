@@ -90,7 +90,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
-value = 0.75
+value = 0.40
 
 [node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1661937268]
 layout_mode = 2

@@ -15,7 +15,7 @@ func _ensure_music_bus() -> void:
 	var idx = AudioServer.bus_count - 1
 	AudioServer.set_bus_name(idx, "Music")
 	AudioServer.set_bus_send(idx, "Master")
-	AudioServer.set_bus_volume_db(idx, linear_to_db(0.75))
+	AudioServer.set_bus_volume_db(idx, linear_to_db(0.40))
 
 func get_high_score() -> int:
 	return int(_data.get("high_score", 0))

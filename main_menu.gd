@@ -16,6 +16,7 @@ func _ready() -> void:
 	_music.volume_db = -80.0
 	_music.autoplay  = false
 	add_child(_music)
+	_music.finished.connect(func(): _music.play())
 	_music.play()
 	create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
@@ -27,9 +28,7 @@ func _ready() -> void:
 	_play_intro()
 
 func _play_game() -> void:
-	var t = create_tween()
-	t.tween_property(_music, "volume_db", -80.0, 0.8).set_ease(Tween.EASE_IN)
-	await t.finished
+	create_tween().tween_property(_music, "volume_db", -80.0, 0.8).set_ease(Tween.EASE_IN)
 	Transition.change_scene("res://main.tscn")
 
 func _start_bg_tween() -> void:

@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://cbr8o2lud0ooc"
+path="res://.godot/imported/Gameplay OST.wav-5cb5785554b2e1949bc79be29ac04013.sample"
+
+[deps]
+
+source_file="res://sounds/music/Gameplay OST.wav"
+dest_files=["res://.godot/imported/Gameplay OST.wav-5cb5785554b2e1949bc79be29ac04013.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

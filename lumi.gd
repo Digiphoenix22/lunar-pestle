@@ -9,7 +9,7 @@ const SLOW_SPEED          := 30.0
 const SLEEPY_SPEED        := 15.0
 const INVINCIBILITY       := 1.0
 const RECOVER_TIME        := 10.0
-const SLEEPY_DURATION     := 8.0
+const SLEEPY_DURATION     := 2.0
 const MAYA_JUMP_FORCE     := 48.0
 const MAYA_FLOAT_DURATION := 1.0
 const MAYA_GRAVITY_MULT   := 0.25
@@ -121,6 +121,7 @@ func _ready() -> void:
 	_music.bus       = "Music"
 	_music.volume_db = -80.0
 	add_child(_music)
+	_music.finished.connect(func(): if alive: _music.play())
 	_music.play()
 	create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
@@ -591,7 +592,7 @@ func die() -> void:
 	_animate_hearts_die()
 	var mt = create_tween().set_parallel(true)
 	mt.tween_property(_music, "pitch_scale", 0.6, 2.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-	mt.tween_property(_music, "volume_db", -80.0, 2.5).set_ease(Tween.EASE_IN)
+	mt.tween_property(_music, "volume_db", -80.0, 8.5).set_ease(Tween.EASE_IN)
 	ground_scroller.target_speed = 0.0
 	camera.death_zoom()
 	_do_flash(Color(1, 1, 1, 1), 0.35)
