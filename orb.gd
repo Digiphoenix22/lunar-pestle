@@ -9,7 +9,20 @@ const COLORS := {
 	"mochi":  Color(1.0,  0.65, 0.1,  1.0),
 }
 
+const MODEL_PATHS := {
+	"sleepy": "",
+	"jade":   "",
+	"maya":   "",
+	"mochi":  "",
+}
+
 func _ready() -> void:
+	var path = MODEL_PATHS.get(orb_type, "")
+	if path != "" and ResourceLoader.exists(path):
+		var scene = load(path) as PackedScene
+		if scene:
+			var model = scene.instantiate()
+			$MeshInstance3D.replace_by(model)
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color               = COLORS[orb_type]
 	mat.emission_enabled           = true
@@ -22,9 +35,9 @@ func _ready() -> void:
 
 func _start_emission_pulse(mat: StandardMaterial3D) -> void:
 	var t = create_tween().set_loops()
-	t.tween_property(mat, "emission_energy_multiplier", 0.5, 0.9)\
+	t.tween_property(mat, "emission_energy_multiplier", 5.0, 0.9)\
 		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-	t.tween_property(mat, "emission_energy_multiplier", 1.0, 0.9)\
+	t.tween_property(mat, "emission_energy_multiplier", 20.0, 0.9)\
 		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 func _start_bob() -> void:
