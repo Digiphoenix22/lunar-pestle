@@ -53,12 +53,15 @@ var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
 @onready var slow_anim       = $"../CanvasLayer/HUD/SlowIndicator/AnimationPlayer"
 @onready var lumi_rect       = $"../CanvasLayer/HUD/LumiRect"
 @onready var bottom_hud      = $"../CanvasLayer/HUD/BottomHud"
+@onready var top_hud         = $"../CanvasLayer/HUD/TopHud"
 @onready var victory_screen  = $"../CanvasLayer/VictoryScreen"
 @onready var stage_label     = $"../CanvasLayer/HUD/StageLabel"
 @onready var score_label     = $"../CanvasLayer/HUD/ScoreLabel"
+@onready var best_label      = $"../CanvasLayer/HUD/BestLabel"
 @onready var time_label      = $"../CanvasLayer/HUD/TimeLabel"
 @onready var dist_label      = $"../CanvasLayer/HUD/DistLabel"
 @onready var mochi_label     = $"../CanvasLayer/HUD/MochiLabel"
+@onready var speed_label     = $"../CanvasLayer/HUD/SpeedLabel"
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
@@ -79,6 +82,8 @@ const HIT_SOUNDS := [
 var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
+var _dash_sound:       AudioStreamPlayer
+var _dash_cooldown     := 0.0
 
 func _ready() -> void:
 	pause_menu.visible = false
@@ -98,6 +103,10 @@ func _ready() -> void:
 	_powerup_sound.volume_db = -2.5
 	_powerup_sound.bus = _ensure_powerup_bus()
 	add_child(_powerup_sound)
+	_dash_sound = AudioStreamPlayer.new()
+	_dash_sound.stream = load("res://sounds/sfx/dash.mp3")
+	_dash_sound.bus = "SFX"
+	add_child(_dash_sound)
 	_start_bottom_hud_tween()
 	_build_slow_anim()
 	_setup_blur_overlay()
@@ -188,8 +197,10 @@ func _build_slow_anim() -> void:
 
 func _start_bottom_hud_tween() -> void:
 	var t = create_tween().set_loops()
-	t.tween_property(bottom_hud, "modulate", HUD_INDIGO, 1.8).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-	t.tween_property(bottom_hud, "modulate", HUD_PURPLE, 1.8).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	t.tween_property(bottom_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	t.parallel().tween_property(top_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	t.tween_property(bottom_hud, "modulate", HUD_PURPLE, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	t.parallel().tween_property(top_hud, "modulate", HUD_PURPLE, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventKey and event.is_pressed() and not event.is_echo()):
@@ -239,15 +250,23 @@ func _on_stage_up() -> void:
 	ground_scroller.set_stage(current_stage)
 	if boost_timer <= 0:
 		ground_scroller.target_speed = _base_speed()
-	_do_flash(Color(1.0, 0.85, 0.2, 0.45), 0.4)
+	_do_flash(Color(0.863, 0.714, 0.937, 0.45), 0.4)
+	var snd = AudioStreamPlayer.new()
+	snd.stream = load("res://sounds/sfx/sfx6.mp3")
+	snd.bus = "SFX"
+	add_child(snd)
+	snd.play()
+	snd.finished.connect(snd.queue_free)
 	var notif = Label.new()
 	notif.text = "STAGE %d" % current_stage
 	notif.add_theme_font_override("font", load("res://fonts/ExodusDisplay-SharpenBold.otf"))
 	notif.add_theme_font_size_override("font_size", 72)
-	notif.add_theme_color_override("font_color", Color(1.0, 0.9, 0.3, 1.0))
+	notif.add_theme_color_override("font_color", Color(0.863, 0.714, 0.937, 1.0))
 	notif.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	notif.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
 	notif.set_anchors_preset(Control.PRESET_CENTER)
-	notif.position = Vector2(-200, -80)
+	notif.size     = Vector2(420, 90)
+	notif.position = Vector2(-210, -45)
 	notif.modulate.a = 0.0
 	get_node("../CanvasLayer/HUD").add_child(notif)
 	var t = create_tween()
@@ -310,11 +329,21 @@ func _physics_process(delta: float) -> void:
 			_jump_count = 2
 			maya_jump = false
 			_maya_float_timer = MAYA_FLOAT_DURATION
+			var snd = AudioStreamPlayer.new()
+			snd.stream = load("res://sounds/sfx/sfx5.mp3")
+			snd.bus = "SFX"
+			add_child(snd)
+			snd.play()
+			snd.finished.connect(snd.queue_free)
 
+	if _dash_cooldown > 0:
+		_dash_cooldown -= delta
 	if Input.is_action_just_pressed("ui_left") and current_lane > 0:
 		current_lane -= 1
+		_play_dash()
 	if Input.is_action_just_pressed("ui_right") and current_lane < 2:
 		current_lane += 1
+		_play_dash()
 
 	position.x = lerp(position.x, LANES[current_lane], LANE_SPEED * delta)
 
@@ -352,12 +381,14 @@ func _update_hud() -> void:
 	lumi_rect.position.y = clampf(remap(position.y, 2.2, 8.0, LUMI_RECT_REST_Y, LUMI_RECT_JUMP_Y), LUMI_RECT_JUMP_Y, LUMI_RECT_REST_Y)
 	lumi_rect.texture = _lumi_tex_hurt if hit_count > 0 else _lumi_tex_normal
 	score_label.text  = "%d" % score
+	best_label.text   = "Best: %d" % SaveData.get_high_score()
 	stage_label.text  = "Stage %d" % current_stage
 	var mins := int(elapsed_time) / 60
 	var secs := int(elapsed_time) % 60
 	time_label.text  = "%d:%02d" % [mins, secs]
 	dist_label.text  = "%dm" % int(distance)
 	mochi_label.text = "Mochi  x%d" % mochi_count
+	speed_label.text = "%du/s" % int(ground_scroller.scroll_speed)
 
 func _toggle_boost() -> void:
 	if boost_timer > 0:
@@ -375,6 +406,12 @@ func _do_flash(color: Color, duration: float) -> void:
 	create_tween().tween_property(white_flash, "modulate:a", 0.0, duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 
 func collect_orb(orb_type: String) -> void:
+	if orb_type == "mochi":
+		_powerup_sound.pitch_scale = minf(1.0 + mochi_count * 0.06, 1.5)
+		_powerup_sound.volume_db   = -5.6
+	else:
+		_powerup_sound.pitch_scale = 1.0
+		_powerup_sound.volume_db   = -2.5
 	_powerup_sound.play()
 	match orb_type:
 		"sleepy":
@@ -413,6 +450,14 @@ func take_hit() -> void:
 		invincible_timer = INVINCIBILITY
 		recover_timer    = RECOVER_TIME
 
+func _play_dash() -> void:
+	if _dash_cooldown > 0:
+		return
+	_dash_sound.pitch_scale = randf_range(0.88, 1.12)
+	_dash_sound.volume_db   = randf_range(-4.0, 0.0)
+	_dash_sound.play()
+	_dash_cooldown = 0.12
+
 func _play_random_hit() -> void:
 	var path = HIT_SOUNDS[randi() % HIT_SOUNDS.size()]
 	hit_sound.stream = load(path)
@@ -420,26 +465,39 @@ func _play_random_hit() -> void:
 
 func _trigger_win() -> void:
 	_won = true
+	var snd = AudioStreamPlayer.new()
+	snd.stream = load("res://sounds/sfx/sfx6.mp3")
+	snd.bus = "SFX"
+	add_child(snd)
+	snd.play()
+	snd.finished.connect(snd.queue_free)
 	var slow_tween = create_tween()
-	slow_tween.tween_method(func(v: float): Engine.time_scale = v, 1.0, 0.05, 1.5)
-	await get_tree().create_timer(2.2, true, false, true).timeout
+	slow_tween.tween_method(func(v: float): Engine.time_scale = v, 1.0, 0.05, 0.8)
+	await get_tree().create_timer(1.2, true, false, true).timeout
 	slow_tween.kill()
 	Engine.time_scale = 1.0
 	get_tree().paused = true
-	victory_screen.get_node("ScoreText").text = "Score: %d" % score
-	_show_menu(victory_screen)
+	await Transition.wipe_in()
+	var is_best = SaveData.submit_score(score)
+	var score_txt = "Score: %d" % score
+	if is_best:
+		score_txt += "  —  NEW BEST!"
+	victory_screen.get_node("ScoreText").text = score_txt
+	victory_screen.visible = true
 	var cont_btn = victory_screen.get_node("ContinueButton")
-	var quit_btn = victory_screen.get_node("QuitButton")
+	var quit_btn  = victory_screen.get_node("QuitButton")
 	Transition.wire_buttons([cont_btn, quit_btn])
 	cont_btn.pressed.connect(func():
+		await Transition.wipe_in()
+		victory_screen.visible = false
 		get_tree().paused = false
-		_hide_menu(victory_screen)
+		await Transition.wipe_out()
 	, CONNECT_ONE_SHOT)
 	quit_btn.pressed.connect(func():
 		get_tree().paused = false
-		Engine.time_scale = 1.0
 		Transition.change_scene("res://main_menu.tscn")
 	, CONNECT_ONE_SHOT)
+	await Transition.wipe_out()
 
 func die() -> void:
 	Engine.time_scale = 1.0
@@ -448,7 +506,10 @@ func die() -> void:
 	camera.death_zoom()
 	_do_flash(Color(1, 1, 1, 1), 0.35)
 	# TODO: trigger ragdoll on model when ready
+	SaveData.submit_score(score)
 	await get_tree().create_timer(1.5).timeout
+	var death_text = death_screen.get_node("DeathText")
+	death_text.text = "Score: %d   Best: %d" % [score, SaveData.get_high_score()]
 	_show_menu(death_screen)
 	var restart_btn = death_screen.get_node("RestartButton")
 	var quit_btn    = death_screen.get_node("QuitButton")
