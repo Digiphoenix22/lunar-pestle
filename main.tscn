@@ -185,22 +185,6 @@ offset_bottom = 638.7373
 texture = ExtResource("10_dg77c")
 expand_mode = 1
 
-[node name="Pip1" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1293967294]
-layout_mode = 0
-offset_left = 136.0
-offset_top = 598.0
-offset_right = 176.0
-offset_bottom = 638.0
-color = Color(0.2, 1, 0.3, 1)
-
-[node name="Pip2" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1293967293]
-layout_mode = 0
-offset_left = 192.0
-offset_top = 598.0
-offset_right = 232.0
-offset_bottom = 638.0
-color = Color(0.2, 1, 0.3, 1)
-
 [node name="BGScore" type="Label" parent="CanvasLayer/HUD" unique_id=288719171]
 layout_mode = 0
 offset_left = 951.00006
@@ -266,7 +250,7 @@ offset_left = 402.0
 offset_top = 583.99994
 offset_right = 622.0
 offset_bottom = 621.99994
-rotation = 0.2987269
+rotation = 0.28734824
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 28
 text = "80u/s"
