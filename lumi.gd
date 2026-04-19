@@ -92,6 +92,7 @@ var _powerup_sound:    AudioStreamPlayer
 var _dash_sound:       AudioStreamPlayer
 var _dash_cooldown     := 0.0
 var _heart_anim        := false
+var _music:            AudioStreamPlayer
 
 func _ready() -> void:
 	pause_menu.visible = false
@@ -115,6 +116,14 @@ func _ready() -> void:
 	_dash_sound.stream = load("res://sounds/sfx/dash.mp3")
 	_dash_sound.bus = "SFX"
 	add_child(_dash_sound)
+	_music = AudioStreamPlayer.new()
+	_music.stream    = load("res://sounds/music/Gameplay OST.wav")
+	_music.bus       = "Music"
+	_music.volume_db = -80.0
+	add_child(_music)
+	_music.play()
+	create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	_build_hearts()
 	_start_bottom_hud_tween()
 	_build_slow_anim()
@@ -580,6 +589,9 @@ func die() -> void:
 	Engine.time_scale = 1.0
 	alive = false
 	_animate_hearts_die()
+	var mt = create_tween().set_parallel(true)
+	mt.tween_property(_music, "pitch_scale", 0.6, 2.0).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	mt.tween_property(_music, "volume_db", -80.0, 2.5).set_ease(Tween.EASE_IN)
 	ground_scroller.target_speed = 0.0
 	camera.death_zoom()
 	_do_flash(Color(1, 1, 1, 1), 0.35)

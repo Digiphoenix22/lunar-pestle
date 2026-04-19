@@ -5,16 +5,32 @@ const HUD_INDIGO := Color(0.22, 0.08, 0.65, 1.0)
 
 @onready var bg = $Background
 
-var _options_scene = preload("res://options_menu.tscn")
+var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
+var _music:           AudioStreamPlayer
 
 func _ready() -> void:
+	_music = AudioStreamPlayer.new()
+	_music.stream    = load("res://sounds/music/Menu OST.wav")
+	_music.bus       = "Music"
+	_music.volume_db = -80.0
+	_music.autoplay  = false
+	add_child(_music)
+	_music.play()
+	create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	Transition.wire_buttons([$PlayButton, $OptionsButton, $QuitButton])
-	$PlayButton.pressed.connect(func(): Transition.change_scene("res://main.tscn"))
+	$PlayButton.pressed.connect(_play_game)
 	$OptionsButton.pressed.connect(_open_options)
 	$QuitButton.pressed.connect(func(): get_tree().quit())
 	_start_bg_tween()
 	_play_intro()
+
+func _play_game() -> void:
+	var t = create_tween()
+	t.tween_property(_music, "volume_db", -80.0, 0.8).set_ease(Tween.EASE_IN)
+	await t.finished
+	Transition.change_scene("res://main.tscn")
 
 func _start_bg_tween() -> void:
 	var t = create_tween().set_loops()
