@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://dgheh5258bt5e" path="res://Level/Models/Chunk4.glb" id="1_qf0g4"]
 [ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_nyff4"]
-[ext_resource type="Material" uid="uid://arch_c5_lp001" path="res://Materials/Arch_c5.tres" id="3_emi2a"]
-[ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="4_mk6lw"]
+[ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="3_nyff4"]
+[ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="4_emi2a"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nyff4"]
 size = Vector3(14.807198, 0.63079834, 35.974777)
@@ -14,8 +14,8 @@ size = Vector3(14.807198, 0.63079834, 35.974777)
 material_override = ExtResource("2_nyff4")
 
 [node name="Large Crater_005" parent="." index="1" unique_id=201284596]
-surface_material_override/0 = ExtResource("3_emi2a")
-surface_material_override/1 = ExtResource("4_mk6lw")
+surface_material_override/0 = ExtResource("3_nyff4")
+surface_material_override/1 = ExtResource("4_emi2a")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Large Crater_005" index="0" unique_id=931033413 groups=["obstacle"]]
 

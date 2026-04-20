@@ -93,9 +93,9 @@ texture = ExtResource("2_glbon")
 
 [node name="LogoRect" type="TextureRect" parent="." unique_id=1212163539]
 layout_mode = 0
-offset_left = 275.0
+offset_left = 296.0
 offset_top = 94.0
-offset_right = 868.2476
+offset_right = 889.2476
 offset_bottom = 319.0
 texture = ExtResource("2_jix8l")
 expand_mode = 1
@@ -103,9 +103,9 @@ stretch_mode = 5
 
 [node name="PlayButton" type="Button" parent="." unique_id=527759521]
 layout_mode = 0
-offset_left = 375.0
+offset_left = 396.0
 offset_top = 337.0
-offset_right = 775.0
+offset_right = 796.0
 offset_bottom = 437.0
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 52
@@ -113,9 +113,9 @@ text = "Play"
 
 [node name="OptionsButton" type="Button" parent="." unique_id=1013297348]
 layout_mode = 0
-offset_left = 375.0
+offset_left = 396.0
 offset_top = 447.0
-offset_right = 775.0
+offset_right = 796.0
 offset_bottom = 537.0
 theme_override_fonts/font = ExtResource("3_reg")
 theme_override_font_sizes/font_size = 38
@@ -124,9 +124,9 @@ text = "options
 
 [node name="QuitButton" type="Button" parent="." unique_id=1695361462]
 layout_mode = 0
-offset_left = 375.0
+offset_left = 396.0
 offset_top = 546.0
-offset_right = 775.0
+offset_right = 796.0
 offset_bottom = 636.0
 theme_override_fonts/font = ExtResource("3_reg")
 theme_override_font_sizes/font_size = 38

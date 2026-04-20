@@ -1,11 +1,11 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://buocudrhkd4px"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cnbn3v5kgh3ip"]
 
-[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_s2tbe"]
+[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_tumw1"]
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_s2tbe")
-shader_parameter/globe_multiplier = 0.042000001995
+shader = ExtResource("1_tumw1")
+shader_parameter/globe_multiplier = 1.0
 shader_parameter/albedo_color = Color(0.22793484, 0.12518415, 0.25851798, 1)
 shader_parameter/shadow_color = Color(0.5, 0.4, 0.8, 1)
 shader_parameter/use_ramp = false

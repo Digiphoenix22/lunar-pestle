@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://d1x458unpbdsg"]
 
 [ext_resource type="PackedScene" uid="uid://b1g5okqh421u2" path="res://Level/Models/Chunk6.glb" id="1_m7ead"]
-[ext_resource type="Material" uid="uid://c5hwbssv2rrt5" path="res://Materials/Crater.tres" id="2_0o8wd"]
-[ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="3_xi0fh"]
+[ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="2_0o8wd"]
+[ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="3_xi0fh"]
 [ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="4_5vvrp"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0o8wd"]
