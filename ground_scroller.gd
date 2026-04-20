@@ -5,7 +5,7 @@ const CHUNK_COUNT  := 10
 const STAGE_OBSTACLE_CHANCE := [0.4, 0.55, 0.65, 0.75, 0.85, 0.90]
 var obstacle_chance := 0.4
 var scroll_speed    := 0.0
-var target_speed      := 80.0
+var target_speed      := 0.0
 const SPEED_EASE      := 0.5
 
 var plain_template: Node3D = null

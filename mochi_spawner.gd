@@ -16,6 +16,7 @@ var _timer     := 0.0
 @onready var lumi            = $"../Lumi"
 
 func _ready() -> void:
+	add_to_group("spawners")
 	_timer = BASE_INTERVAL
 
 func _current_interval() -> float:

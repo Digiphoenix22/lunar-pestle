@@ -16,6 +16,7 @@ var _timer     := 0.0
 @onready var ground_scroller = $"../GroundScroller"
 
 func _ready() -> void:
+	add_to_group("spawners")
 	_timer = spawn_interval + start_delay
 
 func _process(delta: float) -> void:

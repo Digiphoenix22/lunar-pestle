@@ -111,7 +111,14 @@ func _process(_delta: float) -> void:
 		n.offset_top    = b.ot - mo.y * f + iy
 		n.offset_bottom = b.ob - mo.y * f + iy
 
+var _htp_scene = preload("res://how_to_play.tscn")
+
 func _play_game() -> void:
+	if SaveData.get_show_tutorial():
+		var htp = _htp_scene.instantiate()
+		add_child(htp)
+		_animate_menu_in(htp)
+		await htp.dismissed
 	create_tween().tween_property(_music, "volume_db", -80.0, 0.8).set_ease(Tween.EASE_IN)
 	Transition.change_scene("res://main.tscn")
 
@@ -227,7 +234,7 @@ func _close_options() -> void:
 	_options_instance = null
 
 func _animate_menu_in(menu: Control) -> void:
-	menu.pivot_offset = Vector2(960, 540)
+	menu.pivot_offset = Vector2(576, 324)
 	menu.scale = Vector2(0.92, 0.92)
 	menu.modulate.a = 0.0
 	var t = create_tween().set_parallel(true)
