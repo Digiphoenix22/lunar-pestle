@@ -15,8 +15,10 @@ func _ready() -> void:
 func _spawn() -> void:
 	if obstacle_scene == null:
 		return
+	var lane = SpawnRegistry.pick_lane()
+	SpawnRegistry.register(lane)
 	var obs = obstacle_scene.instantiate()
-	obs.position = Vector3(LANES[randi() % 3], ground_y, spawn_z)
+	obs.position = Vector3(LANES[lane], ground_y, spawn_z)
 	add_child(obs)
 
 func _process(delta: float) -> void:

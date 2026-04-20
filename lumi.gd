@@ -17,8 +17,8 @@ const MAYA_GRAVITY_MULT   := 0.25
 const BOOST_DURATION := 5.0
 const BOOST_MULT     := 5.0
 
-const STAGE_SCORES := [0, 1500, 4000, 9000, 18000, 32000]
-const STAGE_SPEED  := [80.0, 90.0, 105.0, 120.0, 135.0, 155.0]
+const STAGE_SCORES := [0, 1000, 1500, 2500, 4000, 5000, 10000]
+const STAGE_SPEED  := [80.0, 90.0, 105.0, 120.0, 135.0, 155.0, 175.0]
 
 var current_lane      := 1
 var alive             := true
@@ -38,8 +38,14 @@ var current_stage := 1
 var god_mode      := false
 var _won          := false
 
-var _lumi_tex_normal = preload("res://images/buni.png")
-var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
+enum LumiState { RUN, RUN_HURT, JUMP, JUMP_HURT, DEAD }
+
+var _lumi_tex_run       = preload("res://images/Lumi/LumiRun.png")
+var _lumi_tex_run_hurt  = preload("res://images/Lumi/LumiRunHurt.png")
+var _lumi_tex_jump      = preload("res://images/Lumi/LumiJump.png")
+var _lumi_tex_jump_hurt = preload("res://images/Lumi/LumiJumpHurt.png")
+var _lumi_tex_dead      = preload("res://images/Lumi/LumiDead.png")
+var _lumi_state         := LumiState.RUN
 
 @onready var death_screen    = $"../CanvasLayer/DeathScreen"
 @onready var pause_menu      = $"../CanvasLayer/PauseMenu"
@@ -60,6 +66,7 @@ var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
 @onready var dist_label      = $"../CanvasLayer/HUD/DistLabel"
 @onready var mochi_label     = $"../CanvasLayer/HUD/MochiLabel"
 @onready var speed_label     = $"../CanvasLayer/HUD/SpeedLabel"
+@onready var jump_buff_rect  = $"../CanvasLayer/HUD/JumpBuff"
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
@@ -68,12 +75,12 @@ const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
 const HUD_PURPLE        := Color(0.75, 0.507, 0.994, 1.0)
 const HUD_INDIGO        := Color(0.22, 0.08, 0.65, 1.0)
-const HEART_JADE        := Color(0.1,  0.9,  0.35, 1.0)
+const HEART_JADE        := Color(1.0,  1.0,  1.0,  1.0)
 const HEART_DEAD        := Color(0.0,  0.0,  0.0,  1.0)
-const HEART_X           := 136.0
+const HEART_X           := 180.0
 const HEART_Y           := 598.0
 const HEART_SIZE        := 40.0
-const HEART_SPACING     := 56.0
+const HEART_SPACING     := 46.0
 
 var max_health  := 2
 var _hearts: Array = []
@@ -86,9 +93,16 @@ const HIT_SOUNDS := [
 	"res://sounds/death/rblxold.mp3",
 ]
 
+const MAYA_GLOW_COLOR := Color(0.2, 0.65, 1.0, 1.0)
+
 var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
+var _double_jumping   := false
+var _maya_glow_mat:   ShaderMaterial
+var _lumi_extra_y     := 0.0
+var _bob_amplitude    := 0.0
+var _hearts_in_air    := false
 var _dash_sound:       AudioStreamPlayer
 var _dash_cooldown     := 0.0
 var _heart_anim        := false
@@ -131,6 +145,7 @@ func _ready() -> void:
 	AudioServer.add_bus_effect(music_idx, _music_lpf)
 	_music.finished.connect(func(): if alive: _music.play())
 	_music.play()
+	var is_restart := _death_restart
 	if _death_restart:
 		_death_restart = false
 		_music.volume_db = 0.0
@@ -141,9 +156,12 @@ func _ready() -> void:
 		create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	_build_hearts()
+	_setup_maya_glow()
 	_start_bottom_hud_tween()
 	_build_slow_anim()
 	_setup_blur_overlay()
+	if not is_restart:
+		_play_hud_intro()
 
 func _build_hearts() -> void:
 	for h in _hearts:
@@ -185,14 +203,32 @@ func _open_options() -> void:
 	var back_btn = _options_instance.get_node("Panel/VBox/BackButton")
 	Transition.wire_buttons([back_btn])
 	back_btn.pressed.connect(_close_options)
-	_show_menu(_options_instance)
+	_show_panel(_options_instance)
 
 func _close_options() -> void:
 	if not _options_instance:
 		return
-	await _hide_menu(_options_instance, not pause_menu.visible)
+	await _hide_panel(_options_instance)
 	_options_instance.queue_free()
 	_options_instance = null
+
+func _show_panel(menu: Control) -> void:
+	menu.pivot_offset = Vector2(960, 540)
+	menu.scale = Vector2(0.92, 0.92)
+	menu.modulate.a = 0.0
+	menu.visible = true
+	var t = create_tween().set_parallel(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	t.tween_property(menu, "scale", Vector2.ONE, 0.22)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	t.tween_property(menu, "modulate:a", 1.0, 0.16).set_ease(Tween.EASE_OUT)
+
+func _hide_panel(menu: Control) -> void:
+	var t = create_tween().set_parallel(true).set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	t.tween_property(menu, "scale", Vector2(0.92, 0.92), 0.14)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(menu, "modulate:a", 0.0, 0.12).set_ease(Tween.EASE_IN)
+	await t.finished
+	menu.visible = false
 
 func _ensure_powerup_bus() -> String:
 	const BUS := "PowerupSFX"
@@ -263,7 +299,29 @@ func _build_slow_anim() -> void:
 	lib.add_animation("pulse", anim)
 	slow_anim.add_animation_library("", lib)
 
+func _play_hud_intro() -> void:
+	var top_nodes: Array = [top_hud, stage_label, score_label, best_label, mochi_label]
+	var bot_nodes: Array = [bottom_hud, lumi_rect, time_label, dist_label, speed_label, slow_indicator] + _hearts
+	var top_rests: Array = []
+	var bot_rests: Array = []
+	for n: Control in top_nodes:
+		top_rests.append(n.position.y)
+		n.position.y -= 220.0
+	for n: Control in bot_nodes:
+		bot_rests.append(n.position.y)
+		n.position.y += 220.0
+	var t = create_tween().set_parallel(true)
+	for i in top_nodes.size():
+		t.tween_property(top_nodes[i], "position:y", top_rests[i], 0.7)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC).set_delay(0.1)
+	for i in bot_nodes.size():
+		t.tween_property(bot_nodes[i], "position:y", bot_rests[i], 0.7)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC).set_delay(0.1)
+
 func _start_bottom_hud_tween() -> void:
+	var start_color := Color(0.220, 0.078, 0.647, 1.0)
+	bottom_hud.modulate = start_color
+	top_hud.modulate    = start_color
 	var t = create_tween().set_loops()
 	t.tween_property(bottom_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 	t.parallel().tween_property(top_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
@@ -409,7 +467,18 @@ func _physics_process(delta: float) -> void:
 	_update_hud()
 
 	if is_on_floor():
+		if _double_jumping:
+			_double_jumping = false
+			_set_maya_glow(0.0, 0.35)
+			create_tween().tween_property(self, "_bob_amplitude", 0.0, 0.3)\
+				.set_ease(Tween.EASE_OUT)
+		if _hearts_in_air:
+			_hearts_in_air = false
+			_float_hearts(false)
 		_jump_count = 0
+	elif not _hearts_in_air:
+		_hearts_in_air = true
+		_float_hearts(true)
 
 	if not is_on_floor():
 		var grav_mult = MAYA_GRAVITY_MULT if _maya_float_timer > 0 else 1.0
@@ -424,6 +493,14 @@ func _physics_process(delta: float) -> void:
 			_jump_count = 2
 			maya_jump = false
 			_maya_float_timer = MAYA_FLOAT_DURATION
+			_double_jumping = true
+			_set_maya_glow(1.5, 0.2)
+			_lumi_extra_y = -38.0
+			create_tween().tween_property(self, "_lumi_extra_y", 0.0, 0.5)\
+				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+			create_tween().tween_property(self, "_bob_amplitude", 7.0, 0.25)\
+				.set_ease(Tween.EASE_OUT)
+			_consume_jump_buff_icon()
 			var snd = AudioStreamPlayer.new()
 			snd.stream = load("res://sounds/sfx/sfx5.mp3")
 			snd.bus = "SFX"
@@ -474,8 +551,9 @@ func _update_hud() -> void:
 	if not _heart_anim:
 		for i in _hearts.size():
 			_hearts[i].modulate = HEART_JADE if i < (max_health - hit_count) else HEART_DEAD
-	lumi_rect.position.y = clampf(remap(position.y, 2.2, 8.0, LUMI_RECT_REST_Y, LUMI_RECT_JUMP_Y), LUMI_RECT_JUMP_Y, LUMI_RECT_REST_Y)
-	lumi_rect.texture = _lumi_tex_hurt if hit_count > 0 else _lumi_tex_normal
+	var bob = sin(Time.get_ticks_msec() * 0.006) * _bob_amplitude
+	lumi_rect.position.y = clampf(remap(position.y, 2.2, 8.0, LUMI_RECT_REST_Y, LUMI_RECT_JUMP_Y), LUMI_RECT_JUMP_Y, LUMI_RECT_REST_Y) + _lumi_extra_y + bob
+	_update_lumi_sprite()
 	score_label.text  = "%d" % score
 	best_label.text   = "Best: %d" % SaveData.get_high_score()
 	stage_label.text  = "Stage %d" % current_stage
@@ -495,6 +573,75 @@ func _toggle_boost() -> void:
 		ground_scroller.target_speed = _base_speed() * BOOST_MULT
 		boost_sound.stream = load("res://sounds/death/speed.mp3")
 		boost_sound.play()
+
+func _setup_maya_glow() -> void:
+	var shader = Shader.new()
+	shader.code = """
+shader_type canvas_item;
+uniform vec4 glow_color : source_color = vec4(0.2, 0.65, 1.0, 1.0);
+uniform float intensity : hint_range(0.0, 3.0) = 0.0;
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec3 tinted = mix(tex.rgb, glow_color.rgb, intensity * 0.55);
+	COLOR = vec4(tinted * (1.0 + intensity * 0.9), tex.a);
+}
+"""
+	_maya_glow_mat = ShaderMaterial.new()
+	_maya_glow_mat.shader = shader
+	_maya_glow_mat.set_shader_parameter("glow_color", MAYA_GLOW_COLOR)
+	_maya_glow_mat.set_shader_parameter("intensity", 0.0)
+	lumi_rect.material = _maya_glow_mat
+
+func _show_jump_buff_icon() -> void:
+	jump_buff_rect.modulate.a = 0.0
+	jump_buff_rect.scale      = Vector2(0.12, 0.12)
+	jump_buff_rect.visible    = true
+	var t = create_tween().set_parallel(true)
+	t.tween_property(jump_buff_rect, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	t.tween_property(jump_buff_rect, "scale", Vector2(0.184, 0.184), 0.35)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+
+func _consume_jump_buff_icon() -> void:
+	var rest_y = jump_buff_rect.position.y
+	var t = create_tween().set_parallel(true)
+	t.tween_property(jump_buff_rect, "position:y", rest_y - 48.0, 0.5)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	t.tween_property(jump_buff_rect, "modulate:a", 0.0, 0.4).set_ease(Tween.EASE_IN)
+	await t.finished
+	jump_buff_rect.visible    = false
+	jump_buff_rect.position.y = rest_y
+
+func _set_maya_glow(target: float, duration: float) -> void:
+	var from = _maya_glow_mat.get_shader_parameter("intensity")
+	create_tween().tween_method(
+		func(v: float): _maya_glow_mat.set_shader_parameter("intensity", v),
+		from, target, duration).set_ease(Tween.EASE_OUT)
+
+func _update_lumi_sprite() -> void:
+	var low_hp := (max_health - hit_count) <= 1
+	var in_air := not is_on_floor()
+	var new_state: LumiState
+	if not alive:
+		new_state = LumiState.DEAD
+	elif in_air:
+		new_state = LumiState.JUMP_HURT if low_hp else LumiState.JUMP
+	else:
+		new_state = LumiState.RUN_HURT if low_hp else LumiState.RUN
+	if new_state == _lumi_state:
+		return
+	_lumi_state = new_state
+	var target_scale := Vector2(1.4, 1.0) if new_state == LumiState.DEAD else Vector2.ONE
+	var t = create_tween().set_parallel(true)
+	t.tween_property(lumi_rect, "scale", Vector2(0.0, 0.0), 0.07).set_ease(Tween.EASE_IN)
+	await t.finished
+	match new_state:
+		LumiState.RUN:       lumi_rect.texture = _lumi_tex_run
+		LumiState.RUN_HURT:  lumi_rect.texture = _lumi_tex_run_hurt
+		LumiState.JUMP:      lumi_rect.texture = _lumi_tex_jump
+		LumiState.JUMP_HURT: lumi_rect.texture = _lumi_tex_jump_hurt
+		LumiState.DEAD:      lumi_rect.texture = _lumi_tex_dead
+	create_tween().tween_property(lumi_rect, "scale", target_scale, 0.18)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 
 func _do_flash(color: Color, duration: float) -> void:
 	white_flash.color = color
@@ -529,6 +676,7 @@ func collect_orb(orb_type: String) -> void:
 		"maya":
 			maya_jump = true
 			_do_flash(Color(0.2, 0.6, 1.0, 0.4), 0.25)
+			_show_jump_buff_icon()
 		"mochi":
 			mochi_count += 1
 			_do_flash(Color(1.0, 0.75, 0.1, 0.45), 0.3)
@@ -561,6 +709,14 @@ func _animate_heart_heal() -> void:
 		t2.tween_property(h, "scale", Vector2.ONE, 0.25).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BACK)
 	await t2.finished
 	_heart_anim = false
+
+func _float_hearts(up: bool) -> void:
+	for i in _hearts.size():
+		var target_y = HEART_Y - 6.0 if up else HEART_Y
+		var dur      = 0.28 if up else 0.32
+		var trans    = Tween.TRANS_BACK if up else Tween.TRANS_CUBIC
+		create_tween().tween_property(_hearts[i], "position:y", target_y, dur)\
+			.set_ease(Tween.EASE_OUT).set_trans(trans).set_delay(i * 0.055)
 
 func _animate_hearts_die() -> void:
 	_heart_anim = true
@@ -621,6 +777,8 @@ func _trigger_win() -> void:
 func die() -> void:
 	Engine.time_scale = 1.0
 	alive = false
+	_lumi_state = LumiState.RUN  # force re-evaluation next frame
+	_update_lumi_sprite()
 	_animate_hearts_die()
 	var mt = create_tween().set_parallel(true)
 	mt.tween_property(_music, "pitch_scale", 0.72, 1.8).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)

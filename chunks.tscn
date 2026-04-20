@@ -10,7 +10,7 @@
 [node name="Chunks" type="Node3D" unique_id=1297379566]
 
 [node name="Base" parent="." unique_id=178457917 instance=ExtResource("3_7scjo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, -1.0653858, 40.42192)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.17580223, 40.42192)
 
 [node name="1" parent="." unique_id=2049937168 instance=ExtResource("1_j03bv")]
 

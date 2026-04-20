@@ -10,11 +10,15 @@
 [ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="8_kek77"]
 [ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="9_4c57u"]
 [ext_resource type="Texture2D" uid="uid://bnpnd1efxjklp" path="res://images/cornerHUD.png" id="9_efxa6"]
-[ext_resource type="Texture2D" uid="uid://dxtjvgn2w0veu" path="res://images/buni.png" id="10_dg77c"]
 [ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
 [ext_resource type="Script" uid="uid://ccpwtyja71f3v" path="res://mochi_spawner.gd" id="12_mochi"]
+[ext_resource type="Texture2D" uid="uid://cp3i2xkmyydci" path="res://images/Lumi/LumiRun.png" id="13_vivmo"]
 [ext_resource type="Script" path="res://globe_manager.gd" id="13_ycdy4"]
 [ext_resource type="Shader" uid="uid://cx4mr7tqpa2yn" path="res://Shaders/StarSky.gdshader" id="14_stars"]
+[ext_resource type="Texture2D" uid="uid://bf6ekhduedo3v" path="res://images/buffs/jade.png" id="15_cegan"]
+[ext_resource type="Texture2D" uid="uid://bljgdenjn8ffn" path="res://images/buffs/joy.png" id="16_82xsv"]
+[ext_resource type="Texture2D" uid="uid://cu60bv82sa81t" path="res://images/buffs/laughter.png" id="17_getpj"]
+[ext_resource type="Texture2D" uid="uid://1qhqqjki0hhr" path="res://images/buffs/wonder.png" id="18_ryguw"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_stars"]
 shader = ExtResource("14_stars")
@@ -40,10 +44,15 @@ sky = SubResource("Sky_fo4su")
 sky_custom_fov = 59.5
 tonemap_mode = 2
 glow_enabled = true
-fog_light_color = Color(0.6716999, 0.6373163, 0.872377, 1)
+fog_light_color = Color(0.4292827, 0.37446478, 0.6712472, 1)
+fog_light_energy = 0.53
 fog_density = 0.0
-fog_sky_affect = 0.3
+fog_aerial_perspective = 0.047
+fog_sky_affect = 0.318
+fog_height = 72.28
 volumetric_fog_albedo = Color(0.87253416, 0.7442837, 0.9837994, 1)
+volumetric_fog_anisotropy = 0.51
+volumetric_fog_length = 64.1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
 
@@ -216,11 +225,12 @@ vertical_alignment = 1
 
 [node name="LumiRect" type="TextureRect" parent="CanvasLayer/HUD" unique_id=797308432]
 layout_mode = 0
-offset_left = 33.0
-offset_top = 543.0
-offset_right = 112.0
+offset_left = 60.0
+offset_top = 509.0678
+offset_right = 167.0
 offset_bottom = 638.7373
-texture = ExtResource("10_dg77c")
+pivot_offset = Vector2(53, 66.93219)
+texture = ExtResource("13_vivmo")
 expand_mode = 1
 
 [node name="BGScore" type="Label" parent="CanvasLayer/HUD" unique_id=288719171]
@@ -345,6 +355,46 @@ offset_bottom = 589.0
 rotation = 0.2617994
 theme_override_font_sizes/font_size = 26
 text = "Distance"
+
+[node name="HealthBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1358173089]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 593.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("15_cegan")
+
+[node name="JumpBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1147337458]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 593.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("16_82xsv")
+
+[node name="Buff3" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1986673823]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 594.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("17_getpj")
+
+[node name="Buff4" type="TextureRect" parent="CanvasLayer/HUD" unique_id=560201620]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 594.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("18_ryguw")
 
 [node name="BlurOverlay" type="ColorRect" parent="CanvasLayer" unique_id=-1288967295]
 visible = false

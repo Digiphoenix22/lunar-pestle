@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Transition="*res://transition.gd"
 SaveData="*res://save_data.gd"
+SpawnRegistry="*res://spawn_registry.gd"
 
 [global_group]
 

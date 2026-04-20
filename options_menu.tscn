@@ -1,17 +1,18 @@
 [gd_scene format=3 uid="uid://drhyb8akrpfmg"]
 
-[ext_resource type="Script" path="res://options_menu.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dlroxx205ajgd" path="res://options_menu.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="2_bold"]
 [ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="3_reg"]
 
 [node name="OptionsMenu" type="Control" unique_id=1224696774]
-script = ExtResource("1_script")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+pivot_offset = Vector2(576, 324)
+script = ExtResource("1_script")
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=26301253]
 layout_mode = 1
@@ -90,7 +91,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
-value = 0.40
+value = 0.4
 
 [node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1661937268]
 layout_mode = 2
