@@ -8,6 +8,7 @@ var scroll_speed        := 80.0
 const LANES := [-8.0, 0.0, 8.0]
 
 func _ready() -> void:
+	add_to_group("spawners")
 	$Timer.wait_time = 2.0
 	$Timer.timeout.connect(_spawn)
 	$Timer.start()

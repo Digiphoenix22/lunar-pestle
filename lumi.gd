@@ -66,7 +66,8 @@ var _lumi_state         := LumiState.RUN
 @onready var dist_label      = $"../CanvasLayer/HUD/DistLabel"
 @onready var mochi_label     = $"../CanvasLayer/HUD/MochiLabel"
 @onready var speed_label     = $"../CanvasLayer/HUD/SpeedLabel"
-@onready var jump_buff_rect  = $"../CanvasLayer/HUD/JumpBuff"
+@onready var jump_buff_rect   = $"../CanvasLayer/HUD/JumpBuff"
+@onready var health_buff_rect = $"../CanvasLayer/HUD/HealthBuff"
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
@@ -99,7 +100,12 @@ var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
 var _double_jumping   := false
-var _maya_glow_mat:   ShaderMaterial
+var _maya_glow_mat:        ShaderMaterial
+var _jump_buff_glow_mat:    ShaderMaterial
+var _jump_buff_float_tween: Tween
+var _jump_buff_show_tween:  Tween
+var _jump_buff_rest_y:      float
+var _lumi_breath_tween:    Tween
 var _lumi_extra_y     := 0.0
 var _bob_amplitude    := 0.0
 var _hearts_in_air    := false
@@ -110,6 +116,7 @@ var _music:            AudioStreamPlayer
 var _music_lpf:        AudioEffectLowPassFilter
 
 static var _death_restart := false
+var _game_started         := false
 
 func _ready() -> void:
 	pause_menu.visible = false
@@ -144,24 +151,33 @@ func _ready() -> void:
 	var music_idx = AudioServer.get_bus_index("Music")
 	AudioServer.add_bus_effect(music_idx, _music_lpf)
 	_music.finished.connect(func(): if alive: _music.play())
-	_music.play()
 	var is_restart := _death_restart
 	if _death_restart:
 		_death_restart = false
 		_music.volume_db = 0.0
 		_music.pitch_scale = 0.72
+		_music.play()
 		create_tween().tween_property(_music, "pitch_scale", 1.0, 3.0)\
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
-	else:
-		create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
-			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	_build_hearts()
 	_setup_maya_glow()
+	_setup_jump_buff_glow()
 	_start_bottom_hud_tween()
 	_build_slow_anim()
 	_setup_blur_overlay()
-	if not is_restart:
+	_start_lumi_breath()
+	if is_restart:
+		_begin_game()
+	else:
+		for n in get_tree().get_nodes_in_group("spawners"):
+			n.process_mode = Node.PROCESS_MODE_DISABLED
 		_play_hud_intro()
+		await _start_countdown()
+		_music.volume_db = -80.0
+		_music.play()
+		create_tween().tween_property(_music, "volume_db", 0.0, 1.5)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+		_begin_game()
 
 func _build_hearts() -> void:
 	for h in _hearts:
@@ -318,6 +334,109 @@ func _play_hud_intro() -> void:
 		t.tween_property(bot_nodes[i], "position:y", bot_rests[i], 0.7)\
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC).set_delay(0.1)
 
+func _begin_game() -> void:
+	_game_started = true
+	ground_scroller.target_speed = _base_speed()
+	for n in get_tree().get_nodes_in_group("spawners"):
+		n.process_mode = Node.PROCESS_MODE_INHERIT
+
+func _play_countdown_sfx(path: String) -> void:
+	var snd = AudioStreamPlayer.new()
+	snd.stream    = load(path)
+	snd.bus       = "SFX"
+	snd.volume_db = linear_to_db(0.7)
+	add_child(snd)
+	snd.play()
+	snd.finished.connect(snd.queue_free)
+
+func _start_countdown() -> void:
+	var sfx_idx = AudioServer.get_bus_index("SFX")
+	var reverb  = AudioEffectReverb.new()
+	reverb.room_size = 0.5
+	reverb.damping   = 0.5
+	reverb.wet       = 0.22
+	reverb.dry       = 1.0
+	AudioServer.add_bus_effect(sfx_idx, reverb)
+
+	var hud  = get_node("../CanvasLayer/HUD")
+	var font = load("res://fonts/ExodusDisplay-SharpenBold.otf")
+	var lbl  = Label.new()
+	lbl.add_theme_font_override("font", font)
+	lbl.add_theme_font_size_override("font_size", 128)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	lbl.set_anchors_preset(Control.PRESET_CENTER)
+	lbl.size     = Vector2(300, 160)
+	lbl.position = Vector2(-150, -80)
+	hud.add_child(lbl)
+
+	for n in [3, 2, 1]:
+		_play_countdown_sfx("res://sounds/sfx/countdownstart.mp3")
+		lbl.text = str(n)
+		lbl.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0, 1.0))
+		lbl.modulate.a = 0.0
+		lbl.scale      = Vector2(1.4, 1.4)
+		lbl.pivot_offset = lbl.size * 0.5
+		var t_in = create_tween().set_parallel(true)
+		t_in.tween_property(lbl, "modulate:a", 1.0,      0.18).set_ease(Tween.EASE_OUT)
+		t_in.tween_property(lbl, "scale",      Vector2.ONE, 0.22).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		await t_in.finished
+		await get_tree().create_timer(0.62).timeout
+		var t_out = create_tween()
+		t_out.tween_property(lbl, "modulate:a", 0.0, 0.18).set_ease(Tween.EASE_IN)
+		await t_out.finished
+
+	_play_countdown_sfx("res://sounds/sfx/countdownfinish.mp3")
+	lbl.text = "GO!"
+	lbl.add_theme_color_override("font_color", HUD_PURPLE)
+	lbl.modulate.a   = 0.0
+	lbl.scale        = Vector2(0.75, 0.75)
+	lbl.pivot_offset = lbl.size * 0.5
+	var go_in = create_tween().set_parallel(true)
+	go_in.tween_property(lbl, "modulate:a", 1.0,        0.15).set_ease(Tween.EASE_OUT)
+	go_in.tween_property(lbl, "scale",      Vector2(1.1, 1.1), 0.22).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await go_in.finished
+	await get_tree().create_timer(0.45).timeout
+	create_tween().tween_property(lbl, "modulate:a", 0.0, 0.3).set_ease(Tween.EASE_IN)
+	await get_tree().create_timer(0.3).timeout
+	lbl.queue_free()
+
+	for i in AudioServer.get_bus_effect_count(sfx_idx):
+		if AudioServer.get_bus_effect(sfx_idx, i) is AudioEffectReverb:
+			AudioServer.remove_bus_effect(sfx_idx, i)
+			break
+
+func _start_lumi_breath() -> void:
+	lumi_rect.pivot_offset = Vector2(lumi_rect.size.x * 0.5, lumi_rect.size.y * 0.5)
+	lumi_rect.mouse_filter = Control.MOUSE_FILTER_STOP
+	lumi_rect.gui_input.connect(_on_lumi_rect_click)
+	_restart_breath_tween()
+
+func _restart_breath_tween() -> void:
+	if _lumi_breath_tween:
+		_lumi_breath_tween.kill()
+	_lumi_breath_tween = create_tween().set_loops()
+	_lumi_breath_tween.tween_property(lumi_rect, "scale", Vector2(1.035, 1.035), 1.1)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_lumi_breath_tween.tween_property(lumi_rect, "scale", Vector2.ONE, 1.1)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+
+func _on_lumi_rect_click(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		lumi_rect.pivot_offset = Vector2(lumi_rect.size.x * 0.5, lumi_rect.size.y * 0.5)
+		var t = create_tween()
+		t.tween_property(lumi_rect, "position:y", lumi_rect.position.y - 18.0, 0.12)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+		t.tween_property(lumi_rect, "position:y", lumi_rect.position.y, 0.2)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+		var snd = AudioStreamPlayer.new()
+		snd.stream    = load("res://sounds/sfx/lumi2.mp3")
+		snd.bus       = "SFX"
+		snd.volume_db = -6.0
+		add_child(snd)
+		snd.play()
+		snd.finished.connect(snd.queue_free)
+
 func _start_bottom_hud_tween() -> void:
 	var start_color := Color(0.220, 0.078, 0.647, 1.0)
 	bottom_hud.modulate = start_color
@@ -430,6 +549,15 @@ func _on_stage_up() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not alive or get_tree().paused:
+		return
+	if not _game_started:
+		if not is_on_floor():
+			velocity.y -= GRAVITY * delta
+		velocity.x = 0.0
+		move_and_slide()
+		position.z = 0.0
+		velocity.z = 0.0
+		_update_hud()
 		return
 
 	if invincible_timer > 0:
@@ -592,24 +720,86 @@ void fragment() {
 	_maya_glow_mat.set_shader_parameter("intensity", 0.0)
 	lumi_rect.material = _maya_glow_mat
 
+func _setup_jump_buff_glow() -> void:
+	var shader = Shader.new()
+	shader.code = """
+shader_type canvas_item;
+uniform vec4 glow_color : source_color = vec4(0.2, 0.65, 1.0, 1.0);
+uniform float intensity : hint_range(0.0, 3.0) = 1.2;
+void fragment() {
+	vec4 tex = texture(TEXTURE, UV);
+	vec3 tinted = mix(tex.rgb, glow_color.rgb, intensity * 0.55);
+	COLOR = vec4(tinted * (1.0 + intensity * 0.9), tex.a);
+}
+"""
+	_jump_buff_glow_mat = ShaderMaterial.new()
+	_jump_buff_glow_mat.shader = shader
+	_jump_buff_glow_mat.set_shader_parameter("glow_color", MAYA_GLOW_COLOR)
+	_jump_buff_glow_mat.set_shader_parameter("intensity", 1.2)
+	jump_buff_rect.material = _jump_buff_glow_mat
+	_jump_buff_rest_y = jump_buff_rect.position.y
+
+func _show_health_buff_icon() -> void:
+	health_buff_rect.modulate.a = 0.0
+	health_buff_rect.scale      = Vector2(0.12, 0.12)
+	health_buff_rect.visible    = true
+	var rest_y: float = health_buff_rect.position.y
+	var t = create_tween().set_parallel(true)
+	t.tween_property(health_buff_rect, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	t.tween_property(health_buff_rect, "scale", Vector2(0.184, 0.184), 0.35)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await t.finished
+	var ft = create_tween().set_loops()
+	ft.tween_property(health_buff_rect, "position:y", rest_y - 5.0, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	ft.tween_property(health_buff_rect, "position:y", rest_y, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	await get_tree().create_timer(1.6).timeout
+	ft.kill()
+	var cur_y: float = health_buff_rect.position.y
+	var d = create_tween().set_parallel(true)
+	d.tween_property(health_buff_rect, "position:y", cur_y - 48.0, 0.5)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	d.tween_property(health_buff_rect, "modulate", Color(1.0, 1.0, 1.0, 0.0), 0.4).set_ease(Tween.EASE_IN)
+	await d.finished
+	health_buff_rect.visible    = false
+	health_buff_rect.position.y = rest_y
+
 func _show_jump_buff_icon() -> void:
+	if _jump_buff_show_tween:
+		_jump_buff_show_tween.kill()
+	if _jump_buff_float_tween:
+		_jump_buff_float_tween.kill()
+	jump_buff_rect.position.y = _jump_buff_rest_y
 	jump_buff_rect.modulate.a = 0.0
 	jump_buff_rect.scale      = Vector2(0.12, 0.12)
 	jump_buff_rect.visible    = true
-	var t = create_tween().set_parallel(true)
-	t.tween_property(jump_buff_rect, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
-	t.tween_property(jump_buff_rect, "scale", Vector2(0.184, 0.184), 0.35)\
+	_jump_buff_show_tween = create_tween().set_parallel(true)
+	_jump_buff_show_tween.tween_property(jump_buff_rect, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	_jump_buff_show_tween.tween_property(jump_buff_rect, "scale", Vector2(0.184, 0.184), 0.35)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await _jump_buff_show_tween.finished
+	if not maya_jump:
+		return
+	_jump_buff_float_tween = create_tween().set_loops()
+	_jump_buff_float_tween.tween_property(jump_buff_rect, "position:y", _jump_buff_rest_y - 5.0, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_jump_buff_float_tween.tween_property(jump_buff_rect, "position:y", _jump_buff_rest_y, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 func _consume_jump_buff_icon() -> void:
-	var rest_y = jump_buff_rect.position.y
+	if _jump_buff_show_tween:
+		_jump_buff_show_tween.kill()
+	if _jump_buff_float_tween:
+		_jump_buff_float_tween.kill()
+	var from_y: float = jump_buff_rect.position.y
 	var t = create_tween().set_parallel(true)
-	t.tween_property(jump_buff_rect, "position:y", rest_y - 48.0, 0.5)\
+	t.tween_property(jump_buff_rect, "position:y", from_y - 48.0, 0.5)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	t.tween_property(jump_buff_rect, "modulate:a", 0.0, 0.4).set_ease(Tween.EASE_IN)
+	t.tween_property(jump_buff_rect, "modulate", Color(1.0, 1.0, 1.0, 0.0), 0.4).set_ease(Tween.EASE_IN)
 	await t.finished
 	jump_buff_rect.visible    = false
-	jump_buff_rect.position.y = rest_y
+	jump_buff_rect.position.y = _jump_buff_rest_y
 
 func _set_maya_glow(target: float, duration: float) -> void:
 	var from = _maya_glow_mat.get_shader_parameter("intensity")
@@ -631,6 +821,8 @@ func _update_lumi_sprite() -> void:
 		return
 	_lumi_state = new_state
 	var target_scale := Vector2(1.4, 1.0) if new_state == LumiState.DEAD else Vector2.ONE
+	if _lumi_breath_tween:
+		_lumi_breath_tween.kill()
 	var t = create_tween().set_parallel(true)
 	t.tween_property(lumi_rect, "scale", Vector2(0.0, 0.0), 0.07).set_ease(Tween.EASE_IN)
 	await t.finished
@@ -640,8 +832,12 @@ func _update_lumi_sprite() -> void:
 		LumiState.JUMP:      lumi_rect.texture = _lumi_tex_jump
 		LumiState.JUMP_HURT: lumi_rect.texture = _lumi_tex_jump_hurt
 		LumiState.DEAD:      lumi_rect.texture = _lumi_tex_dead
-	create_tween().tween_property(lumi_rect, "scale", target_scale, 0.18)\
+	var scale_tween = create_tween()
+	scale_tween.tween_property(lumi_rect, "scale", target_scale, 0.18)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await scale_tween.finished
+	if new_state != LumiState.DEAD:
+		_restart_breath_tween()
 
 func _do_flash(color: Color, duration: float) -> void:
 	white_flash.color = color
@@ -663,14 +859,16 @@ func collect_orb(orb_type: String) -> void:
 			if boost_timer <= 0:
 				ground_scroller.target_speed = SLEEPY_SPEED
 		"jade":
-			var was_hit = hit_count > 0
-			hit_count    = 0
-			recover_timer  = 0.0
-			sleepy_timer   = 0.0
+			var was_hit     = hit_count > 0
+			var old_hits    := hit_count
+			hit_count        = 0
+			recover_timer    = 0.0
+			sleepy_timer     = 0.0
 			invincible_timer = 0.0
 			_do_flash(Color(0.1, 1.0, 0.4, 0.5), 0.3)
+			_show_health_buff_icon()
 			if was_hit:
-				_animate_heart_heal()
+				_animate_heart_heal(old_hits)
 			if boost_timer <= 0:
 				ground_scroller.target_speed = NORMAL_SPEED
 		"maya":
@@ -697,8 +895,36 @@ func take_hit() -> void:
 		invincible_timer = INVINCIBILITY
 		recover_timer    = RECOVER_TIME
 
-func _animate_heart_heal() -> void:
+func _animate_heart_heal(old_hits: int) -> void:
 	_heart_anim = true
+	# Floating +heart feedback at the healed heart's position
+	var healed_idx := max_health - old_hits
+	var ghost_x    := HEART_X + healed_idx * HEART_SPACING
+	var hud = get_node("../CanvasLayer/HUD")
+	var ghost := TextureRect.new()
+	ghost.texture = load("res://images/heart.png")
+	ghost.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+	ghost.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	ghost.layout_mode = 0
+	ghost.offset_left   = ghost_x
+	ghost.offset_top    = HEART_Y
+	ghost.offset_right  = ghost_x + HEART_SIZE
+	ghost.offset_bottom = HEART_Y + HEART_SIZE
+	ghost.pivot_offset  = Vector2(HEART_SIZE * 0.5, HEART_SIZE * 0.5)
+	ghost.modulate      = Color(1.0, 1.0, 1.0, 0.0)
+	ghost.scale         = Vector2(0.5, 0.5)
+	hud.add_child(ghost)
+	var gt = create_tween().set_parallel(true)
+	gt.tween_property(ghost, "scale",      Vector2(1.4, 1.4), 0.18).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	gt.tween_property(ghost, "modulate:a", 1.0,               0.15).set_ease(Tween.EASE_OUT)
+	await gt.finished
+	var gt2 = create_tween().set_parallel(true)
+	gt2.tween_property(ghost, "offset_top",    HEART_Y - 55.0, 0.55).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	gt2.tween_property(ghost, "offset_bottom", HEART_Y + HEART_SIZE - 55.0, 0.55).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	gt2.tween_property(ghost, "modulate:a",    0.0,            0.45).set_ease(Tween.EASE_IN).set_delay(0.1)
+	await gt2.finished
+	ghost.queue_free()
+	# Pulse hearts green
 	var t = create_tween().set_parallel(true)
 	for h in _hearts:
 		t.tween_property(h, "modulate", HEART_JADE, 0.35).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)

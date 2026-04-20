@@ -22,9 +22,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -360.0
-offset_top = -300.0
+offset_top = -330.0
 offset_right = 360.0
-offset_bottom = 300.0
+offset_bottom = 330.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -92,6 +92,20 @@ size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 value = 0.4
+
+[node name="TutorialRow" type="HBoxContainer" parent="Panel/VBox" unique_id=1661937269]
+layout_mode = 2
+
+[node name="TutorialLabel" type="Label" parent="Panel/VBox/TutorialRow" unique_id=1661937270]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 30
+text = "Show Tutorial"
+
+[node name="TutorialToggle" type="CheckButton" parent="Panel/VBox/TutorialRow" unique_id=1661937271]
+layout_mode = 2
+button_pressed = true
 
 [node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1661937268]
 layout_mode = 2

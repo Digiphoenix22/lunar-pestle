@@ -70,6 +70,33 @@ func change_scene(path: String) -> void:
 func reload_scene() -> void:
 	change_scene(get_tree().current_scene.scene_file_path)
 
+func change_scene_delayed(path: String, delay: float) -> void:
+	if _busy:
+		return
+	_busy = true
+	var w = get_viewport().get_visible_rect().size.x
+	_block.position.x = -w
+	var t_in = create_tween()
+	t_in.tween_property(_block, "position:x", 0.0, DURATION_IN)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_EXPO)
+	await t_in.finished
+	await get_tree().create_timer(delay).timeout
+	get_tree().change_scene_to_file(path)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	var t_out = create_tween()
+	t_out.tween_property(_block, "position:x", w, DURATION_OUT)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_EXPO)
+	await t_out.finished
+	_busy = false
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.is_echo():
+		if event.keycode == KEY_PERIOD and event.shift_pressed:
+			SaveData.set_show_tutorial(true)
+			_busy = false
+			change_scene("res://main_menu.tscn")
+
 func wipe_in() -> void:
 	if _busy:
 		return

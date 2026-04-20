@@ -17,6 +17,7 @@ const MODEL_PATHS := {
 }
 
 func _ready() -> void:
+	scale = Vector3(1.5, 1.5, 1.5)
 	var path = MODEL_PATHS.get(orb_type, "")
 	if path != "" and ResourceLoader.exists(path):
 		var scene = load(path) as PackedScene

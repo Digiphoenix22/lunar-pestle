@@ -14,6 +14,10 @@ func _ready() -> void:
 	sfx_slider.value_changed.connect(func(v): _set_bus("SFX", v))
 	music_slider.value_changed.connect(func(v): _set_bus("Music", v))
 
+	var tutorial_toggle = $Panel/VBox/TutorialRow/TutorialToggle
+	tutorial_toggle.button_pressed = SaveData.get_show_tutorial()
+	tutorial_toggle.toggled.connect(func(on): SaveData.set_show_tutorial(on))
+
 func _style_panel() -> void:
 	var style = StyleBoxFlat.new()
 	style.bg_color                   = Color(0.06, 0.02, 0.20, 0.93)
