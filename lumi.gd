@@ -1220,6 +1220,10 @@ func _play_dash() -> void:
 	_dash_sound.volume_db   = randf_range(-4.0, 0.0)
 	_dash_sound.play()
 	_dash_cooldown = 0.12
+	var squeeze_x := 0.6 if _last_dash_dir < 0 else 1.4
+	$LumiModel.scale = Vector3(squeeze_x, 1.35, 1.0)
+	create_tween().tween_property($LumiModel, "scale", Vector3.ONE, 0.22)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 
 func _play_random_hit() -> void:
 	var path = HIT_SOUNDS[randi() % HIT_SOUNDS.size()]
