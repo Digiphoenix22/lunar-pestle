@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://doplv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://bkics1rmmbio" path="res://Level/Models/Chunk3.glb" id="1_3ec7x"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_kmr64"]
-[ext_resource type="Material" uid="uid://cloafoqswfycn" path="res://Materials/Arch.tres" id="3_tp8x8"]
+[ext_resource type="Material" uid="uid://dbljl65b8e644" path="res://Materials/EVILground.tres" id="2_n1qcc"]
+[ext_resource type="Material" uid="uid://dvwbhfoqh7f2h" path="res://Materials/EVILBigCrater.tres" id="3_8v2yp"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_kmr64"]
 height = 2.1762085
@@ -11,13 +11,16 @@ radius = 0.4248047
 [sub_resource type="BoxShape3D" id="BoxShape3D_tp8x8"]
 size = Vector3(1, 0.63079834, 0.6229248)
 
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_n1qcc"]
+
 [node name="Chunk3" unique_id=1549515789 instance=ExtResource("1_3ec7x")]
 
 [node name="Base2_005" parent="." index="0" unique_id=520404081]
-material_override = ExtResource("2_kmr64")
+material_override = ExtResource("2_n1qcc")
 
 [node name="Middle thing_001" parent="." index="1" unique_id=1684990038]
-material_override = ExtResource("3_tp8x8")
+transform = Transform3D(8.004607, 7.1730494, 0, 0, 0, -10.74832, -7.1730494, 8.004607, 0, -153.78796, 4.182877, 12.66832)
+material_override = ExtResource("3_8v2yp")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Middle thing_001" index="0" unique_id=2100356221 groups=["obstacle"]]
 
@@ -40,3 +43,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.188969)
 
 [node name="Start" type="Marker3D" parent="." index="3" unique_id=1005032801]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." index="4" unique_id=2089953456]
+transform = Transform3D(0.8983038, 0, 0.43937483, 0, 1, 0, -0.43937483, 0, 0.8983038, -10.696777, 7.5, -1)
+size = Vector3(19.606445, 10, 19)
+material = ExtResource("3_8v2yp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGBox3D" index="0" unique_id=1124268335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6627197, 0, 2.124939)
+shape = SubResource("ConcavePolygonShape3D_n1qcc")

@@ -36,6 +36,7 @@ theme/custom_font="uid://c7ub575ac38xa"
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

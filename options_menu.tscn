@@ -110,8 +110,88 @@ button_pressed = true
 [node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1661937268]
 layout_mode = 2
 
+[node name="CreditsButton" type="Button" parent="Panel/VBox" unique_id=111400001]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 38
+text = "Credits"
+
 [node name="BackButton" type="Button" parent="Panel/VBox" unique_id=1846251873]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_bold")
 theme_override_font_sizes/font_size = 38
 text = "Back"
+
+[node name="CreditsPanel" type="Control" parent="." unique_id=111400002]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+z_index = 10
+
+[node name="Overlay" type="ColorRect" parent="CreditsPanel" unique_id=111400003]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Card" type="ColorRect" parent="CreditsPanel" unique_id=111400004]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 70.0
+offset_right = 860.0
+offset_bottom = 670.0
+color = Color(0.04, 0.02, 0.1, 0.97)
+
+[node name="Title" type="Label" parent="CreditsPanel" unique_id=111400005]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 85.0
+offset_right = 760.0
+offset_bottom = 160.0
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 58
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="CreditsText" type="RichTextLabel" parent="CreditsPanel" unique_id=111400006]
+layout_mode = 0
+offset_left = 240.0
+offset_top = 168.0
+offset_right = 840.0
+offset_bottom = 610.0
+theme_override_fonts/normal_font = ExtResource("3_reg")
+theme_override_fonts/bold_font = ExtResource("2_bold")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 26
+bbcode_enabled = true
+text = "[center][b]Philip Tierney[/b]
+Lead Programmer  ·  Graphic Design  ·  UI  ·  Sound Design  ·  Game Design
+
+[b]Nathanael Jeanty[/b]
+Programming  ·  3D Art
+
+[b]Wiley Johnson[/b]
+Sprite Work  ·  Concept Art
+
+[b]Sam Zalkin[/b]
+Programming
+
+[b]Andrei Tietjen[/b]
+Music[/center]"
+
+[node name="CloseButton" type="Button" parent="CreditsPanel" unique_id=111400007]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 615.0
+offset_right = 665.0
+offset_bottom = 660.0
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 28
+text = "close"

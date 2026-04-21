@@ -74,6 +74,14 @@ var _lumi_state         := LumiState.RUN
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
+@onready var _anim: AnimationPlayer = $LumiModel/AnimationPlayer
+@onready var mochi_rect  = $"../CanvasLayer/HUD/MochiRect"
+@onready var _canvas_layer: CanvasLayer = $"../CanvasLayer"
+
+var _mochi_icon_tex: Texture2D = preload("res://images/MochiIcon.png")
+var _mochi_rect_rest_x:   float
+var _mochi_rect_shown  := false
+var _mochi_pulse_tween:   Tween
 
 const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
@@ -118,7 +126,10 @@ const SHIELD_DURATION   := 30.0
 var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
-var _double_jumping   := false
+var _double_jumping      := false
+var _dj_anim_triggered   := false
+var _air_dash_held       := false
+var _last_dash_dir    := 0  # -1 left, 1 right, 0 none
 var _maya_glow_mat:        ShaderMaterial
 var shield_active         := false
 var shield_timer          := 0.0
@@ -152,12 +163,15 @@ var _game_started         := false
 
 func _ready() -> void:
 	pause_menu.visible = false
-	var resume_btn  = pause_menu.get_node("ResumeButton")
-	var options_btn = pause_menu.get_node("OptionsButton")
-	var exit_btn    = pause_menu.get_node("ExitButton")
-	Transition.wire_buttons([resume_btn, options_btn, exit_btn])
+	var resume_btn   = pause_menu.get_node("ResumeButton")
+	var options_btn  = pause_menu.get_node("OptionsButton")
+	var credits_btn  = pause_menu.get_node("CreditsButton")
+	var exit_btn     = pause_menu.get_node("ExitButton")
+	Transition.wire_buttons([resume_btn, options_btn, credits_btn, exit_btn])
 	resume_btn.pressed.connect(_resume)
 	options_btn.pressed.connect(_open_options)
+	credits_btn.pressed.connect(_open_credits)
+	pause_menu.get_node("CreditsPanel/CloseButton").pressed.connect(_close_credits)
 	exit_btn.pressed.connect(func():
 		get_tree().paused = false
 		_clear_lpf()
@@ -192,6 +206,8 @@ func _ready() -> void:
 		create_tween().tween_property(_music, "pitch_scale", 1.0, 3.0)\
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
 	_reset_sky_colors()
+	_mochi_rect_rest_x = mochi_rect.position.x
+	mochi_rect.position.x = -mochi_rect.size.x - 20.0
 	_build_hearts()
 	_setup_maya_glow()
 	_setup_jump_buff_glow()
@@ -244,6 +260,12 @@ func add_heart() -> void:
 	t.tween_property(_hearts[-1], "scale", Vector2(1.3, 1.3), 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	await t.finished
 	create_tween().tween_property(_hearts[-1], "scale", Vector2.ONE, 0.2).set_ease(Tween.EASE_OUT)
+
+func _open_credits() -> void:
+	pause_menu.get_node("CreditsPanel").visible = true
+
+func _close_credits() -> void:
+	pause_menu.get_node("CreditsPanel").visible = false
 
 func _open_options() -> void:
 	if _options_instance:
@@ -584,6 +606,10 @@ func _on_stage_up() -> void:
 	_do_flash(Color(0.863, 0.714, 0.937, 0.45), 0.4)
 	if current_stage == 5:
 		_transition_to_stage5_colors()
+	const STAGE_MOCHI_BONUS := [0, 1, 1, 1, 1, 3, 5, 20]
+	var bonus: int = STAGE_MOCHI_BONUS[clampi(current_stage, 0, STAGE_MOCHI_BONUS.size() - 1)]
+	if bonus > 0:
+		_force_mochi(bonus)
 	var sky_mat = _get_sky_mat()
 	if sky_mat:
 		var from = float(sky_mat.get_shader_parameter("sky_rotation"))
@@ -635,9 +661,9 @@ func _physics_process(delta: float) -> void:
 
 	if invincible_timer > 0:
 		invincible_timer -= delta
-		$MeshInstance3D.visible = int(invincible_timer * 10) % 2 == 0
+		$LumiModel.visible = int(invincible_timer * 10) % 2 == 0
 	else:
-		$MeshInstance3D.visible = true
+		$LumiModel.visible = true
 
 	if recover_timer > 0:
 		recover_timer -= delta
@@ -674,8 +700,10 @@ func _physics_process(delta: float) -> void:
 	_update_hud()
 
 	if is_on_floor():
+		_air_dash_held = false
 		if _double_jumping:
 			_double_jumping = false
+			_dj_anim_triggered = false
 			_set_maya_glow(0.0, 0.35)
 			create_tween().tween_property(self, "_bob_amplitude", 0.0, 0.3)\
 				.set_ease(Tween.EASE_OUT)
@@ -701,6 +729,7 @@ func _physics_process(delta: float) -> void:
 			maya_jump = false
 			_maya_float_timer = MAYA_FLOAT_DURATION
 			_double_jumping = true
+			_dj_anim_triggered = false
 			_set_maya_glow(1.5, 0.2)
 			_lumi_extra_y = -38.0
 			create_tween().tween_property(self, "_lumi_extra_y", 0.0, 0.5)\
@@ -719,9 +748,11 @@ func _physics_process(delta: float) -> void:
 		_dash_cooldown -= delta
 	if Input.is_action_just_pressed("ui_left") and current_lane > 0:
 		current_lane -= 1
+		_last_dash_dir = -1
 		_play_dash()
 	if Input.is_action_just_pressed("ui_right") and current_lane < 2:
 		current_lane += 1
+		_last_dash_dir = 1
 		_play_dash()
 
 	position.x = lerp(position.x, LANES[current_lane], LANE_SPEED * delta)
@@ -729,6 +760,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	position.z = 0.0
 	velocity.z = 0.0
+	_update_anim()
 
 	if invincible_timer <= 0:
 		for i in get_slide_collision_count():
@@ -768,7 +800,7 @@ func _update_hud() -> void:
 	var secs := int(elapsed_time) % 60
 	time_label.text  = "%d:%02d" % [mins, secs]
 	dist_label.text  = "%dm" % int(distance)
-	mochi_label.text = "Mochi  x%d" % mochi_count
+	mochi_label.text = "Mochi %d" % mochi_count
 	speed_label.text = "%du/s" % int(ground_scroller.scroll_speed)
 
 func _toggle_boost() -> void:
@@ -1068,7 +1100,7 @@ func _do_flash(color: Color, duration: float) -> void:
 	white_flash.modulate.a = 1.0
 	create_tween().tween_property(white_flash, "modulate:a", 0.0, duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 
-func collect_orb(orb_type: String) -> void:
+func collect_orb(orb_type: String, world_pos: Vector3 = Vector3.ZERO) -> void:
 	if orb_type == "mochi":
 		_powerup_sound.pitch_scale = minf(1.0 + mochi_count * 0.06, 1.5)
 		_powerup_sound.volume_db   = -5.6
@@ -1110,6 +1142,8 @@ func collect_orb(orb_type: String) -> void:
 		"mochi":
 			mochi_count += 1
 			_do_flash(Color(1.0, 0.75, 0.1, 0.45), 0.3)
+			_fly_mochi_to_counter(world_pos)
+			_maybe_show_mochi_rect()
 			if mochi_count >= 10 and not _won:
 				_trigger_win()
 
@@ -1190,6 +1224,31 @@ func _animate_hearts_die() -> void:
 	for h in _hearts:
 		t.tween_property(h, "modulate", HEART_DEAD, 0.3).set_ease(Tween.EASE_IN)
 
+func _update_anim() -> void:
+	if not alive:
+		return
+	var next: String
+	if _dash_cooldown > 0.05 and is_on_floor():
+		next = "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
+	elif _air_dash_held or (_dash_cooldown > 0.05 and not is_on_floor()):
+		return
+	elif not is_on_floor():
+		if _double_jumping and velocity.y > 0:
+			if not _dj_anim_triggered:
+				_dj_anim_triggered = true
+				_anim.play("LUMI_Animsss/LumiDoubleJumpBake")
+				_anim.animation_finished.connect(
+					func(_n: String) -> void: _anim.pause(), CONNECT_ONE_SHOT)
+			return
+		elif velocity.y > 0:
+			next = "LUMI_Animsss/LumiJumpBake"
+		else:
+			next = "LUMI_Animsss/LumiFallBake"
+	else:
+		next = "LUMI_Animsss/LumiRunBake"
+	if _anim.current_animation != next:
+		_anim.play(next)
+
 func _play_dash() -> void:
 	if _dash_cooldown > 0:
 		return
@@ -1197,6 +1256,82 @@ func _play_dash() -> void:
 	_dash_sound.volume_db   = randf_range(-4.0, 0.0)
 	_dash_sound.play()
 	_dash_cooldown = 0.12
+	_air_dash_held = false
+	if not is_on_floor():
+		var an := "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
+		_anim.play(an)
+		_anim.animation_finished.connect(func(_n: String) -> void:
+			if not is_on_floor():
+				_air_dash_held = true
+				_anim.pause()
+		, CONNECT_ONE_SHOT)
+	const BASE := Vector3(0.2, 0.2, 0.2)
+	var squeeze_x := 0.12 if _last_dash_dir < 0 else 0.28
+	$LumiModel.scale = Vector3(squeeze_x, 0.27, 0.2)
+	create_tween().tween_property($LumiModel, "scale", BASE, 0.22)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+
+func _maybe_show_mochi_rect() -> void:
+	if _mochi_rect_shown:
+		return
+	_mochi_rect_shown = true
+	create_tween().tween_property(mochi_rect, "position:x", _mochi_rect_rest_x, 0.35)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+
+func _fly_mochi_to_counter(world_pos: Vector3) -> void:
+	var start: Vector2
+	if world_pos != Vector3.ZERO:
+		start = camera.unproject_position(world_pos)
+	else:
+		start = camera.unproject_position(global_position + Vector3(0, 1.5, 0))
+	var icon := TextureRect.new()
+	icon.texture = _mochi_icon_tex
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_SCALE
+	icon.custom_minimum_size = Vector2(32, 32)
+	icon.size = Vector2(32, 32)
+	icon.position = start - Vector2(16, 16)
+	icon.z_index = 10
+	_canvas_layer.add_child(icon)
+	var target: Vector2 = mochi_label.global_position + Vector2(mochi_label.size.x * 0.5, mochi_label.size.y * 0.5)
+	var t := create_tween()
+	t.tween_property(icon, "position", target, 0.45)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	t.parallel().tween_property(icon, "modulate:a", 0.0, 0.15)\
+		.set_delay(0.32)
+	t.tween_callback(icon.queue_free)
+	t.tween_callback(_update_mochi_label_glow)
+
+func _update_mochi_label_glow() -> void:
+	if _mochi_pulse_tween:
+		_mochi_pulse_tween.kill()
+	if mochi_count >= 10:
+		mochi_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.1, 1.0))
+	elif mochi_count == 9:
+		_mochi_pulse_tween = create_tween().set_loops()
+		_mochi_pulse_tween.tween_property(mochi_label, "modulate", Color(1.0, 0.85, 0.1, 1.0), 0.7)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		_mochi_pulse_tween.tween_property(mochi_label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.7)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	else:
+		var flash := create_tween()
+		flash.tween_property(mochi_label, "modulate", Color(1.0, 0.85, 0.1, 1.0), 0.1)\
+			.set_ease(Tween.EASE_OUT)
+		flash.tween_property(mochi_label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.35)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
+
+func _force_mochi(count: int) -> void:
+	var gap := 0.06
+	for i in count:
+		if i > 0:
+			await get_tree().create_timer(gap).timeout
+		mochi_count += 1
+		mochi_label.text = "Mochi %d" % mochi_count
+		_fly_mochi_to_counter(Vector3.ZERO)
+		_maybe_show_mochi_rect()
+		if mochi_count >= 10 and not _won:
+			_trigger_win()
+			return
 
 func _play_random_hit() -> void:
 	var path = HIT_SOUNDS[randi() % HIT_SOUNDS.size()]

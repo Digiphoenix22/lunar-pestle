@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dpplv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://bkics1rmmbio" path="res://Level/Models/Chunk3.glb" id="1_3ec7x"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_kmr64"]
+[ext_resource type="Material" uid="uid://bu0sf8l2q1sqj" path="res://Materials/SUPEREVILground.tres" id="2_o1btt"]
 [ext_resource type="Material" uid="uid://cloafoqswfycn" path="res://Materials/Arch.tres" id="3_tp8x8"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_kmr64"]
@@ -14,7 +14,7 @@ size = Vector3(1, 0.63079834, 0.6229248)
 [node name="Chunk3" unique_id=1549515789 instance=ExtResource("1_3ec7x")]
 
 [node name="Base2_005" parent="." index="0" unique_id=520404081]
-material_override = ExtResource("2_kmr64")
+material_override = ExtResource("2_o1btt")
 
 [node name="Middle thing_001" parent="." index="1" unique_id=1684990038]
 material_override = ExtResource("3_tp8x8")

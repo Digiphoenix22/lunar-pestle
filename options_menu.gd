@@ -18,6 +18,9 @@ func _ready() -> void:
 	tutorial_toggle.button_pressed = SaveData.get_show_tutorial()
 	tutorial_toggle.toggled.connect(func(on): SaveData.set_show_tutorial(on))
 
+	$Panel/VBox/CreditsButton.pressed.connect(func(): $CreditsPanel.visible = true)
+	$CreditsPanel/CloseButton.pressed.connect(func(): $CreditsPanel.visible = false)
+
 func _style_panel() -> void:
 	var style = StyleBoxFlat.new()
 	style.bg_color                   = Color(0.06, 0.02, 0.20, 0.93)

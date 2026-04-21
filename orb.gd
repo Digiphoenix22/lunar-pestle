@@ -53,5 +53,5 @@ func _start_bob() -> void:
 
 func _on_body_entered(body: Node3D) -> void:
 	if body.has_method("collect_orb"):
-		body.collect_orb(orb_type)
+		body.collect_orb(orb_type, global_position)
 		queue_free()
