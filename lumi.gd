@@ -1202,7 +1202,7 @@ func _update_anim() -> void:
 	if _dash_cooldown > 0.05:
 		next = "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
 	elif not is_on_floor():
-		if _double_jumping:
+		if _double_jumping and velocity.y > 0:
 			next = "LUMI_Animsss/LumiDoubleJumpBake"
 		elif velocity.y > 0:
 			next = "LUMI_Animsss/LumiJumpBake"
