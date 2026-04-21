@@ -119,7 +119,8 @@ const SHIELD_DURATION   := 30.0
 var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
-var _double_jumping   := false
+var _double_jumping      := false
+var _dj_anim_triggered   := false
 var _last_dash_dir    := 0  # -1 left, 1 right, 0 none
 var _maya_glow_mat:        ShaderMaterial
 var shield_active         := false
@@ -678,6 +679,7 @@ func _physics_process(delta: float) -> void:
 	if is_on_floor():
 		if _double_jumping:
 			_double_jumping = false
+			_dj_anim_triggered = false
 			_set_maya_glow(0.0, 0.35)
 			create_tween().tween_property(self, "_bob_amplitude", 0.0, 0.3)\
 				.set_ease(Tween.EASE_OUT)
@@ -703,6 +705,7 @@ func _physics_process(delta: float) -> void:
 			maya_jump = false
 			_maya_float_timer = MAYA_FLOAT_DURATION
 			_double_jumping = true
+			_dj_anim_triggered = false
 			_set_maya_glow(1.5, 0.2)
 			_lumi_extra_y = -38.0
 			create_tween().tween_property(self, "_lumi_extra_y", 0.0, 0.5)\
@@ -1203,7 +1206,12 @@ func _update_anim() -> void:
 		next = "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
 	elif not is_on_floor():
 		if _double_jumping and velocity.y > 0:
-			next = "LUMI_Animsss/LumiDoubleJumpBake"
+			if not _dj_anim_triggered:
+				_dj_anim_triggered = true
+				_anim.play("LUMI_Animsss/LumiDoubleJumpBake")
+				_anim.animation_finished.connect(
+					func(_n: String) -> void: _anim.pause(), CONNECT_ONE_SHOT)
+			return
 		elif velocity.y > 0:
 			next = "LUMI_Animsss/LumiJumpBake"
 		else:
