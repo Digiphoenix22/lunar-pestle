@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://s2c4aaaaaaaaa"]
+[gd_scene format=3 uid="uid://bt5gxwoc3vwc6"]
 
 [ext_resource type="PackedScene" uid="uid://dgheh5258bt5e" path="res://Level/Models/Chunk4.glb" id="1_qf0g4"]
 [ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_nyff4"]

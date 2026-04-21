@@ -78,7 +78,21 @@ var _lumi_state         := LumiState.RUN
 const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
 const HUD_PURPLE        := Color(0.75, 0.507, 0.994, 1.0)
-const HUD_INDIGO        := Color(0.22, 0.08, 0.65, 1.0)
+const HUD_INDIGO        := Color(0.22, 0.08,  0.65,  1.0)
+const HUD_RED           := Color(0.55, 0.07,  0.07,  1.0)
+const HUD_RED_DARK      := Color(0.20, 0.03,  0.03,  1.0)
+const SKY_DEFAULT := {
+	"top_color":     Color(0.01, 0.005, 0.05,  1.0),
+	"mid_color":     Color(0.06, 0.03,  0.18,  1.0),
+	"horizon_color": Color(0.18, 0.08,  0.40,  1.0),
+	"ground_color":  Color(0.04, 0.02,  0.10,  1.0),
+}
+const SKY_STAGE5 := {
+	"top_color":     Color(0.05, 0.004, 0.004, 1.0),
+	"mid_color":     Color(0.20, 0.025, 0.025, 1.0),
+	"horizon_color": Color(0.40, 0.06,  0.04,  1.0),
+	"ground_color":  Color(0.10, 0.015, 0.010, 1.0),
+}
 const HEART_JADE        := Color(1.0,  1.0,  1.0,  1.0)
 const HEART_DEAD        := Color(0.0,  0.0,  0.0,  1.0)
 const HEART_X           := 180.0
@@ -121,6 +135,8 @@ var _jump_buff_float_tween: Tween
 var _jump_buff_show_tween:  Tween
 var _jump_buff_rest_y:      float
 var _lumi_breath_tween:    Tween
+var _hud_cycle_tween:      Tween
+var _stage5_sky_rotating:  bool = false
 var _lumi_extra_y     := 0.0
 var _bob_amplitude    := 0.0
 var _hearts_in_air    := false
@@ -175,6 +191,7 @@ func _ready() -> void:
 		_music.play()
 		create_tween().tween_property(_music, "pitch_scale", 1.0, 3.0)\
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
+	_reset_sky_colors()
 	_build_hearts()
 	_setup_maya_glow()
 	_setup_jump_buff_glow()
@@ -454,15 +471,42 @@ func _on_lumi_rect_click(event: InputEvent) -> void:
 		snd.play()
 		snd.finished.connect(snd.queue_free)
 
+func _transition_to_stage5_colors() -> void:
+	if _hud_cycle_tween:
+		_hud_cycle_tween.kill()
+	_hud_cycle_tween = create_tween().set_loops()
+	_hud_cycle_tween.tween_property(bottom_hud, "modulate", HUD_RED_DARK, 2.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween.parallel().tween_property(top_hud, "modulate", HUD_RED_DARK, 2.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween.tween_property(bottom_hud, "modulate", HUD_RED, 2.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween.parallel().tween_property(top_hud, "modulate", HUD_RED, 2.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	var sky_mat = _get_sky_mat()
+	if sky_mat:
+		for param in SKY_STAGE5:
+			var from_col: Color = sky_mat.get_shader_parameter(param)
+			var to_col: Color   = SKY_STAGE5[param]
+			create_tween().tween_method(
+				func(v: Color): sky_mat.set_shader_parameter(param, v),
+				from_col, to_col, 3.0
+			).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_stage5_sky_rotating = true
+
+func _reset_sky_colors() -> void:
+	var sky_mat = _get_sky_mat()
+	if not sky_mat:
+		return
+	for param in SKY_DEFAULT:
+		sky_mat.set_shader_parameter(param, SKY_DEFAULT[param])
+	sky_mat.set_shader_parameter("sky_rotation", 0.0)
+
 func _start_bottom_hud_tween() -> void:
 	var start_color := Color(0.220, 0.078, 0.647, 1.0)
 	bottom_hud.modulate = start_color
 	top_hud.modulate    = start_color
-	var t = create_tween().set_loops()
-	t.tween_property(bottom_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-	t.parallel().tween_property(top_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-	t.tween_property(bottom_hud, "modulate", HUD_PURPLE, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-	t.parallel().tween_property(top_hud, "modulate", HUD_PURPLE, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween = create_tween().set_loops()
+	_hud_cycle_tween.tween_property(bottom_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween.parallel().tween_property(top_hud, "modulate", HUD_INDIGO, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween.tween_property(bottom_hud, "modulate", HUD_PURPLE, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_hud_cycle_tween.parallel().tween_property(top_hud, "modulate", HUD_PURPLE, 3.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event is InputEventKey and event.is_pressed() and not event.is_echo()):
@@ -538,6 +582,8 @@ func _on_stage_up() -> void:
 	if boost_timer <= 0:
 		ground_scroller.target_speed = _base_speed()
 	_do_flash(Color(0.863, 0.714, 0.937, 0.45), 0.4)
+	if current_stage == 5:
+		_transition_to_stage5_colors()
 	var sky_mat = _get_sky_mat()
 	if sky_mat:
 		var from = float(sky_mat.get_shader_parameter("sky_rotation"))
@@ -570,6 +616,11 @@ func _on_stage_up() -> void:
 	t.tween_callback(notif.queue_free)
 
 func _physics_process(delta: float) -> void:
+	if _stage5_sky_rotating:
+		var sky_mat = _get_sky_mat()
+		if sky_mat:
+			var rot: float = sky_mat.get_shader_parameter("sky_rotation")
+			sky_mat.set_shader_parameter("sky_rotation", rot + 0.04 * delta)
 	if not alive or get_tree().paused:
 		return
 	if not _game_started:

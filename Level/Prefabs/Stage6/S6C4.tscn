@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://s2c4aaaaaaaaa"]
+[gd_scene format=3 uid="uid://dppmv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://dgheh5258bt5e" path="res://Level/Models/Chunk4.glb" id="1_qf0g4"]
 [ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_nyff4"]
@@ -22,3 +22,9 @@ surface_material_override/1 = ExtResource("4_emi2a")
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Large Crater_005/StaticBody3D" index="0" unique_id=528197509]
 transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 5.0516787, 3.7786174, 0.35595843)
 shape = SubResource("BoxShape3D_nyff4")
+
+[node name="End" type="Marker3D" parent="." index="2" unique_id=2105032803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.1404)
+
+[node name="Start" type="Marker3D" parent="." index="3" unique_id=2105032801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19.918854)

@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://s2c3aaaaaaaaa"]
+[gd_scene format=3 uid="uid://dmplv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://bkics1rmmbio" path="res://Level/Models/Chunk3.glb" id="1_3ec7x"]
 [ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_kmr64"]
-[ext_resource type="Material" uid="uid://cloafoqswfycn" path="res://Materials/Arch.tres" id="3_tp8x8"]
+[ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="3_0kn6v"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_kmr64"]
 height = 2.1762085
@@ -17,7 +17,8 @@ size = Vector3(1, 0.63079834, 0.6229248)
 material_override = ExtResource("2_kmr64")
 
 [node name="Middle thing_001" parent="." index="1" unique_id=1684990038]
-material_override = ExtResource("3_tp8x8")
+transform = Transform3D(10.748319, 0, 0, 0, 0, -10.748319, 0, 33.122078, 0, 0, -0.3118749, 0)
+material_override = ExtResource("3_0kn6v")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Middle thing_001" index="0" unique_id=2100356221 groups=["obstacle"]]
 
