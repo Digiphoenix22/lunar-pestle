@@ -163,12 +163,15 @@ var _game_started         := false
 
 func _ready() -> void:
 	pause_menu.visible = false
-	var resume_btn  = pause_menu.get_node("ResumeButton")
-	var options_btn = pause_menu.get_node("OptionsButton")
-	var exit_btn    = pause_menu.get_node("ExitButton")
-	Transition.wire_buttons([resume_btn, options_btn, exit_btn])
+	var resume_btn   = pause_menu.get_node("ResumeButton")
+	var options_btn  = pause_menu.get_node("OptionsButton")
+	var credits_btn  = pause_menu.get_node("CreditsButton")
+	var exit_btn     = pause_menu.get_node("ExitButton")
+	Transition.wire_buttons([resume_btn, options_btn, credits_btn, exit_btn])
 	resume_btn.pressed.connect(_resume)
 	options_btn.pressed.connect(_open_options)
+	credits_btn.pressed.connect(_open_credits)
+	pause_menu.get_node("CreditsPanel/CloseButton").pressed.connect(_close_credits)
 	exit_btn.pressed.connect(func():
 		get_tree().paused = false
 		_clear_lpf()
@@ -257,6 +260,12 @@ func add_heart() -> void:
 	t.tween_property(_hearts[-1], "scale", Vector2(1.3, 1.3), 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	await t.finished
 	create_tween().tween_property(_hearts[-1], "scale", Vector2.ONE, 0.2).set_ease(Tween.EASE_OUT)
+
+func _open_credits() -> void:
+	pause_menu.get_node("CreditsPanel").visible = true
+
+func _close_credits() -> void:
+	pause_menu.get_node("CreditsPanel").visible = false
 
 func _open_options() -> void:
 	if _options_instance:

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://tjciujqunr0v" path="res://ground_scroller.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bsrl00t5o608m" path="res://camera_3d.gd" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
-[ext_resource type="PackedScene" path="res://Level/Prefabs/lumi.tscn" id="4_82xsv"]
+[ext_resource type="PackedScene" uid="uid://jc0sdusp51um" path="res://Level/Prefabs/lumi.tscn" id="4_82xsv"]
 [ext_resource type="Script" uid="uid://ce5t22o7d65ki" path="res://wisp_spawner.gd" id="4_efxa6"]
 [ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="7_272bh"]
 [ext_resource type="Material" uid="uid://cfmp11q8yrqe5" path="res://Materials/TestMat.tres" id="8_5vw27"]
@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://bsaa60gnddse" path="res://globe_manager.gd" id="13_ycdy4"]
 [ext_resource type="Shader" uid="uid://cx4mr7tqpa2yn" path="res://Shaders/StarSky.gdshader" id="14_stars"]
 [ext_resource type="Texture2D" uid="uid://bf6ekhduedo3v" path="res://images/buffs/jade.png" id="15_cegan"]
+[ext_resource type="Texture2D" uid="uid://bfaks4y2pmuxd" path="res://images/MochiIcon.png" id="15_getpj"]
 [ext_resource type="Texture2D" uid="uid://bljgdenjn8ffn" path="res://images/buffs/joy.png" id="16_82xsv"]
 [ext_resource type="Texture2D" uid="uid://cu60bv82sa81t" path="res://images/buffs/laughter.png" id="17_getpj"]
 [ext_resource type="Texture2D" uid="uid://1qhqqjki0hhr" path="res://images/buffs/wonder.png" id="18_ryguw"]
@@ -282,7 +283,16 @@ offset_right = 340.0
 offset_bottom = 50.0
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 28
-text = "Mochi  x0"
+text = "Mochi  0"
+
+[node name="MochiRect" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1036424457]
+layout_mode = 0
+offset_left = 161.0
+offset_top = 18.0
+offset_right = 193.00357
+offset_bottom = 41.0
+texture = ExtResource("15_getpj")
+expand_mode = 1
 
 [node name="StageLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000005]
 layout_mode = 1
@@ -420,7 +430,7 @@ theme_override_font_sizes/font_size = 35
 text = "Options
 "
 
-[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
+[node name="CreditsButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=111300001]
 layout_mode = 0
 offset_left = 413.0
 offset_top = 453.0
@@ -428,7 +438,88 @@ offset_right = 745.0
 offset_bottom = 551.0
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 35
+text = "credits"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
+layout_mode = 0
+offset_left = 413.0
+offset_top = 558.0
+offset_right = 745.0
+offset_bottom = 656.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
 text = "exit"
+
+[node name="CreditsPanel" type="Control" parent="CanvasLayer/PauseMenu" unique_id=111300002]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+z_index = 10
+
+[node name="Overlay" type="ColorRect" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300003]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Card" type="ColorRect" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300004]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 70.0
+offset_right = 860.0
+offset_bottom = 650.0
+color = Color(0.04, 0.02, 0.1, 0.97)
+
+[node name="Title" type="Label" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300005]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 85.0
+offset_right = 760.0
+offset_bottom = 160.0
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 58
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="CreditsText" type="RichTextLabel" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300006]
+layout_mode = 0
+offset_left = 240.0
+offset_top = 168.0
+offset_right = 840.0
+offset_bottom = 590.0
+theme_override_fonts/normal_font = ExtResource("9_4c57u")
+theme_override_fonts/bold_font = ExtResource("8_kek77")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 26
+bbcode_enabled = true
+text = "[center][b]Philip Tierney[/b]
+Lead Programmer  ·  Graphic Design  ·  UI  ·  Sound Design  ·  Game Design
+
+[b]Nathanael Jeanty[/b]
+Programming  ·  3D Art
+
+[b]Wiley Johnson[/b]
+Sprite Work  ·  Concept Art
+
+[b]Sam Zalkin[/b]
+Programming[/center]"
+
+[node name="CloseButton" type="Button" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300007]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 595.0
+offset_right = 665.0
+offset_bottom = 645.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "close"
 
 [node name="DeathScreen" type="Control" parent="CanvasLayer" unique_id=796683479]
 visible = false
@@ -549,15 +640,39 @@ text = "Quit"
 [node name="GlobeManager" type="Node3D" parent="." unique_id=715119291]
 script = ExtResource("13_ycdy4")
 
-[node name="Node3D" type="Node3D" parent="." unique_id=1460857103]
+[node name="Walls" type="Node3D" parent="." unique_id=1460857103]
 transform = Transform3D(0.3, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 13)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Node3D" unique_id=158164550]
-transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, 0, 0, -38.463432)
+[node name="CSGBox3D3" type="CSGBox3D" parent="Walls" unique_id=667730467]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 1.3518449, 0, 0, -87.36823)
+visible = false
 size = Vector3(1, 1, 27)
 material = ExtResource("20_82xsv")
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D" unique_id=918551528]
-transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, -67.74885, 0, -38.463432)
+[node name="CSGBox3D4" type="CSGBox3D" parent="Walls" unique_id=415324993]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 1.3518449, -67.74885, 0, -87.36823)
+visible = false
 size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Walls" unique_id=158164550]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, 0, 0, -38.463432)
+visible = false
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Walls" unique_id=918551528]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, -67.74885, 0, -38.463432)
+visible = false
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="FloorOutside" type="CSGBox3D" parent="Walls" unique_id=646836995]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -249.04301, 0.5000076, -57.639126)
+size = Vector3(340.53574, 0.07293701, 99.979774)
+material = ExtResource("20_82xsv")
+
+[node name="FloorOutside2" type="CSGBox3D" parent="Walls" unique_id=1716145662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 177.06955, 0.5000076, -57.639126)
+size = Vector3(340.53574, 0.07293701, 99.979774)
 material = ExtResource("20_82xsv")
