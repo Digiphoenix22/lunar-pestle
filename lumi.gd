@@ -75,6 +75,12 @@ var _lumi_state         := LumiState.RUN
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
 @onready var _anim: AnimationPlayer = $LumiModel/AnimationPlayer
+@onready var mochi_rect  = $"../CanvasLayer/HUD/MochiRect"
+@onready var _canvas_layer: CanvasLayer = $"../CanvasLayer"
+
+var _mochi_icon_tex: Texture2D = preload("res://images/MochiIcon.png")
+var _mochi_rect_rest_x: float
+var _mochi_rect_shown  := false
 
 const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
@@ -196,6 +202,8 @@ func _ready() -> void:
 		create_tween().tween_property(_music, "pitch_scale", 1.0, 3.0)\
 			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
 	_reset_sky_colors()
+	_mochi_rect_rest_x = mochi_rect.position.x
+	mochi_rect.position.x = -mochi_rect.size.x - 20.0
 	_build_hearts()
 	_setup_maya_glow()
 	_setup_jump_buff_glow()
@@ -588,6 +596,10 @@ func _on_stage_up() -> void:
 	_do_flash(Color(0.863, 0.714, 0.937, 0.45), 0.4)
 	if current_stage == 5:
 		_transition_to_stage5_colors()
+	const STAGE_MOCHI_BONUS := [0, 1, 1, 1, 1, 3, 5, 20]
+	var bonus: int = STAGE_MOCHI_BONUS[clampi(current_stage, 0, STAGE_MOCHI_BONUS.size() - 1)]
+	if bonus > 0:
+		_force_mochi(bonus)
 	var sky_mat = _get_sky_mat()
 	if sky_mat:
 		var from = float(sky_mat.get_shader_parameter("sky_rotation"))
@@ -778,7 +790,7 @@ func _update_hud() -> void:
 	var secs := int(elapsed_time) % 60
 	time_label.text  = "%d:%02d" % [mins, secs]
 	dist_label.text  = "%dm" % int(distance)
-	mochi_label.text = "Mochi  x%d" % mochi_count
+	mochi_label.text = "Mochi %d" % mochi_count
 	speed_label.text = "%du/s" % int(ground_scroller.scroll_speed)
 
 func _toggle_boost() -> void:
@@ -1078,7 +1090,7 @@ func _do_flash(color: Color, duration: float) -> void:
 	white_flash.modulate.a = 1.0
 	create_tween().tween_property(white_flash, "modulate:a", 0.0, duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
 
-func collect_orb(orb_type: String) -> void:
+func collect_orb(orb_type: String, world_pos: Vector3 = Vector3.ZERO) -> void:
 	if orb_type == "mochi":
 		_powerup_sound.pitch_scale = minf(1.0 + mochi_count * 0.06, 1.5)
 		_powerup_sound.volume_db   = -5.6
@@ -1120,6 +1132,8 @@ func collect_orb(orb_type: String) -> void:
 		"mochi":
 			mochi_count += 1
 			_do_flash(Color(1.0, 0.75, 0.1, 0.45), 0.3)
+			_fly_mochi_to_counter(world_pos)
+			_maybe_show_mochi_rect()
 			if mochi_count >= 10 and not _won:
 				_trigger_win()
 
@@ -1246,6 +1260,46 @@ func _play_dash() -> void:
 	$LumiModel.scale = Vector3(squeeze_x, 0.27, 0.2)
 	create_tween().tween_property($LumiModel, "scale", BASE, 0.22)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+
+func _maybe_show_mochi_rect() -> void:
+	if _mochi_rect_shown:
+		return
+	_mochi_rect_shown = true
+	create_tween().tween_property(mochi_rect, "position:x", _mochi_rect_rest_x, 0.35)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+
+func _fly_mochi_to_counter(world_pos: Vector3) -> void:
+	var start: Vector2
+	if world_pos != Vector3.ZERO:
+		start = camera.unproject_position(world_pos)
+	else:
+		start = camera.unproject_position(global_position + Vector3(0, 1.5, 0))
+	var icon := TextureRect.new()
+	icon.texture = _mochi_icon_tex
+	icon.size = Vector2(36, 36)
+	icon.position = start - Vector2(18, 18)
+	icon.z_index = 10
+	_canvas_layer.add_child(icon)
+	var target := mochi_label.global_position + Vector2(mochi_label.size.x * 0.5, mochi_label.size.y * 0.5)
+	var t := create_tween()
+	t.tween_property(icon, "position", target, 0.45)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	t.parallel().tween_property(icon, "modulate:a", 0.0, 0.15)\
+		.set_delay(0.32)
+	t.tween_callback(icon.queue_free)
+
+func _force_mochi(count: int) -> void:
+	var gap := 0.06
+	for i in count:
+		if i > 0:
+			await get_tree().create_timer(gap).timeout
+		mochi_count += 1
+		mochi_label.text = "Mochi %d" % mochi_count
+		_fly_mochi_to_counter(Vector3.ZERO)
+		_maybe_show_mochi_rect()
+		if mochi_count >= 10 and not _won:
+			_trigger_win()
+			return
 
 func _play_random_hit() -> void:
 	var path = HIT_SOUNDS[randi() % HIT_SOUNDS.size()]
