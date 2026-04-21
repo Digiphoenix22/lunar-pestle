@@ -1277,8 +1277,11 @@ func _fly_mochi_to_counter(world_pos: Vector3) -> void:
 		start = camera.unproject_position(global_position + Vector3(0, 1.5, 0))
 	var icon := TextureRect.new()
 	icon.texture = _mochi_icon_tex
-	icon.size = Vector2(32, 23)
-	icon.position = start - Vector2(16, 11.5)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_SCALE
+	icon.custom_minimum_size = Vector2(32, 32)
+	icon.size = Vector2(32, 32)
+	icon.position = start - Vector2(16, 16)
 	icon.z_index = 10
 	_canvas_layer.add_child(icon)
 	var target: Vector2 = mochi_label.global_position + Vector2(mochi_label.size.x * 0.5, mochi_label.size.y * 0.5)
