@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://arch_c5_lp001"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://canspa01bmqmj"]
 
 [ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_kb2ll"]
 
