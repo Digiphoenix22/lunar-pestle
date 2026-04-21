@@ -4,7 +4,9 @@
       "Bash(gh repo *)",
       "Bash(npx --version)",
       "Bash(npx -y @coding-solo/godot-mcp --help)",
-      "Bash(npx @coding-solo/godot-mcp)"
+      "Bash(npx @coding-solo/godot-mcp)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)"
     ]
   }
 }

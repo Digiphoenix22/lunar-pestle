@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://x83trdo7va2w"]
+
+[ext_resource type="PackedScene" uid="uid://d38qguyfueyqf" path="res://Level/Models/Enemies.glb" id="1_7k104"]
+
+[node name="Enemies" unique_id=750503748 instance=ExtResource("1_7k104")]
+
+[node name="Armature_003" parent="." index="0" unique_id=781144561]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.17257053, 2.7069402, -0.07564068)
+
+[node name="Skeleton3D" parent="Armature_003" index="0" unique_id=1806949430]
+bones/0/position = Vector3(-0.102513075, 1.273973, 0.013544057)

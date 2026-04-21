@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://bwdxwcoo2tw76"]
 
+[ext_resource type="PackedScene" uid="uid://d38qguyfueyqf" path="res://Level/Models/Enemies.glb" id="1_hhwu3"]
+
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_e0nn6"]
 data = PackedVector3Array(-0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5)
 
@@ -20,3 +22,6 @@ visible = false
 
 [node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="Block2/StaticBody3D" unique_id=1616379906]
 shape = SubResource("ConcavePolygonShape3D_e0nn6")
+
+[node name="Enemies" parent="." unique_id=750503748 instance=ExtResource("1_hhwu3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6765833, -9.536743e-07, -8.898655)
