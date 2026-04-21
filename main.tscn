@@ -509,7 +509,10 @@ Programming  ·  3D Art
 Sprite Work  ·  Concept Art
 
 [b]Sam Zalkin[/b]
-Programming[/center]"
+Programming
+
+[b]Andrei Tietjen[/b]
+Music[/center]"
 
 [node name="CloseButton" type="Button" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300007]
 layout_mode = 0
