@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b1g5okqh421u2" path="res://Level/Models/Chunk6.glb" id="1_m7ead"]
 [ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="2_0o8wd"]
 [ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="3_xi0fh"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="4_5vvrp"]
+[ext_resource type="Material" uid="uid://bu0sf8l2q1sqj" path="res://Materials/SUPEREVILground.tres" id="4_o2tsv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0o8wd"]
 size = Vector3(5.7422333, 1.2671432, 22.44006)
@@ -21,7 +21,7 @@ transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, -0.03
 shape = SubResource("BoxShape3D_0o8wd")
 
 [node name="Base2_010" parent="." index="1" unique_id=1360306321]
-material_override = ExtResource("4_5vvrp")
+material_override = ExtResource("4_o2tsv")
 
 [node name="End" type="Marker3D" parent="." index="2" unique_id=-2089934493]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.897972)
