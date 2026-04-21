@@ -1280,7 +1280,7 @@ func _fly_mochi_to_counter(world_pos: Vector3) -> void:
 	icon.position = start - Vector2(18, 18)
 	icon.z_index = 10
 	_canvas_layer.add_child(icon)
-	var target := mochi_label.global_position + Vector2(mochi_label.size.x * 0.5, mochi_label.size.y * 0.5)
+	var target: Vector2 = mochi_label.global_position + Vector2(mochi_label.size.x * 0.5, mochi_label.size.y * 0.5)
 	var t := create_tween()
 	t.tween_property(icon, "position", target, 0.45)\
 		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
