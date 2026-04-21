@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://dr2alau4wyx12"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bsj4e1rjlnr85"]
 
 [ext_resource type="Shader" uid="uid://c3swsjt6vmqxb" path="res://Shaders/ToonSkin.gdshader" id="1_jjvfa"]
 [ext_resource type="Texture2D" uid="uid://82rj0km4iwn1" path="res://images/LumiTexture.png" id="2_xkpuh"]

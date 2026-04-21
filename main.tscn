@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://tjciujqunr0v" path="res://ground_scroller.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bsrl00t5o608m" path="res://camera_3d.gd" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" path="res://Level/Prefabs/lumi.tscn" id="4_82xsv"]
 [ext_resource type="Script" uid="uid://ce5t22o7d65ki" path="res://wisp_spawner.gd" id="4_efxa6"]
-[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="4_vivmo"]
 [ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="7_272bh"]
 [ext_resource type="Material" uid="uid://cfmp11q8yrqe5" path="res://Materials/TestMat.tres" id="8_5vw27"]
 [ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="8_kek77"]
@@ -13,7 +13,7 @@
 [ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
 [ext_resource type="Script" uid="uid://ccpwtyja71f3v" path="res://mochi_spawner.gd" id="12_mochi"]
 [ext_resource type="Texture2D" uid="uid://cp3i2xkmyydci" path="res://images/Lumi/LumiRun.png" id="13_vivmo"]
-[ext_resource type="Script" path="res://globe_manager.gd" id="13_ycdy4"]
+[ext_resource type="Script" uid="uid://bsaa60gnddse" path="res://globe_manager.gd" id="13_ycdy4"]
 [ext_resource type="Shader" uid="uid://cx4mr7tqpa2yn" path="res://Shaders/StarSky.gdshader" id="14_stars"]
 [ext_resource type="Texture2D" uid="uid://bf6ekhduedo3v" path="res://images/buffs/jade.png" id="15_cegan"]
 [ext_resource type="Texture2D" uid="uid://bljgdenjn8ffn" path="res://images/buffs/joy.png" id="16_82xsv"]
@@ -57,36 +57,6 @@ volumetric_fog_length = 64.1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
 
-[sub_resource type="Gradient" id="Gradient_i3xm6"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0.12244898, 0.49234694, 0.5739796, 0.625, 0.88265306)
-colors = PackedColorArray(0, 0, 0, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.60122263, 0.60122305, 0.6012228, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_v6oky"]
-gradient = SubResource("Gradient_i3xm6")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2cqfq"]
-render_priority = 0
-shader = ExtResource("4_vivmo")
-shader_parameter/globe_multiplier = 1.0
-shader_parameter/albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
-shader_parameter/shadow_color = Color(0.53932005, 0.2522, 0.97, 1)
-shader_parameter/use_ramp = true
-shader_parameter/ramp_texture = SubResource("GradientTexture1D_v6oky")
-shader_parameter/shadow_bands = 8
-shader_parameter/shadow_fill_strength = 0.5550000263625
-shader_parameter/rim_color = Color(1, 1, 1, 1)
-shader_parameter/rim_size = 0.1310000062225
-shader_parameter/rim_strength = 0.0
-shader_parameter/specular_color = Color(1, 1, 1, 1)
-shader_parameter/glossiness = 1.0
-shader_parameter/specular_strength = 0.0
-shader_parameter/ambient_color = Color(0.1, 0.1, 0.15, 1)
-shader_parameter/ambient_strength = 0.294000013965
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_xuhna"]
-material = SubResource("ShaderMaterial_2cqfq")
-
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_5vw27"]
 material = ExtResource("7_272bh")
 
@@ -127,8 +97,8 @@ script = ExtResource("1_h2yge")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Lumi" unique_id=1904145169]
 shape = SubResource("CapsuleShape3D_3sann")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Lumi" unique_id=1785403627]
-mesh = SubResource("CapsuleMesh_xuhna")
+[node name="LumiModel" parent="Lumi" unique_id=1828404256 instance=ExtResource("4_82xsv")]
+transform = Transform3D(-0.2, 0, -3.019916e-08, 0, 0.2, 0, 3.019916e-08, 0, -0.2, 0, -1.086734, 0.24740744)
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="Lumi" unique_id=852244107]
 

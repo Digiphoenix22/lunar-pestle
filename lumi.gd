@@ -635,9 +635,9 @@ func _physics_process(delta: float) -> void:
 
 	if invincible_timer > 0:
 		invincible_timer -= delta
-		$MeshInstance3D.visible = int(invincible_timer * 10) % 2 == 0
+		$LumiModel.visible = int(invincible_timer * 10) % 2 == 0
 	else:
-		$MeshInstance3D.visible = true
+		$LumiModel.visible = true
 
 	if recover_timer > 0:
 		recover_timer -= delta
