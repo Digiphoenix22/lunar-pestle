@@ -42,10 +42,16 @@ shadow_mesh = SubResource("ArrayMesh_ukxj2")
 
 [node name="Base" unique_id=178457917 instance=ExtResource("1_p6oa1")]
 
-[node name="Base2_007" parent="." index="0" unique_id=1177614499]
+[node name="Base2_007" parent="." index="0" unique_id=842087166]
 material_override = ExtResource("2_a7enj")
 
 [node name="Base2_008" type="MeshInstance3D" parent="." index="1" unique_id=1521298108]
 transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0)
 material_override = ExtResource("2_a7enj")
 mesh = SubResource("ArrayMesh_1rm6y")
+
+[node name="End" type="Marker3D" parent="." index="2" unique_id=784506928]
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, -1.745954e-06, 19.971386)
+
+[node name="Start" type="Marker3D" parent="." index="3" unique_id=1403887226]
+transform = Transform3D(1, 0, 0, 0, -1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 1.7434945e-06, -19.943253)

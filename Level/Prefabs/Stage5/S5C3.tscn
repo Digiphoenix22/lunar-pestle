@@ -1,0 +1,54 @@
+[gd_scene format=3 uid="uid://doplv1k80gq77"]
+
+[ext_resource type="PackedScene" uid="uid://bkics1rmmbio" path="res://Level/Models/Chunk3.glb" id="1_3ec7x"]
+[ext_resource type="Material" uid="uid://dbljl65b8e644" path="res://Materials/EVILground.tres" id="2_n1qcc"]
+[ext_resource type="Material" uid="uid://dvwbhfoqh7f2h" path="res://Materials/EVILBigCrater.tres" id="3_8v2yp"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_kmr64"]
+height = 2.1762085
+radius = 0.4248047
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tp8x8"]
+size = Vector3(1, 0.63079834, 0.6229248)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_n1qcc"]
+
+[node name="Chunk3" unique_id=1549515789 instance=ExtResource("1_3ec7x")]
+
+[node name="Base2_005" parent="." index="0" unique_id=520404081]
+material_override = ExtResource("2_n1qcc")
+
+[node name="Middle thing_001" parent="." index="1" unique_id=1684990038]
+transform = Transform3D(8.004607, 7.1730494, 0, 0, 0, -10.74832, -7.1730494, 8.004607, 0, -153.78796, 4.182877, 12.66832)
+material_override = ExtResource("3_8v2yp")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Middle thing_001" index="0" unique_id=2100356221 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Middle thing_001/StaticBody3D" index="0" unique_id=694324687]
+transform = Transform3D(1.0000063, 0, 4.544862e-07, 4.5402763e-07, -0.044893414, -0.99900115, 2.0402934e-08, 0.9989935, -0.044893697, 0.8233221, 0.05685369, -0.116764985)
+shape = SubResource("CylinderShape3D_kmr64")
+debug_color = Color(0.7, 0, 0, 0.7372549)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Middle thing_001/StaticBody3D" index="1" unique_id=78097247]
+transform = Transform3D(1.0000126, 4.5402953e-07, 4.340855e-07, 4.2334037e-07, 0.023401195, -0.99974096, -4.6406558e-07, 0.99974096, 0.023400486, -0.8206852, -0.027052632, -0.17166978)
+shape = SubResource("CylinderShape3D_kmr64")
+debug_color = Color(0.7, 0, 0, 0.7372549)
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Middle thing_001/StaticBody3D" index="2" unique_id=1028493713]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0.03994751, -0.9879943)
+shape = SubResource("BoxShape3D_tp8x8")
+
+[node name="End" type="Marker3D" parent="." index="2" unique_id=1005032803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.188969)
+
+[node name="Start" type="Marker3D" parent="." index="3" unique_id=1005032801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." index="4" unique_id=2089953456]
+transform = Transform3D(0.8983038, 0, 0.43937483, 0, 1, 0, -0.43937483, 0, 0.8983038, -10.696777, 7.5, -1)
+size = Vector3(19.606445, 10, 19)
+material = ExtResource("3_8v2yp")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CSGBox3D" index="0" unique_id=1124268335]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6627197, 0, 2.124939)
+shape = SubResource("ConcavePolygonShape3D_n1qcc")

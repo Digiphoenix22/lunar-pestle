@@ -20,6 +20,13 @@ func _ensure_music_bus() -> void:
 func get_high_score() -> int:
 	return int(_data.get("high_score", 0))
 
+func get_show_tutorial() -> bool:
+	return bool(_data.get("show_tutorial", true))
+
+func set_show_tutorial(val: bool) -> void:
+	_data["show_tutorial"] = val
+	_save()
+
 func submit_score(score: int) -> bool:
 	if score > get_high_score():
 		_data["high_score"] = score

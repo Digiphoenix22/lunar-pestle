@@ -5,7 +5,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_s2tbe")
-shader_parameter/globe_multiplier = 0.02000000095
+shader_parameter/globe_multiplier = 0.042000001995
 shader_parameter/albedo_color = Color(0.22793484, 0.12518415, 0.25851798, 1)
 shader_parameter/shadow_color = Color(0.5, 0.4, 0.8, 1)
 shader_parameter/use_ramp = false

@@ -5,10 +5,10 @@ extends Node3D
 @export var float_y        := 2.4
 
 const LANES   := [-8.0, 0.0, 8.0]
-const SPAWN_Z := -85.0
+const SPAWN_Z := -200.0
 const GONE_Z  := 12.0
-const TYPES   := ["sleepy", "jade", "maya"]
-const WEIGHTS := [3, 2, 2]
+const TYPES   := ["sleepy", "jade", "maya", "emerald", "shield"]
+const WEIGHTS := [3, 2, 2, 1, 1]
 
 var _orb_scene = preload("res://orb.tscn")
 var _timer     := 0.0
@@ -16,6 +16,7 @@ var _timer     := 0.0
 @onready var ground_scroller = $"../GroundScroller"
 
 func _ready() -> void:
+	add_to_group("spawners")
 	_timer = spawn_interval + start_delay
 
 func _process(delta: float) -> void:
@@ -31,14 +32,39 @@ func _process(delta: float) -> void:
 			orb.queue_free()
 
 func _spawn() -> void:
+	var lane = SpawnRegistry.pick_lane()
+	var pos  = Vector3(LANES[lane], float_y, SPAWN_Z)
+	if not _pos_clear(pos):
+		var fallback = [0, 1, 2].filter(func(l): return l != lane)
+		fallback.shuffle()
+		var found := false
+		for l in fallback:
+			pos = Vector3(LANES[l], float_y, SPAWN_Z)
+			if _pos_clear(pos):
+				lane = l
+				found = true
+				break
+		if not found:
+			return
+	SpawnRegistry.register(lane)
 	var orb      = _orb_scene.instantiate()
 	orb.orb_type = _pick_type()
-	orb.position = Vector3(LANES[randi() % 3], float_y, SPAWN_Z)
+	orb.position = pos
 	add_child(orb)
 	var target_scale = orb.scale
 	orb.scale = Vector3.ZERO
 	create_tween().tween_property(orb, "scale", target_scale, 0.3)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+
+func _pos_clear(pos: Vector3) -> bool:
+	var space = get_world_3d().direct_space_state
+	var q = PhysicsShapeQueryParameters3D.new()
+	var s = SphereShape3D.new()
+	s.radius = 1.2
+	q.shape = s
+	q.transform = Transform3D(Basis(), pos)
+	q.collision_mask = 1
+	return space.intersect_shape(q, 1).is_empty()
 
 func _pick_type() -> String:
 	var total := 0

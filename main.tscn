@@ -5,17 +5,22 @@
 [ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://botv3qm06va5p" path="res://Level/Prefabs/lumi.tscn" id="4_2cqfq"]
 [ext_resource type="Script" uid="uid://ce5t22o7d65ki" path="res://wisp_spawner.gd" id="4_efxa6"]
-[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="4_vivmo"]
 [ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="7_272bh"]
 [ext_resource type="Material" uid="uid://cfmp11q8yrqe5" path="res://Materials/TestMat.tres" id="8_5vw27"]
 [ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="8_kek77"]
 [ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="9_4c57u"]
 [ext_resource type="Texture2D" uid="uid://bnpnd1efxjklp" path="res://images/cornerHUD.png" id="9_efxa6"]
-[ext_resource type="Texture2D" uid="uid://dxtjvgn2w0veu" path="res://images/buni.png" id="10_dg77c"]
 [ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
 [ext_resource type="Script" uid="uid://ccpwtyja71f3v" path="res://mochi_spawner.gd" id="12_mochi"]
+[ext_resource type="Texture2D" uid="uid://cp3i2xkmyydci" path="res://images/Lumi/LumiRun.png" id="13_vivmo"]
 [ext_resource type="Script" uid="uid://bsaa60gnddse" path="res://globe_manager.gd" id="13_ycdy4"]
-[ext_resource type="Shader" path="res://Shaders/StarSky.gdshader" id="14_stars"]
+[ext_resource type="Shader" uid="uid://cx4mr7tqpa2yn" path="res://Shaders/StarSky.gdshader" id="14_stars"]
+[ext_resource type="Texture2D" uid="uid://bf6ekhduedo3v" path="res://images/buffs/jade.png" id="15_cegan"]
+[ext_resource type="Texture2D" uid="uid://bfaks4y2pmuxd" path="res://images/MochiIcon.png" id="15_getpj"]
+[ext_resource type="Texture2D" uid="uid://bljgdenjn8ffn" path="res://images/buffs/joy.png" id="16_82xsv"]
+[ext_resource type="Texture2D" uid="uid://cu60bv82sa81t" path="res://images/buffs/laughter.png" id="17_getpj"]
+[ext_resource type="Texture2D" uid="uid://1qhqqjki0hhr" path="res://images/buffs/wonder.png" id="18_ryguw"]
+[ext_resource type="Material" uid="uid://cthl3fjsu1vqh" path="res://Materials/WALLS.tres" id="20_82xsv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_stars"]
 shader = ExtResource("14_stars")
@@ -26,8 +31,8 @@ shader_parameter/ground_color = Color(0.06, 0.03, 0.15, 1)
 shader_parameter/horizon_spread = 0.1470000069825
 shader_parameter/star_density = 0.5350000016625001
 shader_parameter/star_size = 0.07000000262648
-shader_parameter/twinkle_speed = 4.5490002160775
-shader_parameter/twinkle_amount = 0.2470000117325
+shader_parameter/twinkle_speed = 7.7350003674125
+shader_parameter/twinkle_amount = 0.33200001577
 shader_parameter/horizon_star_fade = 0.5
 shader_parameter/sky_rotation = 0.0
 
@@ -41,42 +46,17 @@ sky = SubResource("Sky_fo4su")
 sky_custom_fov = 59.5
 tonemap_mode = 2
 glow_enabled = true
-fog_light_color = Color(0.6716999, 0.6373163, 0.872377, 1)
+fog_light_color = Color(0.4292827, 0.37446478, 0.6712472, 1)
+fog_light_energy = 0.53
 fog_density = 0.0
-fog_sky_affect = 0.3
+fog_aerial_perspective = 0.047
+fog_sky_affect = 0.318
+fog_height = 72.28
 volumetric_fog_albedo = Color(0.87253416, 0.7442837, 0.9837994, 1)
+volumetric_fog_anisotropy = 0.51
+volumetric_fog_length = 64.1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
-
-[sub_resource type="Gradient" id="Gradient_i3xm6"]
-interpolation_mode = 1
-offsets = PackedFloat32Array(0.12244898, 0.49234694, 0.5739796, 0.625, 0.88265306)
-colors = PackedColorArray(0, 0, 0, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.60122263, 0.60122305, 0.6012228, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_v6oky"]
-gradient = SubResource("Gradient_i3xm6")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_2cqfq"]
-render_priority = 0
-shader = ExtResource("4_vivmo")
-shader_parameter/globe_multiplier = 1.0
-shader_parameter/albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
-shader_parameter/shadow_color = Color(0.53932005, 0.2522, 0.97, 1)
-shader_parameter/use_ramp = true
-shader_parameter/ramp_texture = SubResource("GradientTexture1D_v6oky")
-shader_parameter/shadow_bands = 8
-shader_parameter/shadow_fill_strength = 0.5550000263625
-shader_parameter/rim_color = Color(1, 1, 1, 1)
-shader_parameter/rim_size = 0.1310000062225
-shader_parameter/rim_strength = 0.0
-shader_parameter/specular_color = Color(1, 1, 1, 1)
-shader_parameter/glossiness = 1.0
-shader_parameter/specular_strength = 0.0
-shader_parameter/ambient_color = Color(0.1, 0.1, 0.15, 1)
-shader_parameter/ambient_strength = 0.294000013965
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_xuhna"]
-material = SubResource("ShaderMaterial_2cqfq")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_5vw27"]
 material = ExtResource("7_272bh")
@@ -121,9 +101,6 @@ transform = Transform3D(0.18745488, 0, 0, 0, 0.18745488, 0, 0, 0, 0.18745488, 0,
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Lumi" unique_id=1904145169]
 shape = SubResource("CapsuleShape3D_3sann")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Lumi" unique_id=1785403627]
-visible = false
-mesh = SubResource("CapsuleMesh_xuhna")
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="Lumi" unique_id=852244107]
 
@@ -187,9 +164,9 @@ expand_mode = 1
 
 [node name="TopHud" type="TextureRect" parent="CanvasLayer/HUD" unique_id=335691687]
 layout_mode = 0
-offset_left = 1254.0
+offset_left = 1283.0
 offset_top = 129.0
-offset_right = 1905.0
+offset_right = 1934.0
 offset_bottom = 322.0
 rotation = 3.1415927
 texture = ExtResource("9_efxa6")
@@ -221,18 +198,19 @@ vertical_alignment = 1
 
 [node name="LumiRect" type="TextureRect" parent="CanvasLayer/HUD" unique_id=797308432]
 layout_mode = 0
-offset_left = 33.0
-offset_top = 543.0
-offset_right = 112.0
+offset_left = 60.0
+offset_top = 509.0678
+offset_right = 167.0
 offset_bottom = 638.7373
-texture = ExtResource("10_dg77c")
+pivot_offset = Vector2(53, 66.93219)
+texture = ExtResource("13_vivmo")
 expand_mode = 1
 
 [node name="BGScore" type="Label" parent="CanvasLayer/HUD" unique_id=288719171]
 layout_mode = 0
-offset_left = 951.00006
+offset_left = 980.00006
 offset_top = -7.9999723
-offset_right = 1080.0001
+offset_right = 1109.0001
 offset_bottom = 38.000027
 rotation = 0.28959936
 theme_override_colors/font_color = Color(0, 0, 0, 0.2901961)
@@ -242,9 +220,9 @@ text = "SCORE"
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000001]
 layout_mode = 0
-offset_left = 825.0
+offset_left = 854.0
 offset_top = -58.99997
-offset_right = 1225.0
+offset_right = 1254.0
 offset_bottom = 1.000061
 rotation = 0.30719894
 theme_override_fonts/font = ExtResource("8_kek77")
@@ -254,9 +232,9 @@ horizontal_alignment = 1
 
 [node name="BestLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000006]
 layout_mode = 0
-offset_left = 815.14343
+offset_left = 844.14343
 offset_top = -7.0
-offset_right = 1215.1434
+offset_right = 1244.1434
 offset_bottom = 24.999996
 rotation = 0.30719894
 theme_override_colors/font_color = Color(1, 1, 1, 0.55)
@@ -306,20 +284,30 @@ offset_right = 340.0
 offset_bottom = 50.0
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 28
-text = "Mochi  x0"
+text = "Mochi  0"
+
+[node name="MochiRect" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1036424457]
+layout_mode = 0
+offset_left = 161.0
+offset_top = 18.0
+offset_right = 193.00357
+offset_bottom = 41.0
+texture = ExtResource("15_getpj")
+expand_mode = 1
 
 [node name="StageLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000005]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -38.0
-offset_right = 182.0
+offset_left = -110.0
+offset_right = 110.0
 offset_bottom = 38.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 28
 text = "Stage 1"
+horizontal_alignment = 1
 
 [node name="WhiteFlash" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1292967295]
 modulate = Color(1, 1, 1, 0)
@@ -351,6 +339,46 @@ rotation = 0.2617994
 theme_override_font_sizes/font_size = 26
 text = "Distance"
 
+[node name="HealthBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1358173089]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 593.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("15_cegan")
+
+[node name="JumpBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1147337458]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 593.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("16_82xsv")
+
+[node name="ShieldBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1986673823]
+visible = false
+layout_mode = 0
+offset_left = 197.0
+offset_top = 479.0
+offset_right = 319.0
+offset_bottom = 594.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("17_getpj")
+
+[node name="SleepyBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=560201620]
+visible = false
+layout_mode = 0
+offset_left = 227.0
+offset_top = 479.0
+offset_right = 349.0
+offset_bottom = 594.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("18_ryguw")
+
 [node name="BlurOverlay" type="ColorRect" parent="CanvasLayer" unique_id=-1288967295]
 visible = false
 anchors_preset = 15
@@ -362,7 +390,6 @@ mouse_filter = 2
 color = Color(0.04, 0, 0.12, 0.35)
 
 [node name="PauseMenu" type="Control" parent="CanvasLayer" unique_id=821865285]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -403,7 +430,7 @@ theme_override_font_sizes/font_size = 35
 text = "Options
 "
 
-[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
+[node name="CreditsButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=111300001]
 layout_mode = 0
 offset_left = 413.0
 offset_top = 453.0
@@ -411,7 +438,90 @@ offset_right = 745.0
 offset_bottom = 551.0
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 35
+text = "credits"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
+layout_mode = 0
+offset_left = 413.0
+offset_top = 558.0
+offset_right = 745.0
+offset_bottom = 656.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
 text = "exit"
+
+[node name="CreditsPanel" type="Control" parent="CanvasLayer/PauseMenu" unique_id=111300002]
+z_index = 10
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Overlay" type="ColorRect" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300003]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Card" type="ColorRect" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300004]
+layout_mode = 0
+offset_left = 220.0
+offset_top = 70.0
+offset_right = 860.0
+offset_bottom = 650.0
+color = Color(0.04, 0.02, 0.1, 0.97)
+
+[node name="Title" type="Label" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300005]
+layout_mode = 0
+offset_left = 320.0
+offset_top = 85.0
+offset_right = 760.0
+offset_bottom = 160.0
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 58
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="CreditsText" type="RichTextLabel" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300006]
+layout_mode = 0
+offset_left = 240.0
+offset_top = 168.0
+offset_right = 840.0
+offset_bottom = 590.0
+theme_override_fonts/normal_font = ExtResource("9_4c57u")
+theme_override_fonts/bold_font = ExtResource("8_kek77")
+theme_override_font_sizes/normal_font_size = 17
+theme_override_font_sizes/bold_font_size = 26
+bbcode_enabled = true
+text = "[center][b]Philip Tierney[/b]
+Lead Programmer  ·  Graphic Design  ·  UI  ·  Sound Design  ·  Game Design
+
+[b]Nathanael Jeanty[/b]
+Programming  ·  3D Art  ·  Game design  ·  Animation  ·  swag
+
+[b]Wiley Johnson[/b]
+Sprite Work  ·  Concept Art
+
+[b]Sam Zalkin[/b]
+Programming
+
+[b]Andrei Tietjen[/b]
+Music[/center]"
+
+[node name="CloseButton" type="Button" parent="CanvasLayer/PauseMenu/CreditsPanel" unique_id=111300007]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 595.0
+offset_right = 665.0
+offset_bottom = 645.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "close"
 
 [node name="DeathScreen" type="Control" parent="CanvasLayer" unique_id=796683479]
 visible = false
@@ -531,3 +641,40 @@ text = "Quit"
 
 [node name="GlobeManager" type="Node3D" parent="." unique_id=715119291]
 script = ExtResource("13_ycdy4")
+
+[node name="Walls" type="Node3D" parent="." unique_id=1460857103]
+transform = Transform3D(0.3, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 13)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Walls" unique_id=667730467]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 1.3518449, 0, 0, -87.36823)
+visible = false
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Walls" unique_id=415324993]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 1.3518449, -67.74885, 0, -87.36823)
+visible = false
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Walls" unique_id=158164550]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, 0, 0, -38.463432)
+visible = false
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Walls" unique_id=918551528]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, -67.74885, 0, -38.463432)
+visible = false
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="FloorOutside" type="CSGBox3D" parent="Walls" unique_id=646836995]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -249.04301, 0.5000076, -57.639126)
+size = Vector3(340.53574, 0.07293701, 99.979774)
+material = ExtResource("20_82xsv")
+
+[node name="FloorOutside2" type="CSGBox3D" parent="Walls" unique_id=1716145662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 177.06955, 0.5000076, -57.639126)
+size = Vector3(340.53574, 0.07293701, 99.979774)
+material = ExtResource("20_82xsv")
