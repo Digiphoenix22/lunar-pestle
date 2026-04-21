@@ -75,6 +75,23 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
+[node name="MusicVolumeRow" type="HBoxContainer" parent="Panel/VBox" unique_id=1532211223]
+layout_mode = 2
+
+[node name="MusicLabel" type="Label" parent="Panel/VBox/MusicVolumeRow" unique_id=2033390202]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 30
+text = "Music Volume"
+
+[node name="MusicSlider" type="HSlider" parent="Panel/VBox/MusicVolumeRow" unique_id=176702812]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 1.0
+step = 0.01
+value = 0.40
+
 [node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1661937268]
 layout_mode = 2
 

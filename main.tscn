@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://tjciujqunr0v" path="res://ground_scroller.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bsrl00t5o608m" path="res://camera_3d.gd" id="1_1bvp3"]
 [ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
-[ext_resource type="Script" path="res://wisp_spawner.gd" id="4_efxa6"]
+[ext_resource type="Script" uid="uid://ce5t22o7d65ki" path="res://wisp_spawner.gd" id="4_efxa6"]
+[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="4_vivmo"]
 [ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="7_272bh"]
 [ext_resource type="Material" uid="uid://cfmp11q8yrqe5" path="res://Materials/TestMat.tres" id="8_5vw27"]
 [ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="8_kek77"]
@@ -11,16 +12,26 @@
 [ext_resource type="Texture2D" uid="uid://bnpnd1efxjklp" path="res://images/cornerHUD.png" id="9_efxa6"]
 [ext_resource type="Texture2D" uid="uid://dxtjvgn2w0veu" path="res://images/buni.png" id="10_dg77c"]
 [ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
-[ext_resource type="Script" path="res://mochi_spawner.gd" id="12_mochi"]
-[ext_resource type="Script" uid="uid://bsaa60gnddse" path="res://globe_manager.gd" id="13_ycdy4"]
+[ext_resource type="Script" uid="uid://ccpwtyja71f3v" path="res://mochi_spawner.gd" id="12_mochi"]
+[ext_resource type="Script" path="res://globe_manager.gd" id="13_ycdy4"]
+[ext_resource type="Shader" uid="uid://cx4mr7tqpa2yn" path="res://Shaders/StarSky.gdshader" id="14_stars"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m3tyl"]
-sky_top_color = Color(0.44839734, 0.44303516, 0.48449987, 1)
-sky_horizon_color = Color(0.6788479, 0.66975737, 0.6711235, 1)
-ground_horizon_color = Color(0.6788479, 0.66975737, 0.6711235, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_stars"]
+shader = ExtResource("14_stars")
+shader_parameter/top_color = Color(0.0060246703, 0.0024086512, 0.027202029, 1)
+shader_parameter/mid_color = Color(0.12, 0.06, 0.28, 1)
+shader_parameter/horizon_color = Color(0.18388796, 0.09837022, 0.40236765, 1)
+shader_parameter/ground_color = Color(0.06, 0.03, 0.15, 1)
+shader_parameter/horizon_spread = 0.1470000069825
+shader_parameter/star_density = 0.5350000016625001
+shader_parameter/star_size = 0.07000000262648
+shader_parameter/twinkle_speed = 4.5490002160775
+shader_parameter/twinkle_amount = 0.2470000117325
+shader_parameter/horizon_star_fade = 0.5
+shader_parameter/sky_rotation = 0.0
 
 [sub_resource type="Sky" id="Sky_fo4su"]
-sky_material = SubResource("ProceduralSkyMaterial_m3tyl")
+sky_material = SubResource("ShaderMaterial_stars")
 
 [sub_resource type="Environment" id="Environment_0pku2"]
 background_mode = 2
@@ -29,7 +40,6 @@ sky = SubResource("Sky_fo4su")
 sky_custom_fov = 59.5
 tonemap_mode = 2
 glow_enabled = true
-fog_enabled = true
 fog_light_color = Color(0.6716999, 0.6373163, 0.872377, 1)
 fog_density = 0.0
 fog_sky_affect = 0.3
@@ -37,7 +47,35 @@ volumetric_fog_albedo = Color(0.87253416, 0.7442837, 0.9837994, 1)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
 
+[sub_resource type="Gradient" id="Gradient_i3xm6"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.12244898, 0.49234694, 0.5739796, 0.625, 0.88265306)
+colors = PackedColorArray(0, 0, 0, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.60122263, 0.60122305, 0.6012228, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_v6oky"]
+gradient = SubResource("Gradient_i3xm6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2cqfq"]
+render_priority = 0
+shader = ExtResource("4_vivmo")
+shader_parameter/globe_multiplier = 1.0
+shader_parameter/albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
+shader_parameter/shadow_color = Color(0.53932005, 0.2522, 0.97, 1)
+shader_parameter/use_ramp = true
+shader_parameter/ramp_texture = SubResource("GradientTexture1D_v6oky")
+shader_parameter/shadow_bands = 8
+shader_parameter/shadow_fill_strength = 0.5550000263625
+shader_parameter/rim_color = Color(1, 1, 1, 1)
+shader_parameter/rim_size = 0.1310000062225
+shader_parameter/rim_strength = 0.0
+shader_parameter/specular_color = Color(1, 1, 1, 1)
+shader_parameter/glossiness = 1.0
+shader_parameter/specular_strength = 0.0
+shader_parameter/ambient_color = Color(0.1, 0.1, 0.15, 1)
+shader_parameter/ambient_strength = 0.294000013965
+
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_xuhna"]
+material = SubResource("ShaderMaterial_2cqfq")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_5vw27"]
 material = ExtResource("7_272bh")
