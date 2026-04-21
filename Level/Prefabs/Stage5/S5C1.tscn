@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://dopjv1k80gq77"]
+
+[ext_resource type="PackedScene" uid="uid://c2hls8mvie8i5" path="res://Level/Models/Chunk1.glb" id="1_xibk1"]
+[ext_resource type="Material" uid="uid://dbljl65b8e644" path="res://Materials/EVILground.tres" id="2_3u2ul"]
+[ext_resource type="Material" uid="uid://dvwbhfoqh7f2h" path="res://Materials/EVILBigCrater.tres" id="2_t4n22"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3u2ul"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_h0vg4"]
+
+[node name="Chunk1" unique_id=2049937168 instance=ExtResource("1_xibk1")]
+
+[node name="Base2_002" parent="." index="0" unique_id=1622422198]
+transform = Transform3D(1, 0, 0, 0, -1, 9.048296e-08, 0, -8.742278e-08, -1.0350045, 0, 0, 0)
+material_override = ExtResource("2_3u2ul")
+
+[node name="Circle_001" parent="." index="1" unique_id=963306361]
+transform = Transform3D(-7.949393, 0, 0.49478763, 0, 7.9679995, 0, -0.13237312, 0, -29.713459, -6.146625, 2.901433, 2.362547)
+mesh = SubResource("BoxMesh_3u2ul")
+surface_material_override/0 = ExtResource("2_t4n22")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Circle_001" index="0" unique_id=179560392 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Circle_001/StaticBody3D" index="0" unique_id=1963752044]
+transform = Transform3D(1.0000107, 0, 4.4703484e-07, 0, 1.0000044, 0, -4.2282045e-07, 0, 1.0000069, 0, -0.14575197, 0)
+shape = SubResource("BoxShape3D_h0vg4")
+
+[node name="Circle_002" type="MeshInstance3D" parent="." index="2" unique_id=1754126053]
+transform = Transform3D(-7.949393, 0, 0.49478763, 0, 7.9679995, 0, -0.13237312, 0, -29.713459, 6.1829143, 2.901433, 3.1517186)
+mesh = SubResource("BoxMesh_3u2ul")
+surface_material_override/0 = ExtResource("2_t4n22")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Circle_002" index="0" unique_id=569102862 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Circle_002/StaticBody3D" index="0" unique_id=923871805]
+transform = Transform3D(1.0000107, 0, 4.4703484e-07, 0, 1.0000044, 0, -4.2282045e-07, 0, 1.0000069, 0, -0.14575197, 0)
+shape = SubResource("BoxShape3D_h0vg4")
+
+[node name="End" type="Marker3D" parent="." index="3" unique_id=805032803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.24737)
+
+[node name="Start" type="Marker3D" parent="." index="4" unique_id=805032801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)

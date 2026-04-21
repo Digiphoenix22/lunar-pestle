@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 Transition="*res://transition.gd"
 SaveData="*res://save_data.gd"
+SpawnRegistry="*res://spawn_registry.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [global_group]
 
@@ -31,6 +36,7 @@ theme/custom_font="uid://c7ub575ac38xa"
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

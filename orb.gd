@@ -1,12 +1,14 @@
 extends Area3D
 
-@export_enum("sleepy", "jade", "maya") var orb_type: String = "jade"
+@export_enum("sleepy", "jade", "maya", "emerald", "shield") var orb_type: String = "jade"
 
 const COLORS := {
-	"sleepy": Color(0.5,  0.2,  0.95, 1.0),
-	"jade":   Color(0.1,  0.9,  0.35, 1.0),
-	"maya":   Color(0.15, 0.6,  1.0,  1.0),
-	"mochi":  Color(1.0,  0.65, 0.1,  1.0),
+	"sleepy":   Color(0.5,  0.2,  0.95, 1.0),
+	"jade":     Color(0.1,  0.9,  0.35, 1.0),
+	"maya":     Color(0.15, 0.6,  1.0,  1.0),
+	"mochi":    Color(1.0,  0.65, 0.1,  1.0),
+	"emerald":  Color(0.0,  1.0,  0.2,  1.0),
+	"shield":   Color(0.75, 0.42, 0.05, 1.0),
 }
 
 const MODEL_PATHS := {
@@ -17,6 +19,7 @@ const MODEL_PATHS := {
 }
 
 func _ready() -> void:
+	scale = Vector3(1.5, 1.5, 1.5)
 	var path = MODEL_PATHS.get(orb_type, "")
 	if path != "" and ResourceLoader.exists(path):
 		var scene = load(path) as PackedScene
@@ -50,5 +53,5 @@ func _start_bob() -> void:
 
 func _on_body_entered(body: Node3D) -> void:
 	if body.has_method("collect_orb"):
-		body.collect_orb(orb_type)
+		body.collect_orb(orb_type, global_position)
 		queue_free()

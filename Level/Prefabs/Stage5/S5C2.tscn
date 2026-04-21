@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://dopkv1k80gq77"]
+
+[ext_resource type="PackedScene" uid="uid://c621a30bu6cln" path="res://Level/Models/Chunk2.glb" id="1_ggw2f"]
+[ext_resource type="Material" uid="uid://dvwbhfoqh7f2h" path="res://Materials/EVILBigCrater.tres" id="2_d2ytw"]
+[ext_resource type="Material" uid="uid://dbljl65b8e644" path="res://Materials/EVILground.tres" id="2_v8c63"]
+[ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="4_g5l3i"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_g5l3i"]
+height = 1.7084961
+radius = 0.6826172
+
+[node name="Chunk2" unique_id=868272714 instance=ExtResource("1_ggw2f")]
+
+[node name="Base2_004" parent="." index="0" unique_id=777302883]
+transform = Transform3D(1, 0, 0, 0, -0.99999994, 8.76233e-08, 0, -8.742277e-08, -1.0022937, 0, 0, 0)
+material_override = ExtResource("2_v8c63")
+surface_material_override/0 = ExtResource("2_d2ytw")
+
+[node name="Circle_002" parent="." index="1" unique_id=675979914]
+transform = Transform3D(10.708842, -0.48189068, 1.5891007, 0.8993752, 7.232699, -0.9215676, -1.7113668, 0.78558373, 9.459453, 10.906616, 0.059115887, 2.7571328)
+surface_material_override/0 = ExtResource("2_d2ytw")
+surface_material_override/1 = ExtResource("4_g5l3i")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Circle_002" index="0" unique_id=2129934669 groups=["obstacle"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.034864046, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Circle_002/StaticBody3D" index="0" unique_id=467513426]
+transform = Transform3D(1.0000063, 0, 4.5448542e-07, 0, 1, 0, -4.5448542e-07, 0, 1.0000063, 0, -0.14575195, 0)
+shape = SubResource("CylinderShape3D_g5l3i")
+
+[node name="End" type="Marker3D" parent="." index="2" unique_id=905032803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -60.5256)
+
+[node name="Start" type="Marker3D" parent="." index="3" unique_id=905032801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 60.462547)

@@ -8,6 +8,7 @@ var scroll_speed        := 80.0
 const LANES := [-8.0, 0.0, 8.0]
 
 func _ready() -> void:
+	add_to_group("spawners")
 	$Timer.wait_time = 2.0
 	$Timer.timeout.connect(_spawn)
 	$Timer.start()
@@ -15,8 +16,10 @@ func _ready() -> void:
 func _spawn() -> void:
 	if obstacle_scene == null:
 		return
+	var lane = SpawnRegistry.pick_lane()
+	SpawnRegistry.register(lane)
 	var obs = obstacle_scene.instantiate()
-	obs.position = Vector3(LANES[randi() % 3], ground_y, spawn_z)
+	obs.position = Vector3(LANES[lane], ground_y, spawn_z)
 	add_child(obs)
 
 func _process(delta: float) -> void:
