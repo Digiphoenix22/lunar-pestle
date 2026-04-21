@@ -12,7 +12,6 @@ const GONE_Z  := 12.0
 
 var templates: Array[Node3D] = []
 var _timer := 0.0
-var _enemy_scene: PackedScene = load("res://Enemies.glb")
 
 @onready var ground_scroller = $"../GroundScroller"
 
@@ -46,18 +45,9 @@ func _spawn() -> void:
 	block.position = Vector3(LANES[randi() % 3], drop_height, SPAWN_Z)
 	block.scale = Vector3.ZERO
 	_tag_obstacles(block)
-	_hide_csg(block)
-	var model := _enemy_scene.instantiate() as Node3D
-	block.add_child(model)
 	add_child(block)
 	create_tween().tween_property(block, "scale", Vector3.ONE, 0.35)\
 		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
-
-func _hide_csg(node: Node) -> void:
-	if node is CSGShape3D:
-		(node as GeometryInstance3D).visible = false
-	for child in node.get_children():
-		_hide_csg(child)
 
 func _apply_danger_material(node: Node) -> void:
 	var mat = StandardMaterial3D.new()
