@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh repo *)"
+      "Bash(gh repo *)",
+      "Bash(npx --version)",
+      "Bash(npx -y @coding-solo/godot-mcp --help)",
+      "Bash(npx @coding-solo/godot-mcp)",
+      "Bash(git fetch *)",
+      "Bash(git pull *)",
+      "mcp__godot__get_project_info",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
