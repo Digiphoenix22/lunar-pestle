@@ -74,6 +74,7 @@ var _lumi_state         := LumiState.RUN
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
+@onready var _anim: AnimationPlayer = $LumiModel/AnimationPlayer
 
 const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
@@ -119,6 +120,7 @@ var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
 var _double_jumping   := false
+var _last_dash_dir    := 0  # -1 left, 1 right, 0 none
 var _maya_glow_mat:        ShaderMaterial
 var shield_active         := false
 var shield_timer          := 0.0
@@ -719,9 +721,11 @@ func _physics_process(delta: float) -> void:
 		_dash_cooldown -= delta
 	if Input.is_action_just_pressed("ui_left") and current_lane > 0:
 		current_lane -= 1
+		_last_dash_dir = -1
 		_play_dash()
 	if Input.is_action_just_pressed("ui_right") and current_lane < 2:
 		current_lane += 1
+		_last_dash_dir = 1
 		_play_dash()
 
 	position.x = lerp(position.x, LANES[current_lane], LANE_SPEED * delta)
@@ -729,6 +733,7 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	position.z = 0.0
 	velocity.z = 0.0
+	_update_anim()
 
 	if invincible_timer <= 0:
 		for i in get_slide_collision_count():
@@ -1189,6 +1194,24 @@ func _animate_hearts_die() -> void:
 	var t = create_tween().set_parallel(true)
 	for h in _hearts:
 		t.tween_property(h, "modulate", HEART_DEAD, 0.3).set_ease(Tween.EASE_IN)
+
+func _update_anim() -> void:
+	if not alive:
+		return
+	var next: String
+	if _dash_cooldown > 0.05:
+		next = "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
+	elif not is_on_floor():
+		if _double_jumping:
+			next = "LUMI_Animsss/LumiDoubleJumpBake"
+		elif velocity.y > 0:
+			next = "LUMI_Animsss/LumiJumpBake"
+		else:
+			next = "LUMI_Animsss/LumiFallBake"
+	else:
+		next = "LUMI_Animsss/LumiRunBake"
+	if _anim.current_animation != next:
+		_anim.play(next)
 
 func _play_dash() -> void:
 	if _dash_cooldown > 0:
