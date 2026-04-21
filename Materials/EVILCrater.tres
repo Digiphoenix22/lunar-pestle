@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" format=3 uid="uid://nxoxe82cs34e"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://rug5huup0ca6"]
 
-[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_4sdtk"]
+[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_pxdtx"]
 
 [sub_resource type="Gradient" id="Gradient_i3xm6"]
 interpolation_mode = 1
@@ -12,10 +12,10 @@ gradient = SubResource("Gradient_i3xm6")
 
 [resource]
 render_priority = 0
-shader = ExtResource("1_4sdtk")
-shader_parameter/globe_multiplier = 0.8030000381425
+shader = ExtResource("1_pxdtx")
+shader_parameter/globe_multiplier = 0.02000000095
 shader_parameter/albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
-shader_parameter/shadow_color = Color(0.5, 0.4, 0.8, 1)
+shader_parameter/shadow_color = Color(0.8304363, 0, 0.1694845, 1)
 shader_parameter/use_ramp = true
 shader_parameter/ramp_texture = SubResource("GradientTexture1D_v6oky")
 shader_parameter/shadow_bands = 6

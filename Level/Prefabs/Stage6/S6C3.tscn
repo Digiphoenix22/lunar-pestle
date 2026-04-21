@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://s2c3aaaaaaaaa"]
+[gd_scene format=3 uid="uid://dpplv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://bkics1rmmbio" path="res://Level/Models/Chunk3.glb" id="1_3ec7x"]
 [ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_kmr64"]
@@ -34,3 +34,9 @@ debug_color = Color(0.7, 0, 0, 0.7372549)
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Middle thing_001/StaticBody3D" index="2" unique_id=1028493713]
 transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, 0.03994751, -0.9879943)
 shape = SubResource("BoxShape3D_tp8x8")
+
+[node name="End" type="Marker3D" parent="." index="2" unique_id=2005032803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.006405)
+
+[node name="Start" type="Marker3D" parent="." index="3" unique_id=2005032801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20.108604)

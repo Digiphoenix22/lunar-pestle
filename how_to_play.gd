@@ -7,7 +7,7 @@ const MOCHI_YELLOW := Color(1.0, 0.85, 0.12, 1.0)
 const LINES: Array = [
 	["← / →  or  A / D", "Switch lanes"],
 	["Space / ↑", "Jump"],
-	["Space  +  Jump Buff", "Double jump!"],
+	["Press C for slowdown buff / Doouble jump with blue! ", "Buffs!"],
 	["Mochi", "Collect for 10 to WIN!", true],
 	["Obstacles", "Dodge or jump to survive!"],
 ]
