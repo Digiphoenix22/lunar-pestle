@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://s2c4aaaaaaaaa"]
+
+[ext_resource type="PackedScene" uid="uid://dgheh5258bt5e" path="res://Level/Models/Chunk4.glb" id="1_qf0g4"]
+[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_nyff4"]
+[ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="3_nyff4"]
+[ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="4_emi2a"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_nyff4"]
+size = Vector3(14.807198, 0.63079834, 35.974777)
+
+[node name="Chunk4" unique_id=1618891521 instance=ExtResource("1_qf0g4")]
+
+[node name="Base2_008" parent="." index="0" unique_id=433072300]
+material_override = ExtResource("2_nyff4")
+
+[node name="Large Crater_005" parent="." index="1" unique_id=201284596]
+surface_material_override/0 = ExtResource("3_nyff4")
+surface_material_override/1 = ExtResource("4_emi2a")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Large Crater_005" index="0" unique_id=931033413 groups=["obstacle"]]
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Large Crater_005/StaticBody3D" index="0" unique_id=528197509]
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 5.0516787, 3.7786174, 0.35595843)
+shape = SubResource("BoxShape3D_nyff4")

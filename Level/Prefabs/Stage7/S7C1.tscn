@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://dqpjv1k80gq77"]
+
+[ext_resource type="PackedScene" uid="uid://c2hls8mvie8i5" path="res://Level/Models/Chunk1.glb" id="1_xibk1"]
+[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_ujxjh"]
+[ext_resource type="Material" uid="uid://c5hwbssv2rrt5" path="res://Materials/Crater.tres" id="3_p176i"]
+[ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="4_ujxjh"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ujxjh"]
+height = 1.7084961
+radius = 0.6826172
+
+[node name="Chunk1" unique_id=2049937168 instance=ExtResource("1_xibk1")]
+
+[node name="Base2_002" parent="." index="0" unique_id=1622422198]
+material_override = ExtResource("2_ujxjh")
+
+[node name="Circle_001" parent="." index="1" unique_id=963306361]
+transform = Transform3D(-7.8861327, 0, -0.51826686, 0, 7.9031444, 0, 0.51826686, 0, -7.8861327, -3.7969408, 0.085745335, 2.7571328)
+surface_material_override/0 = ExtResource("3_p176i")
+surface_material_override/1 = ExtResource("4_ujxjh")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Circle_001" index="0" unique_id=179560392 groups=["obstacle"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Circle_001/StaticBody3D" index="0" unique_id=1963752044]
+transform = Transform3D(1.0000063, 0, 4.5448542e-07, 0, 1, 0, -4.5448542e-07, 0, 1.0000063, 0, -0.14575195, 0)
+shape = SubResource("CylinderShape3D_ujxjh")
+
+[node name="End" type="Marker3D" parent="." index="2" unique_id=-1489934493]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.969128)
+
+[node name="Start" type="Marker3D" parent="." index="3" unique_id=-1489934495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19.917568)

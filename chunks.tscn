@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://cagg3qd8b6vml"]
+
+[ext_resource type="PackedScene" uid="uid://br6nhn2gnpebc" path="res://Level/Prefabs/base.tscn" id="base_tscn"]
+
+[ext_resource type="PackedScene" uid="uid://cokbpi1bfi2kr" path="res://Level/Prefabs/Stage1/chunk1.tscn" id="s1c1"]
+[ext_resource type="PackedScene" uid="uid://fa1b0vbk688a" path="res://Level/Prefabs/Stage1/chunk2.tscn" id="s1c2"]
+[ext_resource type="PackedScene" uid="uid://diqqpmvxk0pd4" path="res://Level/Prefabs/Stage1/chunk_3.tscn" id="s1c3"]
+[ext_resource type="PackedScene" uid="uid://2u43umjjw00p" path="res://Level/Prefabs/Stage1/chunk_4.tscn" id="s1c4"]
+[ext_resource type="PackedScene" uid="uid://d1x458unpbdsg" path="res://Level/Prefabs/Stage1/chunk_6.tscn" id="s1c5"]
+
+[ext_resource type="PackedScene" uid="uid://s2c2aaaaaaaaa" path="res://Level/Prefabs/Stage2/S2C2.tscn" id="s2c2"]
+[ext_resource type="PackedScene" uid="uid://s2c3aaaaaaaaa" path="res://Level/Prefabs/Stage2/S2C3.tscn" id="s2c3"]
+[ext_resource type="PackedScene" uid="uid://s2c4aaaaaaaaa" path="res://Level/Prefabs/Stage2/S2C4.tscn" id="s2c4"]
+[ext_resource type="PackedScene" uid="uid://s2c5aaaaaaaaa" path="res://Level/Prefabs/Stage2/S2C5.tscn" id="s2c5"]
+[ext_resource type="PackedScene" uid="uid://s2c6aaaaaaaaa" path="res://Level/Prefabs/Stage2/S2C6.tscn" id="s2c6"]
+
+[ext_resource type="PackedScene" uid="uid://s3c1aaaaaaaaa" path="res://Level/Prefabs/Stage3/S3C1.tscn" id="s3c1"]
+[ext_resource type="PackedScene" uid="uid://s3c2aaaaaaaaa" path="res://Level/Prefabs/Stage3/S3C2.tscn" id="s3c2"]
+[ext_resource type="PackedScene" uid="uid://s3c3aaaaaaaaa" path="res://Level/Prefabs/Stage3/S3C3.tscn" id="s3c3"]
+[ext_resource type="PackedScene" uid="uid://s3c4aaaaaaaaa" path="res://Level/Prefabs/Stage3/S3C4.tscn" id="s3c4"]
+[ext_resource type="PackedScene" uid="uid://s3c5aaaaaaaaa" path="res://Level/Prefabs/Stage3/S3C5.tscn" id="s3c5"]
+
+[ext_resource type="PackedScene" uid="uid://s4c1aaaaaaaaa" path="res://Level/Prefabs/Stage4/S4C1.tscn" id="s4c1"]
+[ext_resource type="PackedScene" uid="uid://s4c2aaaaaaaaa" path="res://Level/Prefabs/Stage4/S4C2.tscn" id="s4c2"]
+[ext_resource type="PackedScene" uid="uid://s4c3aaaaaaaaa" path="res://Level/Prefabs/Stage4/S4C3.tscn" id="s4c3"]
+[ext_resource type="PackedScene" uid="uid://s4c4aaaaaaaaa" path="res://Level/Prefabs/Stage4/S4C4.tscn" id="s4c4"]
+[ext_resource type="PackedScene" uid="uid://s4c5aaaaaaaaa" path="res://Level/Prefabs/Stage4/S4C5.tscn" id="s4c5"]
+
+[ext_resource type="PackedScene" uid="uid://s5c1aaaaaaaaa" path="res://Level/Prefabs/Stage5/S5C1.tscn" id="s5c1"]
+[ext_resource type="PackedScene" uid="uid://s5c2aaaaaaaaa" path="res://Level/Prefabs/Stage5/S5C2.tscn" id="s5c2"]
+[ext_resource type="PackedScene" uid="uid://s5c3aaaaaaaaa" path="res://Level/Prefabs/Stage5/S5C3.tscn" id="s5c3"]
+[ext_resource type="PackedScene" uid="uid://s5c4aaaaaaaaa" path="res://Level/Prefabs/Stage5/S5C4.tscn" id="s5c4"]
+[ext_resource type="PackedScene" uid="uid://s5c5aaaaaaaaa" path="res://Level/Prefabs/Stage5/S5C5.tscn" id="s5c5"]
+
+[ext_resource type="PackedScene" uid="uid://s6c1aaaaaaaaa" path="res://Level/Prefabs/Stage6/S6C1.tscn" id="s6c1"]
+[ext_resource type="PackedScene" uid="uid://s6c2aaaaaaaaa" path="res://Level/Prefabs/Stage6/S6C2.tscn" id="s6c2"]
+[ext_resource type="PackedScene" uid="uid://s6c3aaaaaaaaa" path="res://Level/Prefabs/Stage6/S6C3.tscn" id="s6c3"]
+[ext_resource type="PackedScene" uid="uid://s6c4aaaaaaaaa" path="res://Level/Prefabs/Stage6/S6C4.tscn" id="s6c4"]
+[ext_resource type="PackedScene" uid="uid://s6c5aaaaaaaaa" path="res://Level/Prefabs/Stage6/S6C5.tscn" id="s6c5"]
+
+[ext_resource type="PackedScene" uid="uid://s7c1aaaaaaaaa" path="res://Level/Prefabs/Stage7/S7C1.tscn" id="s7c1"]
+[ext_resource type="PackedScene" uid="uid://s7c2aaaaaaaaa" path="res://Level/Prefabs/Stage7/S7C2.tscn" id="s7c2"]
+[ext_resource type="PackedScene" uid="uid://s7c3aaaaaaaaa" path="res://Level/Prefabs/Stage7/S7C3.tscn" id="s7c3"]
+[ext_resource type="PackedScene" uid="uid://s7c4aaaaaaaaa" path="res://Level/Prefabs/Stage7/S7C4.tscn" id="s7c4"]
+[ext_resource type="PackedScene" uid="uid://s7c5aaaaaaaaa" path="res://Level/Prefabs/Stage7/S7C5.tscn" id="s7c5"]
+
+[node name="Chunks" type="Node3D" unique_id=1297379566]
+
+[node name="Base" parent="." unique_id=178457917 instance=ExtResource("base_tscn")]
+
+[node name="Stage1" type="Node3D" parent="." unique_id=1182464841]
+
+[node name="1" parent="Stage1" unique_id=2049937168 instance=ExtResource("s1c1")]
+[node name="2" parent="Stage1" unique_id=868272714 instance=ExtResource("s1c2")]
+[node name="3" parent="Stage1" unique_id=1827086545 instance=ExtResource("s1c3")]
+[node name="4" parent="Stage1" unique_id=1549515789 instance=ExtResource("s1c4")]
+[node name="5" parent="Stage1" unique_id=1618891521 instance=ExtResource("s1c5")]
+
+[node name="Stage2" type="Node3D" parent="." unique_id=1575998589]
+
+[node name="1" parent="Stage2" unique_id=2100000001 instance=ExtResource("s2c2")]
+[node name="2" parent="Stage2" unique_id=2100000002 instance=ExtResource("s2c3")]
+[node name="3" parent="Stage2" unique_id=2100000003 instance=ExtResource("s2c4")]
+[node name="4" parent="Stage2" unique_id=2100000004 instance=ExtResource("s2c5")]
+[node name="5" parent="Stage2" unique_id=2100000005 instance=ExtResource("s2c6")]
+
+[node name="Stage3" type="Node3D" parent="." unique_id=2200000000]
+
+[node name="1" parent="Stage3" unique_id=2200000001 instance=ExtResource("s3c1")]
+[node name="2" parent="Stage3" unique_id=2200000002 instance=ExtResource("s3c2")]
+[node name="3" parent="Stage3" unique_id=2200000003 instance=ExtResource("s3c3")]
+[node name="4" parent="Stage3" unique_id=2200000004 instance=ExtResource("s3c4")]
+[node name="5" parent="Stage3" unique_id=2200000005 instance=ExtResource("s3c5")]
+
+[node name="Stage4" type="Node3D" parent="." unique_id=2300000000]
+
+[node name="1" parent="Stage4" unique_id=2300000001 instance=ExtResource("s4c1")]
+[node name="2" parent="Stage4" unique_id=2300000002 instance=ExtResource("s4c2")]
+[node name="3" parent="Stage4" unique_id=2300000003 instance=ExtResource("s4c3")]
+[node name="4" parent="Stage4" unique_id=2300000004 instance=ExtResource("s4c4")]
+[node name="5" parent="Stage4" unique_id=2300000005 instance=ExtResource("s4c5")]
+
+[node name="Stage5" type="Node3D" parent="." unique_id=2400000000]
+
+[node name="1" parent="Stage5" unique_id=2400000001 instance=ExtResource("s5c1")]
+[node name="2" parent="Stage5" unique_id=2400000002 instance=ExtResource("s5c2")]
+[node name="3" parent="Stage5" unique_id=2400000003 instance=ExtResource("s5c3")]
+[node name="4" parent="Stage5" unique_id=2400000004 instance=ExtResource("s5c4")]
+[node name="5" parent="Stage5" unique_id=2400000005 instance=ExtResource("s5c5")]
+
+[node name="Stage6" type="Node3D" parent="." unique_id=2500000000]
+
+[node name="1" parent="Stage6" unique_id=2500000001 instance=ExtResource("s6c1")]
+[node name="2" parent="Stage6" unique_id=2500000002 instance=ExtResource("s6c2")]
+[node name="3" parent="Stage6" unique_id=2500000003 instance=ExtResource("s6c3")]
+[node name="4" parent="Stage6" unique_id=2500000004 instance=ExtResource("s6c4")]
+[node name="5" parent="Stage6" unique_id=2500000005 instance=ExtResource("s6c5")]
+
+[node name="Stage7" type="Node3D" parent="." unique_id=2600000000]
+
+[node name="1" parent="Stage7" unique_id=2600000001 instance=ExtResource("s7c1")]
+[node name="2" parent="Stage7" unique_id=2600000002 instance=ExtResource("s7c2")]
+[node name="3" parent="Stage7" unique_id=2600000003 instance=ExtResource("s7c3")]
+[node name="4" parent="Stage7" unique_id=2600000004 instance=ExtResource("s7c4")]
+[node name="5" parent="Stage7" unique_id=2600000005 instance=ExtResource("s7c5")]

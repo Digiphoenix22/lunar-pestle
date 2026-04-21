@@ -1,0 +1,593 @@
+[gd_scene format=3 uid="uid://bfe31ovbpb0ua"]
+
+[ext_resource type="Script" uid="uid://tjciujqunr0v" path="res://ground_scroller.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://bsrl00t5o608m" path="res://camera_3d.gd" id="1_1bvp3"]
+[ext_resource type="Script" uid="uid://b584w2ogrj3e5" path="res://lumi.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://ce5t22o7d65ki" path="res://wisp_spawner.gd" id="4_efxa6"]
+[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="4_vivmo"]
+[ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="7_272bh"]
+[ext_resource type="Material" uid="uid://cfmp11q8yrqe5" path="res://Materials/TestMat.tres" id="8_5vw27"]
+[ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="8_kek77"]
+[ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="9_4c57u"]
+[ext_resource type="Texture2D" uid="uid://bnpnd1efxjklp" path="res://images/cornerHUD.png" id="9_efxa6"]
+[ext_resource type="Script" uid="uid://dxqcjsh1mh6a1" path="res://block_dropper.gd" id="11_blkdp"]
+[ext_resource type="Script" uid="uid://ccpwtyja71f3v" path="res://mochi_spawner.gd" id="12_mochi"]
+[ext_resource type="Texture2D" uid="uid://cp3i2xkmyydci" path="res://images/Lumi/LumiRun.png" id="13_vivmo"]
+[ext_resource type="Script" path="res://globe_manager.gd" id="13_ycdy4"]
+[ext_resource type="Shader" uid="uid://cx4mr7tqpa2yn" path="res://Shaders/StarSky.gdshader" id="14_stars"]
+[ext_resource type="Texture2D" uid="uid://bf6ekhduedo3v" path="res://images/buffs/jade.png" id="15_cegan"]
+[ext_resource type="Texture2D" uid="uid://bljgdenjn8ffn" path="res://images/buffs/joy.png" id="16_82xsv"]
+[ext_resource type="Texture2D" uid="uid://cu60bv82sa81t" path="res://images/buffs/laughter.png" id="17_getpj"]
+[ext_resource type="Texture2D" uid="uid://1qhqqjki0hhr" path="res://images/buffs/wonder.png" id="18_ryguw"]
+[ext_resource type="Material" uid="uid://cthl3fjsu1vqh" path="res://Materials/WALLS.tres" id="20_82xsv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_stars"]
+shader = ExtResource("14_stars")
+shader_parameter/top_color = Color(0.0060246703, 0.0024086512, 0.027202029, 1)
+shader_parameter/mid_color = Color(0.12, 0.06, 0.28, 1)
+shader_parameter/horizon_color = Color(0.18388796, 0.09837022, 0.40236765, 1)
+shader_parameter/ground_color = Color(0.06, 0.03, 0.15, 1)
+shader_parameter/horizon_spread = 0.1470000069825
+shader_parameter/star_density = 0.5350000016625001
+shader_parameter/star_size = 0.07000000262648
+shader_parameter/twinkle_speed = 7.7350003674125
+shader_parameter/twinkle_amount = 0.33200001577
+shader_parameter/horizon_star_fade = 0.5
+shader_parameter/sky_rotation = 0.0
+
+[sub_resource type="Sky" id="Sky_fo4su"]
+sky_material = SubResource("ShaderMaterial_stars")
+
+[sub_resource type="Environment" id="Environment_0pku2"]
+background_mode = 2
+background_energy_multiplier = 1.27
+sky = SubResource("Sky_fo4su")
+sky_custom_fov = 59.5
+tonemap_mode = 2
+glow_enabled = true
+fog_light_color = Color(0.4292827, 0.37446478, 0.6712472, 1)
+fog_light_energy = 0.53
+fog_density = 0.0
+fog_aerial_perspective = 0.047
+fog_sky_affect = 0.318
+fog_height = 72.28
+volumetric_fog_albedo = Color(0.87253416, 0.7442837, 0.9837994, 1)
+volumetric_fog_anisotropy = 0.51
+volumetric_fog_length = 64.1
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
+
+[sub_resource type="Gradient" id="Gradient_i3xm6"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.12244898, 0.49234694, 0.5739796, 0.625, 0.88265306)
+colors = PackedColorArray(0, 0, 0, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.60122263, 0.60122305, 0.6012228, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_v6oky"]
+gradient = SubResource("Gradient_i3xm6")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2cqfq"]
+render_priority = 0
+shader = ExtResource("4_vivmo")
+shader_parameter/globe_multiplier = 1.0
+shader_parameter/albedo_color = Color(0.5689727, 0.56897277, 0.5689727, 1)
+shader_parameter/shadow_color = Color(0.53932005, 0.2522, 0.97, 1)
+shader_parameter/use_ramp = true
+shader_parameter/ramp_texture = SubResource("GradientTexture1D_v6oky")
+shader_parameter/shadow_bands = 8
+shader_parameter/shadow_fill_strength = 0.5550000263625
+shader_parameter/rim_color = Color(1, 1, 1, 1)
+shader_parameter/rim_size = 0.1310000062225
+shader_parameter/rim_strength = 0.0
+shader_parameter/specular_color = Color(1, 1, 1, 1)
+shader_parameter/glossiness = 1.0
+shader_parameter/specular_strength = 0.0
+shader_parameter/ambient_color = Color(0.1, 0.1, 0.15, 1)
+shader_parameter/ambient_strength = 0.294000013965
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_xuhna"]
+material = SubResource("ShaderMaterial_2cqfq")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_5vw27"]
+material = ExtResource("7_272bh")
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_kek77"]
+material = ExtResource("8_5vw27")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4c57u"]
+transparency = 1
+albedo_color = Color(1, 0.11372549, 0.05882353, 0.48235294)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 9.55
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_efxa6"]
+material = SubResource("StandardMaterial3D_4c57u")
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_272bh"]
+
+[node name="WorldRoot" type="Node3D" unique_id=1626412060]
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1791450035]
+transform = Transform3D(1, 0, 0, 0, 0.96174127, 0.27395922, 0, -0.27395922, 0.96174127, 0.060658436, 8.648586, 7.319722)
+script = ExtResource("1_1bvp3")
+target = NodePath("../Lumi")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=334163119]
+transform = Transform3D(-0.86601543, -0.430608, 0.25415373, 0.004156635, 0.5020725, 0.8648156, -0.50000006, 0.75, -0.43301266, 0, 6.3448744, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1781889181]
+environment = SubResource("Environment_0pku2")
+
+[node name="Lumi" type="CharacterBody3D" parent="." unique_id=1657644139]
+process_mode = 3
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2.2, 0)
+script = ExtResource("1_h2yge")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Lumi" unique_id=1904145169]
+shape = SubResource("CapsuleShape3D_3sann")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Lumi" unique_id=1785403627]
+mesh = SubResource("CapsuleMesh_xuhna")
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="Lumi" unique_id=852244107]
+
+[node name="BoostSound" type="AudioStreamPlayer2D" parent="Lumi" unique_id=-1289967295]
+
+[node name="GroundScroller" type="Node3D" parent="." unique_id=1633350001 groups=["globe"]]
+script = ExtResource("1_0xm2m")
+
+[node name="WispSpawner" type="Node3D" parent="." unique_id=10832525]
+script = ExtResource("4_efxa6")
+
+[node name="BlockDropper" type="Node3D" parent="." unique_id=-1290967295]
+script = ExtResource("11_blkdp")
+
+[node name="MochiSpawner" type="Node3D" parent="." unique_id=111100001]
+script = ExtResource("12_mochi")
+
+[node name="DevStuff" type="Node3D" parent="." unique_id=368281543]
+visible = false
+
+[node name="TestLumiLeft" type="MeshInstance3D" parent="DevStuff" unique_id=476935056]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -8, 2.2, 0)
+mesh = SubResource("CapsuleMesh_5vw27")
+
+[node name="TestLumiRight" type="MeshInstance3D" parent="DevStuff" unique_id=2105918805]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 8, 2.2, 0)
+mesh = SubResource("CapsuleMesh_kek77")
+
+[node name="TestLumiMiddle" type="MeshInstance3D" parent="DevStuff" unique_id=421962349]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2.2188945, 0)
+mesh = SubResource("CapsuleMesh_efxa6")
+
+[node name="Floor" type="CSGBox3D" parent="." unique_id=196039518]
+transform = Transform3D(0.99915487, 0.03544998, 0.020802824, -0.035457656, 0.9993712, 0, -0.020789742, -0.00073761935, 0.9997836, 0.115, 0, 17.03373)
+visible = false
+size = Vector3(25, 0.001, 40)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" unique_id=1311064236]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" unique_id=1936818764]
+shape = SubResource("WorldBoundaryShape3D_272bh")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1334622461]
+process_mode = 3
+
+[node name="HUD" type="Control" parent="CanvasLayer" unique_id=-1293967295]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BottomHud" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1855218268]
+layout_mode = 0
+offset_top = 501.0
+offset_right = 651.0
+offset_bottom = 694.0
+texture = ExtResource("9_efxa6")
+expand_mode = 1
+
+[node name="TopHud" type="TextureRect" parent="CanvasLayer/HUD" unique_id=335691687]
+layout_mode = 0
+offset_left = 1283.0
+offset_top = 129.0
+offset_right = 1934.0
+offset_bottom = 322.0
+rotation = 3.1415927
+texture = ExtResource("9_efxa6")
+expand_mode = 1
+
+[node name="SlowIndicator" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1293967292]
+layout_mode = 0
+offset_left = 934.0
+offset_top = 580.0
+offset_right = 1141.0
+offset_bottom = 632.0
+pivot_offset = Vector2(103.5, 26)
+color = Color(0.64664716, 0.6376494, 0.9812682, 0.7490196)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/HUD/SlowIndicator" unique_id=-1291967295]
+
+[node name="SlowLabel" type="Label" parent="CanvasLayer/HUD/SlowIndicator" unique_id=-1293967291]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 28
+text = "Slowed!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LumiRect" type="TextureRect" parent="CanvasLayer/HUD" unique_id=797308432]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 509.0678
+offset_right = 167.0
+offset_bottom = 638.7373
+pivot_offset = Vector2(53, 66.93219)
+texture = ExtResource("13_vivmo")
+expand_mode = 1
+
+[node name="BGScore" type="Label" parent="CanvasLayer/HUD" unique_id=288719171]
+layout_mode = 0
+offset_left = 980.00006
+offset_top = -7.9999723
+offset_right = 1109.0001
+offset_bottom = 38.000027
+rotation = 0.28959936
+theme_override_colors/font_color = Color(0, 0, 0, 0.2901961)
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 37
+text = "SCORE"
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000001]
+layout_mode = 0
+offset_left = 854.0
+offset_top = -58.99997
+offset_right = 1254.0
+offset_bottom = 1.000061
+rotation = 0.30719894
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 48
+text = "0"
+horizontal_alignment = 1
+
+[node name="BestLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000006]
+layout_mode = 0
+offset_left = 844.14343
+offset_top = -7.0
+offset_right = 1244.1434
+offset_bottom = 24.999996
+rotation = 0.30719894
+theme_override_colors/font_color = Color(1, 1, 1, 0.55)
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 24
+text = "Best: 0"
+horizontal_alignment = 1
+
+[node name="TimeLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000002]
+layout_mode = 0
+offset_left = 17.000006
+offset_top = 474.0
+offset_right = 237.0
+offset_bottom = 512.0
+rotation = 0.2617994
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "0:00"
+
+[node name="DistLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000003]
+layout_mode = 0
+offset_left = 206.0
+offset_top = 528.0
+offset_right = 426.0
+offset_bottom = 566.0
+rotation = 0.2617994
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "0m"
+
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/HUD" unique_id=193844643]
+layout_mode = 0
+offset_left = 402.0
+offset_top = 583.99994
+offset_right = 622.0
+offset_bottom = 621.99994
+rotation = 0.28734824
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "80u/s"
+
+[node name="MochiLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000004]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 12.0
+offset_right = 340.0
+offset_bottom = 50.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "Mochi  x0"
+
+[node name="StageLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000005]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -110.0
+offset_right = 110.0
+offset_bottom = 38.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 28
+text = "Stage 1"
+horizontal_alignment = 1
+
+[node name="WhiteFlash" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1292967295]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TimeText" type="Label" parent="CanvasLayer/HUD" unique_id=249344459]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 500.0
+offset_right = 76.0
+offset_bottom = 532.0
+rotation = 0.2617994
+theme_override_font_sizes/font_size = 26
+text = "time"
+
+[node name="TimeText2" type="Label" parent="CanvasLayer/HUD" unique_id=1020022866]
+layout_mode = 0
+offset_left = 195.0
+offset_top = 557.0
+offset_right = 322.0
+offset_bottom = 589.0
+rotation = 0.2617994
+theme_override_font_sizes/font_size = 26
+text = "Distance"
+
+[node name="HealthBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1358173089]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 593.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("15_cegan")
+
+[node name="JumpBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1147337458]
+visible = false
+layout_mode = 0
+offset_left = 167.0
+offset_top = 479.0
+offset_right = 289.0
+offset_bottom = 593.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("16_82xsv")
+
+[node name="ShieldBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1986673823]
+visible = false
+layout_mode = 0
+offset_left = 197.0
+offset_top = 479.0
+offset_right = 319.0
+offset_bottom = 594.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("17_getpj")
+
+[node name="SleepyBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=560201620]
+visible = false
+layout_mode = 0
+offset_left = 227.0
+offset_top = 479.0
+offset_right = 349.0
+offset_bottom = 594.0
+scale = Vector2(0.44048935, 0.44048935)
+texture = ExtResource("18_ryguw")
+
+[node name="BlurOverlay" type="ColorRect" parent="CanvasLayer" unique_id=-1288967295]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 0, 0.12, 0.35)
+
+[node name="PauseMenu" type="Control" parent="CanvasLayer" unique_id=821865285]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Paused" type="Label" parent="CanvasLayer/PauseMenu" unique_id=1555868494]
+layout_mode = 0
+offset_left = 418.0
+offset_top = 132.0
+offset_right = 743.0
+offset_bottom = 252.0
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 77
+text = "Paused"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=849204658]
+layout_mode = 0
+offset_left = 415.0
+offset_top = 243.0
+offset_right = 747.0
+offset_bottom = 341.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
+text = "resume"
+
+[node name="OptionsButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=1085258178]
+layout_mode = 0
+offset_left = 413.0
+offset_top = 348.0
+offset_right = 745.0
+offset_bottom = 446.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
+text = "Options
+"
+
+[node name="ExitButton" type="Button" parent="CanvasLayer/PauseMenu" unique_id=2120156217]
+layout_mode = 0
+offset_left = 413.0
+offset_top = 453.0
+offset_right = 745.0
+offset_bottom = 551.0
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 35
+text = "exit"
+
+[node name="DeathScreen" type="Control" parent="CanvasLayer" unique_id=796683479]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DeathText" type="Label" parent="CanvasLayer/DeathScreen" unique_id=704341850]
+layout_mode = 0
+offset_left = 291.0
+offset_top = 166.0
+offset_right = 885.0
+offset_bottom = 221.0
+theme_override_font_sizes/font_size = 45
+text = "Krampus got you!"
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="CanvasLayer/DeathScreen" unique_id=395032846]
+layout_mode = 0
+offset_left = 413.0
+offset_top = 241.0
+offset_right = 745.0
+offset_bottom = 339.0
+theme_override_font_sizes/font_size = 36
+text = "restart"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/DeathScreen" unique_id=1674273651]
+layout_mode = 0
+offset_left = 412.0
+offset_top = 345.0
+offset_right = 744.0
+offset_bottom = 443.0
+theme_override_font_sizes/font_size = 36
+text = "quit"
+
+[node name="VictoryScreen" type="Control" parent="CanvasLayer" unique_id=111200001]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VictoryText" type="Label" parent="CanvasLayer/VictoryScreen" unique_id=111200002]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -158.0
+offset_right = 260.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 86
+text = "VICTORY!"
+horizontal_alignment = 1
+
+[node name="ScoreText" type="Label" parent="CanvasLayer/VictoryScreen" unique_id=111200003]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -218.0
+offset_top = -59.0
+offset_right = 222.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 36
+text = "Score: 0"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="CanvasLayer/VictoryScreen" unique_id=111200004]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.0
+offset_top = -12.0
+offset_right = 165.0
+offset_bottom = 78.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_kek77")
+theme_override_font_sizes/font_size = 38
+text = "Continue"
+
+[node name="QuitButton" type="Button" parent="CanvasLayer/VictoryScreen" unique_id=111200005]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.0
+offset_top = 83.0
+offset_right = 165.0
+offset_bottom = 173.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("9_4c57u")
+theme_override_font_sizes/font_size = 38
+text = "Quit"
+
+[node name="GlobeManager" type="Node3D" parent="." unique_id=715119291]
+script = ExtResource("13_ycdy4")
+
+[node name="Node3D" type="Node3D" parent="." unique_id=1460857103]
+transform = Transform3D(0.3, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 13)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D" unique_id=158164550]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, 0, 0, -38.463432)
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D" unique_id=918551528]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, -67.74885, 0, -38.463432)
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")

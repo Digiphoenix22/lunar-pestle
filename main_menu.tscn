@@ -1,0 +1,133 @@
+[gd_scene format=3 uid="uid://ch3u8o6d6hr78"]
+
+[ext_resource type="Script" uid="uid://d33c6x66sgwwv" path="res://main_menu.gd" id="1_mmgd"]
+[ext_resource type="Texture2D" uid="uid://dru62nt73kdub" path="res://images/MainMenu/Earth.png" id="2_8qtwp"]
+[ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="2_bold"]
+[ext_resource type="Texture2D" uid="uid://dqqegwkabye3a" path="res://images/MainMenu/Moon.png" id="2_glbon"]
+[ext_resource type="Texture2D" uid="uid://df1ji22355dmc" path="res://images/LunarNew.png" id="2_jix8l"]
+[ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="3_reg"]
+[ext_resource type="Texture2D" uid="uid://dt3t07fg2b30r" path="res://images/MainMenu/Asset 21.png" id="4_dy7ct"]
+[ext_resource type="Texture2D" uid="uid://du0grhmjdq6ip" path="res://images/MainMenu/Asset 22.png" id="5_0o4t1"]
+
+[node name="MainMenuRoot" type="Control" unique_id=1629364145]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mmgd")
+
+[node name="Background" type="ColorRect" parent="." unique_id=504017870]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02318679, 0.003943503, 0.13984418, 1)
+
+[node name="StarRect1" type="TextureRect" parent="." unique_id=492010259]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -724.0
+offset_top = -648.0
+offset_right = 2186.558
+offset_bottom = 619.30774
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.52, 0.52)
+texture = ExtResource("4_dy7ct")
+
+[node name="StarRect2" type="TextureRect" parent="." unique_id=1253263588]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -778.0
+offset_top = -656.0
+offset_right = 2132.558
+offset_bottom = 611.30774
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.52, 0.52)
+texture = ExtResource("5_0o4t1")
+
+[node name="EarthRect" type="TextureRect" parent="." unique_id=699571788]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -322.0
+offset_top = -298.0
+offset_right = -82.423096
+offset_bottom = -64.15405
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.52, 0.52)
+texture = ExtResource("2_8qtwp")
+
+[node name="MoonRect" type="TextureRect" parent="." unique_id=681095834]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -750.0
+offset_top = -271.0
+offset_right = 2088.4617
+offset_bottom = 892.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(0.52, 0.52)
+texture = ExtResource("2_glbon")
+
+[node name="LogoRect" type="TextureRect" parent="." unique_id=1212163539]
+layout_mode = 0
+offset_left = 296.0
+offset_top = 94.0
+offset_right = 889.2476
+offset_bottom = 319.0
+texture = ExtResource("2_jix8l")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayButton" type="Button" parent="." unique_id=527759521]
+layout_mode = 0
+offset_left = 396.0
+offset_top = 337.0
+offset_right = 796.0
+offset_bottom = 437.0
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 52
+text = "Play"
+
+[node name="OptionsButton" type="Button" parent="." unique_id=1013297348]
+layout_mode = 0
+offset_left = 396.0
+offset_top = 447.0
+offset_right = 796.0
+offset_bottom = 537.0
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 38
+text = "options
+"
+
+[node name="QuitButton" type="Button" parent="." unique_id=1695361462]
+layout_mode = 0
+offset_left = 396.0
+offset_top = 546.0
+offset_right = 796.0
+offset_bottom = 636.0
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 38
+text = "Quit"
