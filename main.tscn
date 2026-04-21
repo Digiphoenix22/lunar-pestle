@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bljgdenjn8ffn" path="res://images/buffs/joy.png" id="16_82xsv"]
 [ext_resource type="Texture2D" uid="uid://cu60bv82sa81t" path="res://images/buffs/laughter.png" id="17_getpj"]
 [ext_resource type="Texture2D" uid="uid://1qhqqjki0hhr" path="res://images/buffs/wonder.png" id="18_ryguw"]
+[ext_resource type="Material" uid="uid://cthl3fjsu1vqh" path="res://Materials/WALLS.tres" id="20_82xsv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_stars"]
 shader = ExtResource("14_stars")
@@ -577,3 +578,16 @@ text = "Quit"
 
 [node name="GlobeManager" type="Node3D" parent="." unique_id=715119291]
 script = ExtResource("13_ycdy4")
+
+[node name="Node3D" type="Node3D" parent="." unique_id=1460857103]
+transform = Transform3D(0.3, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 13)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Node3D" unique_id=158164550]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, 0, 0, -38.463432)
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Node3D" unique_id=918551528]
+transform = Transform3D(1, 0, 0, 0, -1.2256914, 0, 0, 0, 2.2694292, -67.74885, 0, -38.463432)
+size = Vector3(1, 1, 27)
+material = ExtResource("20_82xsv")
