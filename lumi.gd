@@ -63,6 +63,7 @@ var _lumi_tex_hurt   = preload("res://images/bunihurt.png")
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
+@onready var _anim: AnimationPlayer = $LUMI/AnimationPlayer
 
 const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
@@ -345,9 +346,9 @@ func _physics_process(delta: float) -> void:
 
 	if invincible_timer > 0:
 		invincible_timer -= delta
-		$MeshInstance3D.visible = int(invincible_timer * 10) % 2 == 0
+		$LUMI.visible = int(invincible_timer * 10) % 2 == 0
 	else:
-		$MeshInstance3D.visible = true
+		$LUMI.visible = true
 
 	if recover_timer > 0:
 		recover_timer -= delta
@@ -393,6 +394,7 @@ func _physics_process(delta: float) -> void:
 			_jump_count = 2
 			maya_jump = false
 			_maya_float_timer = MAYA_FLOAT_DURATION
+			_anim.play("LumiDoubleJumpBake")
 			var snd = AudioStreamPlayer.new()
 			snd.stream = load("res://sounds/sfx/sfx5.mp3")
 			snd.bus = "SFX"
@@ -405,9 +407,11 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("ui_left") and current_lane > 0:
 		current_lane -= 1
 		_play_dash()
+		_anim.play("LumiDashLBake")
 	if Input.is_action_just_pressed("ui_right") and current_lane < 2:
 		current_lane += 1
 		_play_dash()
+		_anim.play("LumiDashRBake")
 
 	position.x = lerp(position.x, LANES[current_lane], LANE_SPEED * delta)
 
@@ -415,12 +419,26 @@ func _physics_process(delta: float) -> void:
 	position.z = 0.0
 	velocity.z = 0.0
 
+	_update_animation()
+
 	if invincible_timer <= 0:
 		for i in get_slide_collision_count():
 			var col = get_slide_collision(i)
 			if col.get_collider().is_in_group("obstacle"):
 				take_hit()
 				break
+
+func _update_animation() -> void:
+	var current = _anim.current_animation
+	if current in ["LumiDashLBake", "LumiDashRBake", "LumiDoubleJumpBake"] and _anim.is_playing():
+		return
+	if not is_on_floor():
+		var target = "LumiJumpBake" if velocity.y > 0 else "LumiFallBake"
+		if current != target:
+			_anim.play(target)
+	else:
+		if current != "LumiRunBake":
+			_anim.play("LumiRunBake")
 
 func _update_hud() -> void:
 	var debuffed = recover_timer > 0 or sleepy_timer > 0

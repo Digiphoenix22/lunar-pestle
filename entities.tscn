@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bershfm210ajx"]
+
+[ext_resource type="PackedScene" uid="uid://boacomhgio5rs" path="res://Level/Models/Pestle.glb" id="1_wluys"]
+[ext_resource type="PackedScene" uid="uid://x83trdo7va2w" path="res://Level/Prefabs/enemy.tscn" id="2_b6qfa"]
+[ext_resource type="PackedScene" uid="uid://csa4252os76lo" path="res://Level/Models/BunnyMochii.glb" id="3_gew7j"]
+
+[node name="Entities" type="Node3D" unique_id=828757242]
+
+[node name="Pestle" parent="." unique_id=289625839 instance=ExtResource("1_wluys")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015470624, 0, 0.25648117)
+
+[node name="Enemies" parent="." unique_id=750503748 instance=ExtResource("2_b6qfa")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0948591, 0, 0.089175224)
+
+[node name="BunnyMochii" parent="." unique_id=357758392 instance=ExtResource("3_gew7j")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3897886, 0, 0.0034942627)
