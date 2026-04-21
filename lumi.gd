@@ -155,6 +155,7 @@ var _lumi_extra_y     := 0.0
 var _bob_amplitude    := 0.0
 var _hearts_in_air    := false
 var _dash_sound:       AudioStreamPlayer
+var _jump_sound:       AudioStreamPlayer
 var _dash_cooldown     := 0.0
 var _heart_anim        := false
 var _music:            AudioStreamPlayer
@@ -190,6 +191,9 @@ func _ready() -> void:
 	_dash_sound.stream = load("res://sounds/sfx/dash.mp3")
 	_dash_sound.bus = "SFX"
 	add_child(_dash_sound)
+	_jump_sound = AudioStreamPlayer.new()
+	_jump_sound.bus = "SFX"
+	add_child(_jump_sound)
 	_music = AudioStreamPlayer.new()
 	_music.stream    = load("res://sounds/music/Gameplay OST.wav")
 	_music.bus       = "Music"
@@ -736,6 +740,11 @@ func _physics_process(delta: float) -> void:
 		if _hearts_in_air:
 			_hearts_in_air = false
 			_float_hearts(false)
+		if _jump_count > 0:
+			const BASE := Vector3(0.2, 0.2, 0.2)
+			$LumiModel.scale = Vector3(0.26, 0.15, 0.26)
+			create_tween().tween_property($LumiModel, "scale", BASE, 0.25)\
+				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 		_jump_count = 0
 	elif not _hearts_in_air:
 		_hearts_in_air = true
@@ -749,6 +758,14 @@ func _physics_process(delta: float) -> void:
 		if is_on_floor():
 			velocity.y = JUMP_FORCE
 			_jump_count = 1
+			_jump_sound.stream = load("res://sounds/sfx/lumi%d.mp3" % (randi() % 2 + 1))
+			_jump_sound.pitch_scale = randf_range(0.92, 1.08)
+			_jump_sound.volume_db = -20.0
+			_jump_sound.play()
+			const BASE := Vector3(0.2, 0.2, 0.2)
+			$LumiModel.scale = Vector3(0.17, 0.26, 0.17)
+			create_tween().tween_property($LumiModel, "scale", BASE, 0.3)\
+				.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 		elif maya_jump and _jump_count < 2:
 			velocity.y = MAYA_JUMP_FORCE
 			_jump_count = 2
@@ -1186,6 +1203,7 @@ func take_hit() -> void:
 		return
 	hit_count += 1
 	_play_random_hit()
+	camera.shake(0.55)
 	if hit_count >= max_health:
 		die()
 	else:
