@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://bx7qm2nph4e1k"]
+
+[ext_resource type="Script" uid="uid://bt8a7bypgbhwj" path="res://how_to_play.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://djl0jvecdvl6m" path="res://fonts/ExodusDisplay-SharpenBold.otf" id="2_bold"]
+[ext_resource type="FontFile" uid="uid://c7ub575ac38xa" path="res://fonts/ExodusDisplay-Sharpen.otf" id="3_reg"]
+[ext_resource type="Texture2D" uid="uid://cp3i2xkmyydci" path="res://images/Lumi/LumiRun.png" id="4_pg7y5"]
+
+[node name="HowToPlay" type="Control" unique_id=881234561]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(576, 324)
+script = ExtResource("1_script")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=881234562]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0, 0.07, 0.82)
+
+[node name="Title" type="Label" parent="." unique_id=881234565]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 42.0
+offset_right = 650.0
+offset_bottom = 108.0
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 52
+text = "HOW TO PLAY"
+
+[node name="LinesContainer" type="VBoxContainer" parent="." unique_id=881234564]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 128.0
+offset_right = 1100.0
+offset_bottom = 560.0
+theme_override_constants/separation = 22
+
+[node name="ClickHint" type="Label" parent="." unique_id=881234590]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -58.0
+offset_right = 180.0
+offset_bottom = -28.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 22
+text = "— click to continue —"
+horizontal_alignment = 1
+
+[node name="GotItButton" type="Button" parent="." unique_id=881234583]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -72.0
+offset_right = 150.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_bold")
+theme_override_font_sizes/font_size = 38
+text = "Got It!"
+
+[node name="Lumi" type="TextureRect" parent="." unique_id=1962143463]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -138.0
+offset_top = 43.0
+offset_right = 399.0
+offset_bottom = 675.0
+grow_horizontal = 0
+scale = Vector2(0.13675353, 0.13675353)
+texture = ExtResource("4_pg7y5")
+expand_mode = 1

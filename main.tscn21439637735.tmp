@@ -29,8 +29,8 @@ shader_parameter/ground_color = Color(0.06, 0.03, 0.15, 1)
 shader_parameter/horizon_spread = 0.1470000069825
 shader_parameter/star_density = 0.5350000016625001
 shader_parameter/star_size = 0.07000000262648
-shader_parameter/twinkle_speed = 7.7350003674125
-shader_parameter/twinkle_amount = 0.33200001577
+shader_parameter/twinkle_speed = 4.5490002160775
+shader_parameter/twinkle_amount = 0.2470000117325
 shader_parameter/horizon_star_fade = 0.5
 shader_parameter/sky_rotation = 0.0
 
@@ -44,15 +44,10 @@ sky = SubResource("Sky_fo4su")
 sky_custom_fov = 59.5
 tonemap_mode = 2
 glow_enabled = true
-fog_light_color = Color(0.4292827, 0.37446478, 0.6712472, 1)
-fog_light_energy = 0.53
+fog_light_color = Color(0.6716999, 0.6373163, 0.872377, 1)
 fog_density = 0.0
-fog_aerial_perspective = 0.047
-fog_sky_affect = 0.318
-fog_height = 72.28
+fog_sky_affect = 0.3
 volumetric_fog_albedo = Color(0.87253416, 0.7442837, 0.9837994, 1)
-volumetric_fog_anisotropy = 0.51
-volumetric_fog_length = 64.1
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3sann"]
 
@@ -191,9 +186,9 @@ expand_mode = 1
 
 [node name="TopHud" type="TextureRect" parent="CanvasLayer/HUD" unique_id=335691687]
 layout_mode = 0
-offset_left = 1283.0
+offset_left = 1254.0
 offset_top = 129.0
-offset_right = 1934.0
+offset_right = 1905.0
 offset_bottom = 322.0
 rotation = 3.1415927
 texture = ExtResource("9_efxa6")
@@ -235,9 +230,9 @@ expand_mode = 1
 
 [node name="BGScore" type="Label" parent="CanvasLayer/HUD" unique_id=288719171]
 layout_mode = 0
-offset_left = 980.00006
+offset_left = 951.00006
 offset_top = -7.9999723
-offset_right = 1109.0001
+offset_right = 1080.0001
 offset_bottom = 38.000027
 rotation = 0.28959936
 theme_override_colors/font_color = Color(0, 0, 0, 0.2901961)
@@ -247,9 +242,9 @@ text = "SCORE"
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000001]
 layout_mode = 0
-offset_left = 854.0
+offset_left = 825.0
 offset_top = -58.99997
-offset_right = 1254.0
+offset_right = 1225.0
 offset_bottom = 1.000061
 rotation = 0.30719894
 theme_override_fonts/font = ExtResource("8_kek77")
@@ -259,9 +254,9 @@ horizontal_alignment = 1
 
 [node name="BestLabel" type="Label" parent="CanvasLayer/HUD" unique_id=111000006]
 layout_mode = 0
-offset_left = 844.14343
+offset_left = 815.14343
 offset_top = -7.0
-offset_right = 1244.1434
+offset_right = 1215.1434
 offset_bottom = 24.999996
 rotation = 0.30719894
 theme_override_colors/font_color = Color(1, 1, 1, 0.55)
@@ -318,14 +313,13 @@ layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -110.0
-offset_right = 110.0
+offset_left = -38.0
+offset_right = 182.0
 offset_bottom = 38.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("9_4c57u")
 theme_override_font_sizes/font_size = 28
 text = "Stage 1"
-horizontal_alignment = 1
 
 [node name="WhiteFlash" type="ColorRect" parent="CanvasLayer/HUD" unique_id=-1292967295]
 modulate = Color(1, 1, 1, 0)
@@ -377,22 +371,22 @@ offset_bottom = 593.0
 scale = Vector2(0.44048935, 0.44048935)
 texture = ExtResource("16_82xsv")
 
-[node name="ShieldBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1986673823]
+[node name="Buff3" type="TextureRect" parent="CanvasLayer/HUD" unique_id=1986673823]
 visible = false
 layout_mode = 0
-offset_left = 197.0
+offset_left = 167.0
 offset_top = 479.0
-offset_right = 319.0
+offset_right = 289.0
 offset_bottom = 594.0
 scale = Vector2(0.44048935, 0.44048935)
 texture = ExtResource("17_getpj")
 
-[node name="SleepyBuff" type="TextureRect" parent="CanvasLayer/HUD" unique_id=560201620]
+[node name="Buff4" type="TextureRect" parent="CanvasLayer/HUD" unique_id=560201620]
 visible = false
 layout_mode = 0
-offset_left = 227.0
+offset_left = 167.0
 offset_top = 479.0
-offset_right = 349.0
+offset_right = 289.0
 offset_bottom = 594.0
 scale = Vector2(0.44048935, 0.44048935)
 texture = ExtResource("18_ryguw")

@@ -7,8 +7,8 @@ extends Node3D
 const LANES   := [-8.0, 0.0, 8.0]
 const SPAWN_Z := -200.0
 const GONE_Z  := 12.0
-const TYPES   := ["sleepy", "jade", "maya"]
-const WEIGHTS := [3, 2, 2]
+const TYPES   := ["sleepy", "jade", "maya", "emerald", "shield"]
+const WEIGHTS := [3, 2, 2, 1, 1]
 
 var _orb_scene = preload("res://orb.tscn")
 var _timer     := 0.0
