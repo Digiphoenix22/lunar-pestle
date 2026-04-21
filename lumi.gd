@@ -8,8 +8,8 @@ const NORMAL_SPEED        := 80.0
 const SLOW_SPEED          := 30.0
 const SLEEPY_SPEED        := 15.0
 const INVINCIBILITY       := 1.0
-const RECOVER_TIME        := 10.0
-const SLEEPY_DURATION     := 2.0
+const RECOVER_TIME        := 5.0
+const SLEEPY_DURATION     := 10.0
 const MAYA_JUMP_FORCE     := 48.0
 const MAYA_FLOAT_DURATION := 1.0
 const MAYA_GRAVITY_MULT   := 0.25
@@ -17,8 +17,8 @@ const MAYA_GRAVITY_MULT   := 0.25
 const BOOST_DURATION := 5.0
 const BOOST_MULT     := 5.0
 
-const STAGE_SCORES := [0, 1000, 1500, 2500, 4000, 5000, 10000]
-const STAGE_SPEED  := [80.0, 90.0, 105.0, 120.0, 135.0, 155.0, 175.0]
+const STAGE_SCORES := [0, 1000, 2000, 3500, 5000, 7500, 10000]
+const STAGE_SPEED  := [80.0, 90.0, 105.0, 120.0, 135.0, 155.0, 275.0]
 
 var current_lane      := 1
 var alive             := true
@@ -27,6 +27,7 @@ var invincible_timer  := 0.0
 var recover_timer     := 0.0
 var boost_timer       := 0.0
 var sleepy_timer      := 0.0
+var sleepy_stored     := false
 var maya_jump         := false
 var _jump_count       := 0
 var _maya_float_timer := 0.0
@@ -68,6 +69,8 @@ var _lumi_state         := LumiState.RUN
 @onready var speed_label     = $"../CanvasLayer/HUD/SpeedLabel"
 @onready var jump_buff_rect   = $"../CanvasLayer/HUD/JumpBuff"
 @onready var health_buff_rect = $"../CanvasLayer/HUD/HealthBuff"
+@onready var shield_buff_rect = $"../CanvasLayer/HUD/ShieldBuff"
+@onready var sleepy_buff_rect = $"../CanvasLayer/HUD/SleepyBuff"
 @onready var white_flash     = $"../CanvasLayer/HUD/WhiteFlash"
 @onready var blur_overlay    = $"../CanvasLayer/BlurOverlay"
 @onready var camera          = $"../Camera3D"
@@ -94,13 +97,25 @@ const HIT_SOUNDS := [
 	"res://sounds/death/rblxold.mp3",
 ]
 
-const MAYA_GLOW_COLOR := Color(0.2, 0.65, 1.0, 1.0)
+const MAYA_GLOW_COLOR   := Color(0.2,  0.65, 1.0,  1.0)
+const SHIELD_COLOR      := Color(0.75, 0.42, 0.05, 1.0)
+const SHIELD_DURATION   := 30.0
 
 var _options_scene    = preload("res://options_menu.tscn")
 var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
 var _double_jumping   := false
 var _maya_glow_mat:        ShaderMaterial
+var shield_active         := false
+var shield_timer          := 0.0
+var _shield_orb:           MeshInstance3D
+var _shield_pulse_tween:   Tween
+var _shield_buff_float:    Tween
+var _shield_buff_show:     Tween
+var _shield_buff_rest_y:   float
+var _sleepy_buff_float:    Tween
+var _sleepy_buff_show:     Tween
+var _sleepy_buff_rest_y:   float
 var _jump_buff_glow_mat:    ShaderMaterial
 var _jump_buff_float_tween: Tween
 var _jump_buff_show_tween:  Tween
@@ -114,6 +129,7 @@ var _dash_cooldown     := 0.0
 var _heart_anim        := false
 var _music:            AudioStreamPlayer
 var _music_lpf:        AudioEffectLowPassFilter
+var _music_phaser:     AudioEffectPhaser
 
 static var _death_restart := false
 var _game_started         := false
@@ -162,6 +178,7 @@ func _ready() -> void:
 	_build_hearts()
 	_setup_maya_glow()
 	_setup_jump_buff_glow()
+	_create_shield_orb()
 	_start_bottom_hud_tween()
 	_build_slow_anim()
 	_setup_blur_overlay()
@@ -457,6 +474,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_tree().paused = true
 			_show_menu(pause_menu)
 			_tween_lpf(400.0, 0.45)
+	elif event.keycode == KEY_C and sleepy_stored and alive and _game_started:
+		_activate_sleepy()
 	elif event.keycode == KEY_B:
 		_toggle_boost()
 	elif event.keycode == KEY_PERIOD and alive:
@@ -492,9 +511,12 @@ func _clear_lpf() -> void:
 			AudioServer.remove_bus_effect(idx, i)
 
 func _base_speed() -> float:
-	if sleepy_timer > 0 or recover_timer > 0:
-		return SLEEPY_SPEED if sleepy_timer > 0 else SLOW_SPEED
-	return STAGE_SPEED[current_stage - 1]
+	var stage_spd: float = STAGE_SPEED[current_stage - 1] if current_stage <= STAGE_SPEED.size() else STAGE_SPEED[-1]
+	if sleepy_timer > 0:
+		return stage_spd * 0.7
+	if recover_timer > 0:
+		return SLOW_SPEED
+	return stage_spd
 
 func _check_stage() -> void:
 	var new_stage = 1
@@ -568,15 +590,15 @@ func _physics_process(delta: float) -> void:
 
 	if recover_timer > 0:
 		recover_timer -= delta
-		if recover_timer <= 0:
-			hit_count = 0
-			if boost_timer <= 0:
-				ground_scroller.target_speed = _base_speed()
+		if recover_timer <= 0 and boost_timer <= 0:
+			ground_scroller.target_speed = _base_speed()
 
 	if sleepy_timer > 0:
 		sleepy_timer -= delta
-		if sleepy_timer <= 0 and boost_timer <= 0:
-			ground_scroller.target_speed = _base_speed()
+		if sleepy_timer <= 0:
+			_remove_music_phaser()
+			if boost_timer <= 0:
+				ground_scroller.target_speed = _base_speed()
 
 	if boost_timer > 0:
 		boost_timer -= delta
@@ -585,6 +607,12 @@ func _physics_process(delta: float) -> void:
 
 	if _maya_float_timer > 0:
 		_maya_float_timer -= delta
+
+	if shield_timer > 0:
+		shield_timer -= delta
+		if shield_timer <= 0 and shield_active:
+			shield_active = false
+			_deactivate_shield()
 
 	elapsed_time += delta
 	distance     += ground_scroller.scroll_speed * delta
@@ -665,9 +693,9 @@ func _update_hud() -> void:
 		if not slow_anim.is_playing():
 			slow_anim.play("pulse")
 		if sleepy_timer > 0 and recover_timer > 0:
-			slow_label.text = "Sleepy+Slow!  %ds" % ceili(maxf(sleepy_timer, recover_timer))
+			slow_label.text = "Slowed!  %ds" % ceili(maxf(sleepy_timer, recover_timer))
 		elif sleepy_timer > 0:
-			slow_label.text = "Sleepy!  %ds" % ceili(sleepy_timer)
+			slow_label.text = "World Slowed!  %ds" % ceili(sleepy_timer)
 		else:
 			slow_label.text = "Slowed!  %ds" % ceili(recover_timer)
 	else:
@@ -738,6 +766,151 @@ void fragment() {
 	_jump_buff_glow_mat.set_shader_parameter("intensity", 1.2)
 	jump_buff_rect.material = _jump_buff_glow_mat
 	_jump_buff_rest_y = jump_buff_rect.position.y
+
+func _create_shield_orb() -> void:
+	_shield_orb = MeshInstance3D.new()
+	var sphere = SphereMesh.new()
+	sphere.radius = 1.6
+	sphere.height = 3.2
+	sphere.radial_segments = 24
+	sphere.rings = 12
+	_shield_orb.mesh = sphere
+	var mat = StandardMaterial3D.new()
+	mat.transparency              = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mat.albedo_color              = Color(0.85, 0.52, 0.08, 0.18)
+	mat.emission_enabled          = true
+	mat.emission                  = Color(0.9, 0.55, 0.05, 1.0)
+	mat.emission_energy_multiplier = 2.0
+	mat.cull_mode                 = BaseMaterial3D.CULL_DISABLED
+	mat.shading_mode              = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_shield_orb.material_override = mat
+	_shield_orb.visible           = false
+	_shield_buff_rest_y  = shield_buff_rect.position.y
+	_sleepy_buff_rest_y  = sleepy_buff_rect.position.y
+	add_child(_shield_orb)
+
+func _activate_shield() -> void:
+	_shield_orb.scale    = Vector3.ZERO
+	_shield_orb.visible  = true
+	create_tween().tween_property(_shield_orb, "scale", Vector3.ONE, 0.4)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	if _shield_pulse_tween:
+		_shield_pulse_tween.kill()
+	var mat = _shield_orb.material_override as StandardMaterial3D
+	_shield_pulse_tween = create_tween().set_loops()
+	_shield_pulse_tween.tween_method(func(v: float): mat.emission_energy_multiplier = v,
+		2.0, 5.0, 1.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_shield_pulse_tween.tween_method(func(v: float): mat.emission_energy_multiplier = v,
+		5.0, 2.0, 1.2).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_show_shield_buff_icon()
+
+func _deactivate_shield() -> void:
+	if _shield_pulse_tween:
+		_shield_pulse_tween.kill()
+	var shrink = create_tween().set_parallel(true)
+	shrink.tween_property(_shield_orb, "scale", Vector3.ZERO, 0.35)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	shrink.tween_method(func(v: float):
+		(_shield_orb.material_override as StandardMaterial3D).albedo_color.a = v,
+		0.18, 0.0, 0.3).set_ease(Tween.EASE_IN)
+	await shrink.finished
+	_shield_orb.visible = false
+	(_shield_orb.material_override as StandardMaterial3D).albedo_color.a = 0.18
+	_consume_shield_buff_icon()
+
+func _show_shield_buff_icon() -> void:
+	if _shield_buff_show:
+		_shield_buff_show.kill()
+	if _shield_buff_float:
+		_shield_buff_float.kill()
+	shield_buff_rect.position.y = _shield_buff_rest_y
+	shield_buff_rect.modulate.a = 0.0
+	shield_buff_rect.scale      = Vector2(0.12, 0.12)
+	shield_buff_rect.visible    = true
+	_shield_buff_show = create_tween().set_parallel(true)
+	_shield_buff_show.tween_property(shield_buff_rect, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	_shield_buff_show.tween_property(shield_buff_rect, "scale", Vector2(0.184, 0.184), 0.35)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await _shield_buff_show.finished
+	_shield_buff_float = create_tween().set_loops()
+	_shield_buff_float.tween_property(shield_buff_rect, "position:y", _shield_buff_rest_y - 5.0, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_shield_buff_float.tween_property(shield_buff_rect, "position:y", _shield_buff_rest_y, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+
+func _consume_shield_buff_icon() -> void:
+	if _shield_buff_show:
+		_shield_buff_show.kill()
+	if _shield_buff_float:
+		_shield_buff_float.kill()
+	var from_y: float = shield_buff_rect.position.y
+	var d = create_tween().set_parallel(true)
+	d.tween_property(shield_buff_rect, "position:y", from_y - 48.0, 0.5)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	d.tween_property(shield_buff_rect, "modulate", Color(1.0, 1.0, 1.0, 0.0), 0.4).set_ease(Tween.EASE_IN)
+	await d.finished
+	shield_buff_rect.visible    = false
+	shield_buff_rect.position.y = _shield_buff_rest_y
+
+func _show_sleepy_buff_icon() -> void:
+	if _sleepy_buff_show:
+		_sleepy_buff_show.kill()
+	if _sleepy_buff_float:
+		_sleepy_buff_float.kill()
+	sleepy_buff_rect.position.y = _sleepy_buff_rest_y
+	sleepy_buff_rect.modulate.a = 0.0
+	sleepy_buff_rect.scale      = Vector2(0.12, 0.12)
+	sleepy_buff_rect.visible    = true
+	_sleepy_buff_show = create_tween().set_parallel(true)
+	_sleepy_buff_show.tween_property(sleepy_buff_rect, "modulate:a", 1.0, 0.3).set_ease(Tween.EASE_OUT)
+	_sleepy_buff_show.tween_property(sleepy_buff_rect, "scale", Vector2(0.184, 0.184), 0.35)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	await _sleepy_buff_show.finished
+	_sleepy_buff_float = create_tween().set_loops()
+	_sleepy_buff_float.tween_property(sleepy_buff_rect, "position:y", _sleepy_buff_rest_y - 5.0, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	_sleepy_buff_float.tween_property(sleepy_buff_rect, "position:y", _sleepy_buff_rest_y, 0.95)\
+		.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+
+func _consume_sleepy_buff_icon() -> void:
+	if _sleepy_buff_show:
+		_sleepy_buff_show.kill()
+	if _sleepy_buff_float:
+		_sleepy_buff_float.kill()
+	var from_y: float = sleepy_buff_rect.position.y
+	var d = create_tween().set_parallel(true)
+	d.tween_property(sleepy_buff_rect, "position:y", from_y - 48.0, 0.5)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	d.tween_property(sleepy_buff_rect, "modulate", Color(1.0, 1.0, 1.0, 0.0), 0.4).set_ease(Tween.EASE_IN)
+	await d.finished
+	sleepy_buff_rect.visible    = false
+	sleepy_buff_rect.position.y = _sleepy_buff_rest_y
+
+func _activate_sleepy() -> void:
+	sleepy_stored = false
+	sleepy_timer  = SLEEPY_DURATION
+	var stage_spd: float = STAGE_SPEED[current_stage - 1] if current_stage <= STAGE_SPEED.size() else STAGE_SPEED[-1]
+	ground_scroller.target_speed = stage_spd * 0.7
+	_do_flash(Color(0.5, 0.2, 1.0, 0.5), 0.35)
+	_add_music_phaser()
+	_consume_sleepy_buff_icon()
+
+func _add_music_phaser() -> void:
+	_remove_music_phaser()
+	_music_phaser = AudioEffectPhaser.new()
+	_music_phaser.rate_hz  = 0.1
+	_music_phaser.depth    = 1.0
+	_music_phaser.feedback = 0.7
+	AudioServer.add_bus_effect(AudioServer.get_bus_index("Music"), _music_phaser)
+
+func _remove_music_phaser() -> void:
+	if _music_phaser == null:
+		return
+	var idx := AudioServer.get_bus_index("Music")
+	for i in range(AudioServer.get_bus_effect_count(idx) - 1, -1, -1):
+		if AudioServer.get_bus_effect(idx, i) is AudioEffectPhaser:
+			AudioServer.remove_bus_effect(idx, i)
+	_music_phaser = null
 
 func _show_health_buff_icon() -> void:
 	health_buff_rect.modulate.a = 0.0
@@ -854,10 +1027,9 @@ func collect_orb(orb_type: String) -> void:
 	_powerup_sound.play()
 	match orb_type:
 		"sleepy":
-			sleepy_timer = SLEEPY_DURATION
+			sleepy_stored = true
 			_do_flash(Color(0.5, 0.2, 1.0, 0.4), 0.25)
-			if boost_timer <= 0:
-				ground_scroller.target_speed = SLEEPY_SPEED
+			_show_sleepy_buff_icon()
 		"jade":
 			var was_hit     = hit_count > 0
 			var old_hits    := hit_count
@@ -875,6 +1047,15 @@ func collect_orb(orb_type: String) -> void:
 			maya_jump = true
 			_do_flash(Color(0.2, 0.6, 1.0, 0.4), 0.25)
 			_show_jump_buff_icon()
+		"emerald":
+			add_heart()
+			_do_flash(Color(0.0, 1.0, 0.2, 0.5), 0.35)
+			_show_health_buff_icon()
+		"shield":
+			shield_active = true
+			shield_timer  = SHIELD_DURATION
+			_do_flash(SHIELD_COLOR, 0.3)
+			_activate_shield()
 		"mochi":
 			mochi_count += 1
 			_do_flash(Color(1.0, 0.75, 0.1, 0.45), 0.3)
@@ -883,6 +1064,14 @@ func collect_orb(orb_type: String) -> void:
 
 func take_hit() -> void:
 	if god_mode or invincible_timer > 0:
+		return
+	if shield_active:
+		shield_active = false
+		shield_timer  = 0.0
+		_deactivate_shield()
+		_do_flash(SHIELD_COLOR, 0.3)
+		_play_random_hit()
+		invincible_timer = INVINCIBILITY
 		return
 	hit_count += 1
 	_play_random_hit()
@@ -1002,6 +1191,7 @@ func _trigger_win() -> void:
 
 func die() -> void:
 	Engine.time_scale = 1.0
+	_remove_music_phaser()
 	alive = false
 	_lumi_state = LumiState.RUN  # force re-evaluation next frame
 	_update_lumi_sprite()
