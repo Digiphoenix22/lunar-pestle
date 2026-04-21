@@ -15,19 +15,15 @@ run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
-[display]
-
-window/size/viewport_width=1152
-window/size/viewport_height=648
-window/size/resizable=true
-window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
-
 [autoload]
 
 Transition="*res://transition.gd"
 SaveData="*res://save_data.gd"
 SpawnRegistry="*res://spawn_registry.gd"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [global_group]
 
