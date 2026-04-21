@@ -79,8 +79,9 @@ var _lumi_state         := LumiState.RUN
 @onready var _canvas_layer: CanvasLayer = $"../CanvasLayer"
 
 var _mochi_icon_tex: Texture2D = preload("res://images/MochiIcon.png")
-var _mochi_rect_rest_x: float
+var _mochi_rect_rest_x:   float
 var _mochi_rect_shown  := false
+var _mochi_pulse_tween:   Tween
 
 const LUMI_RECT_REST_Y  := 515.0
 const LUMI_RECT_JUMP_Y  := 462.0
@@ -1276,8 +1277,8 @@ func _fly_mochi_to_counter(world_pos: Vector3) -> void:
 		start = camera.unproject_position(global_position + Vector3(0, 1.5, 0))
 	var icon := TextureRect.new()
 	icon.texture = _mochi_icon_tex
-	icon.size = Vector2(36, 36)
-	icon.position = start - Vector2(18, 18)
+	icon.size = Vector2(32, 23)
+	icon.position = start - Vector2(16, 11.5)
 	icon.z_index = 10
 	_canvas_layer.add_child(icon)
 	var target: Vector2 = mochi_label.global_position + Vector2(mochi_label.size.x * 0.5, mochi_label.size.y * 0.5)
@@ -1287,6 +1288,25 @@ func _fly_mochi_to_counter(world_pos: Vector3) -> void:
 	t.parallel().tween_property(icon, "modulate:a", 0.0, 0.15)\
 		.set_delay(0.32)
 	t.tween_callback(icon.queue_free)
+	t.tween_callback(_update_mochi_label_glow)
+
+func _update_mochi_label_glow() -> void:
+	if _mochi_pulse_tween:
+		_mochi_pulse_tween.kill()
+	if mochi_count >= 10:
+		mochi_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.1, 1.0))
+	elif mochi_count == 9:
+		_mochi_pulse_tween = create_tween().set_loops()
+		_mochi_pulse_tween.tween_property(mochi_label, "modulate", Color(1.0, 0.85, 0.1, 1.0), 0.7)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+		_mochi_pulse_tween.tween_property(mochi_label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.7)\
+			.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	else:
+		var flash := create_tween()
+		flash.tween_property(mochi_label, "modulate", Color(1.0, 0.85, 0.1, 1.0), 0.1)\
+			.set_ease(Tween.EASE_OUT)
+		flash.tween_property(mochi_label, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.35)\
+			.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_SINE)
 
 func _force_mochi(count: int) -> void:
 	var gap := 0.06
