@@ -29,26 +29,26 @@ func _ready() -> void:
 	mat.emission_energy_multiplier = 1.0
 	var emit_mat: ShaderMaterial = (load("res://Materials/emmision.tres") as ShaderMaterial).duplicate()
 	emit_mat.set_shader_parameter("emission_color", COLORS[orb_type])
-	mat.next_pass = emit_mat
+	emit_mat.next_pass = mat
 
 	var path: String = MODEL_PATHS.get(orb_type, "")
 	if path != "" and ResourceLoader.exists(path):
 		$MeshInstance3D.visible = false
 		var model: Node3D = (load(path) as PackedScene).instantiate()
 		add_child(model)
-		_apply_material(model, mat)
+		_apply_material(model, emit_mat)
 	else:
-		$MeshInstance3D.material_override = mat
+		$MeshInstance3D.material_override = emit_mat
 
 	body_entered.connect(_on_body_entered)
 	_start_bob()
 	_start_emission_pulse(mat)
 
-func _apply_material(node: Node, mat: Material) -> void:
+func _apply_material(node: Node, emit_mat: Material) -> void:
 	if node is MeshInstance3D:
-		(node as MeshInstance3D).material_override = mat
+		(node as MeshInstance3D).material_override = emit_mat
 	for child in node.get_children():
-		_apply_material(child, mat)
+		_apply_material(child, emit_mat)
 
 func _start_emission_pulse(mat: StandardMaterial3D) -> void:
 	var t = create_tween().set_loops()
