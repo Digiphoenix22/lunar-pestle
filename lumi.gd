@@ -121,6 +121,7 @@ var _options_instance: Control = null
 var _powerup_sound:    AudioStreamPlayer
 var _double_jumping      := false
 var _dj_anim_triggered   := false
+var _air_dash_held       := false
 var _last_dash_dir    := 0  # -1 left, 1 right, 0 none
 var _maya_glow_mat:        ShaderMaterial
 var shield_active         := false
@@ -677,6 +678,7 @@ func _physics_process(delta: float) -> void:
 	_update_hud()
 
 	if is_on_floor():
+		_air_dash_held = false
 		if _double_jumping:
 			_double_jumping = false
 			_dj_anim_triggered = false
@@ -1202,8 +1204,10 @@ func _update_anim() -> void:
 	if not alive:
 		return
 	var next: String
-	if _dash_cooldown > 0.05:
+	if _dash_cooldown > 0.05 and is_on_floor():
 		next = "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
+	elif _air_dash_held or (_dash_cooldown > 0.05 and not is_on_floor()):
+		return
 	elif not is_on_floor():
 		if _double_jumping and velocity.y > 0:
 			if not _dj_anim_triggered:
@@ -1228,6 +1232,15 @@ func _play_dash() -> void:
 	_dash_sound.volume_db   = randf_range(-4.0, 0.0)
 	_dash_sound.play()
 	_dash_cooldown = 0.12
+	_air_dash_held = false
+	if not is_on_floor():
+		var an := "LUMI_Animsss/LumiDashLBake" if _last_dash_dir < 0 else "LUMI_Animsss/LumiDashRBake"
+		_anim.play(an)
+		_anim.animation_finished.connect(func(_n: String) -> void:
+			if not is_on_floor():
+				_air_dash_held = true
+				_anim.pause()
+		, CONNECT_ONE_SHOT)
 	const BASE := Vector3(0.2, 0.2, 0.2)
 	var squeeze_x := 0.12 if _last_dash_dir < 0 else 0.28
 	$LumiModel.scale = Vector3(squeeze_x, 0.27, 0.2)
