@@ -1,0 +1,30 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bf7r2d0orbwgq"]
+
+[ext_resource type="Shader" uid="uid://bfrdj44oki7lk" path="res://Shaders/ToonBase.gdshader" id="1_ec22q"]
+
+[sub_resource type="Gradient" id="Gradient_i3xm6"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.12244898, 0.49234694, 0.5739796, 0.625, 0.88265306)
+colors = PackedColorArray(0, 0, 0, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.29219002, 0.29219005, 0.29219002, 1, 0.60122263, 0.60122305, 0.6012228, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_v6oky"]
+gradient = SubResource("Gradient_i3xm6")
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ec22q")
+shader_parameter/globe_multiplier = 1.0
+shader_parameter/albedo_color = Color(0.3751473, 0.10926282, 0.60566795, 1)
+shader_parameter/shadow_color = Color(0.021268593, 0.8793596, 0.8653998, 1)
+shader_parameter/use_ramp = true
+shader_parameter/ramp_texture = SubResource("GradientTexture1D_v6oky")
+shader_parameter/shadow_bands = 6
+shader_parameter/shadow_fill_strength = 0.5550000263625
+shader_parameter/rim_color = Color(1, 1, 1, 1)
+shader_parameter/rim_size = 0.046000002185
+shader_parameter/rim_strength = 0.0
+shader_parameter/specular_color = Color(1, 1, 1, 1)
+shader_parameter/glossiness = 1.0
+shader_parameter/specular_strength = 0.0
+shader_parameter/ambient_color = Color(0.1, 0.1, 0.15, 1)
+shader_parameter/ambient_strength = 0.3

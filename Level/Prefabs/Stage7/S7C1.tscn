@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dqpjv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://c2hls8mvie8i5" path="res://Level/Models/Chunk1.glb" id="1_xibk1"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_ujxjh"]
+[ext_resource type="Material" uid="uid://bf7r2d0orbwgq" path="res://Materials/FUCKGROUND.tres" id="2_qhugm"]
 [ext_resource type="Material" uid="uid://c5hwbssv2rrt5" path="res://Materials/Crater.tres" id="3_p176i"]
 [ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="4_ujxjh"]
 
@@ -12,7 +12,7 @@ radius = 0.6826172
 [node name="Chunk1" unique_id=2049937168 instance=ExtResource("1_xibk1")]
 
 [node name="Base2_002" parent="." index="0" unique_id=1622422198]
-material_override = ExtResource("2_ujxjh")
+material_override = ExtResource("2_qhugm")
 
 [node name="Circle_001" parent="." index="1" unique_id=963306361]
 transform = Transform3D(-7.8861327, 0, -0.51826686, 0, 7.9031444, 0, 0.51826686, 0, -7.8861327, -3.7969408, 0.085745335, 2.7571328)
@@ -30,3 +30,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.969128)
 
 [node name="Start" type="Marker3D" parent="." index="3" unique_id=-1489934495]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 19.917568)
+
+[node name="FloatyBox" type="CSGBox3D" parent="." index="4" unique_id=1151650563]
+transform = Transform3D(1.0493273, -0.5259449, 0, 0.4188066, 1.1340548, -0.31925845, 0.16856296, 0.45643893, 0.79322004, -43, 17.5, 1.6271973)
+size = Vector3(19, 10, 23.745605)
+material = ExtResource("2_qhugm")
+
+[node name="FloatyBox2" type="CSGBox3D" parent="." index="5" unique_id=187965394]
+transform = Transform3D(-0.29126573, 0.63610643, 0.7187142, 0.96423364, 0.7107353, -0.04074207, -0.53881156, 0.92804027, -0.46142602, 29.27153, 17.5, 1.6271973)
+size = Vector3(19, 10, 23.745605)
+material = ExtResource("2_qhugm")

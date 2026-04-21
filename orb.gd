@@ -1,6 +1,6 @@
 extends Area3D
 
-@export_enum("sleepy", "jade", "maya", "emerald", "shield") var orb_type: String = "jade"
+@export_enum("sleepy", "jade", "maya", "emerald", "shield", "mochi") var orb_type: String = "jade"
 
 const COLORS := {
 	"sleepy":   Color(0.5,  0.2,  0.95, 1.0),
@@ -12,29 +12,40 @@ const COLORS := {
 }
 
 const MODEL_PATHS := {
-	"sleepy": "",
-	"jade":   "",
-	"maya":   "",
-	"mochi":  "",
+	"mochi":   "res://Pestle.glb",
+	"sleepy":  "res://BunnyMochii.glb",
+	"jade":    "res://BunnyMochii.glb",
+	"maya":    "res://BunnyMochii.glb",
+	"emerald": "res://BunnyMochii.glb",
+	"shield":  "res://BunnyMochii.glb",
 }
 
 func _ready() -> void:
 	scale = Vector3(1.5, 1.5, 1.5)
-	var path = MODEL_PATHS.get(orb_type, "")
-	if path != "" and ResourceLoader.exists(path):
-		var scene = load(path) as PackedScene
-		if scene:
-			var model = scene.instantiate()
-			$MeshInstance3D.replace_by(model)
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color               = COLORS[orb_type]
 	mat.emission_enabled           = true
 	mat.emission                   = COLORS[orb_type]
 	mat.emission_energy_multiplier = 1.0
-	$MeshInstance3D.material_override = mat
+
+	var path: String = MODEL_PATHS.get(orb_type, "")
+	if path != "" and ResourceLoader.exists(path):
+		$MeshInstance3D.visible = false
+		var model: Node3D = (load(path) as PackedScene).instantiate()
+		add_child(model)
+		_apply_material(model, mat)
+	else:
+		$MeshInstance3D.material_override = mat
+
 	body_entered.connect(_on_body_entered)
 	_start_bob()
 	_start_emission_pulse(mat)
+
+func _apply_material(node: Node, mat: Material) -> void:
+	if node is MeshInstance3D:
+		(node as MeshInstance3D).material_override = mat
+	for child in node.get_children():
+		_apply_material(child, mat)
 
 func _start_emission_pulse(mat: StandardMaterial3D) -> void:
 	var t = create_tween().set_loops()
