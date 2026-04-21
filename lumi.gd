@@ -148,6 +148,9 @@ var _jump_buff_rest_y:      float
 var _lumi_breath_tween:    Tween
 var _hud_cycle_tween:      Tween
 var _stage5_sky_rotating:  bool = false
+var _stage7_rainbow:       bool = false
+var _rainbow_hue:          float = 0.0
+var _dev_mode:             bool = false
 var _lumi_extra_y     := 0.0
 var _bob_amplitude    := 0.0
 var _hearts_in_air    := false
@@ -513,6 +516,8 @@ func _transition_to_stage5_colors() -> void:
 	_stage5_sky_rotating = true
 
 func _reset_sky_colors() -> void:
+	_stage7_rainbow = false
+	_rainbow_hue    = 0.0
 	var sky_mat = _get_sky_mat()
 	if not sky_mat:
 		return
@@ -542,22 +547,26 @@ func _unhandled_input(event: InputEvent) -> void:
 			_tween_lpf(400.0, 0.45)
 	elif event.keycode == KEY_C and sleepy_stored and alive and _game_started:
 		_activate_sleepy()
-	elif event.keycode == KEY_B:
-		_toggle_boost()
-	elif event.keycode == KEY_PERIOD and alive:
-		die()
-	elif event.keycode == KEY_BRACKETRIGHT:
-		if current_stage < STAGE_SCORES.size():
-			current_stage += 1
-			_on_stage_up()
-	elif event.keycode == KEY_G:
-		var types := ["sleepy", "jade", "maya"]
-		collect_orb(types[randi() % types.size()])
-	elif event.keycode == KEY_H:
-		collect_orb("mochi")
-	elif event.keycode == KEY_T:
-		god_mode = !god_mode
-		_do_flash(Color(0.3, 1.0, 1.0, 0.5) if god_mode else Color(0.5, 0.5, 0.5, 0.4), 0.3)
+	elif event.keycode == KEY_SLASH and event.shift_pressed:
+		_dev_mode = !_dev_mode
+		_do_flash(Color(1.0, 1.0, 0.0, 0.4) if _dev_mode else Color(0.4, 0.4, 0.4, 0.4), 0.25)
+	elif _dev_mode:
+		if event.keycode == KEY_B:
+			_toggle_boost()
+		elif event.keycode == KEY_PERIOD and alive:
+			die()
+		elif event.keycode == KEY_BRACKETRIGHT:
+			if current_stage < STAGE_SCORES.size():
+				current_stage += 1
+				_on_stage_up()
+		elif event.keycode == KEY_G:
+			var types := ["sleepy", "jade", "maya"]
+			collect_orb(types[randi() % types.size()])
+		elif event.keycode == KEY_H:
+			collect_orb("mochi")
+		elif event.keycode == KEY_T:
+			god_mode = !god_mode
+			_do_flash(Color(0.3, 1.0, 1.0, 0.5) if god_mode else Color(0.5, 0.5, 0.5, 0.4), 0.3)
 
 func _resume() -> void:
 	get_tree().paused = false
@@ -606,6 +615,11 @@ func _on_stage_up() -> void:
 	_do_flash(Color(0.863, 0.714, 0.937, 0.45), 0.4)
 	if current_stage == 5:
 		_transition_to_stage5_colors()
+	if current_stage == 7:
+		if _hud_cycle_tween:
+			_hud_cycle_tween.kill()
+		_stage5_sky_rotating = false
+		_stage7_rainbow = true
 	const STAGE_MOCHI_BONUS := [0, 1, 1, 1, 1, 3, 5, 20]
 	var bonus: int = STAGE_MOCHI_BONUS[clampi(current_stage, 0, STAGE_MOCHI_BONUS.size() - 1)]
 	if bonus > 0:
@@ -647,6 +661,18 @@ func _physics_process(delta: float) -> void:
 		if sky_mat:
 			var rot: float = sky_mat.get_shader_parameter("sky_rotation")
 			sky_mat.set_shader_parameter("sky_rotation", rot + 0.04 * delta)
+	if _stage7_rainbow:
+		_rainbow_hue = fmod(_rainbow_hue + 0.018 * delta, 1.0)
+		var h := _rainbow_hue
+		var hud_col := Color.from_hsv(h, 0.65, 1.0)
+		top_hud.modulate    = hud_col
+		bottom_hud.modulate = hud_col
+		var sky_mat = _get_sky_mat()
+		if sky_mat:
+			sky_mat.set_shader_parameter("top_color",     Color.from_hsv(fmod(h + 0.0,  1.0), 0.9, 0.08))
+			sky_mat.set_shader_parameter("mid_color",     Color.from_hsv(fmod(h + 0.15, 1.0), 0.9, 0.22))
+			sky_mat.set_shader_parameter("horizon_color", Color.from_hsv(fmod(h + 0.3,  1.0), 0.9, 0.45))
+			sky_mat.set_shader_parameter("ground_color",  Color.from_hsv(fmod(h + 0.5,  1.0), 0.9, 0.12))
 	if not alive or get_tree().paused:
 		return
 	if not _game_started:

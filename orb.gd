@@ -27,6 +27,9 @@ func _ready() -> void:
 	mat.emission_enabled           = true
 	mat.emission                   = COLORS[orb_type]
 	mat.emission_energy_multiplier = 1.0
+	var emit_mat: ShaderMaterial = (load("res://Materials/emmision.tres") as ShaderMaterial).duplicate()
+	emit_mat.set_shader_parameter("emission_color", COLORS[orb_type])
+	mat.next_pass = emit_mat
 
 	var path: String = MODEL_PATHS.get(orb_type, "")
 	if path != "" and ResourceLoader.exists(path):
