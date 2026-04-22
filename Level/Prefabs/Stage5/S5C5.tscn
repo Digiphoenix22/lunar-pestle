@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dopnv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://b1g5okqh421u2" path="res://Level/Models/Chunk6.glb" id="1_m7ead"]
-[ext_resource type="Material" uid="uid://rug5huup0ca6" path="res://Materials/EVILCrater.tres" id="2_etixn"]
+[ext_resource type="Material" uid="uid://dvwbhfoqh7f2h" path="res://Materials/EVILBigCrater.tres" id="2_etixn"]
 [ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="3_xi0fh"]
 [ext_resource type="Material" uid="uid://dbljl65b8e644" path="res://Materials/EVILground.tres" id="4_ev4na"]
 
@@ -10,7 +10,7 @@ size = Vector3(5.7422333, 1.2671432, 22.44006)
 
 [node name="Chunk7" unique_id=1246025710 instance=ExtResource("1_m7ead")]
 
-[node name="Large Crater_004" parent="." index="0" unique_id=715159942]
+[node name="Large Crater_004" parent="." index="0" unique_id=1802069375]
 transform = Transform3D(0.89126784, 0, 0.45347732, 0, 3.0060859, 0, -0.45347732, 0, 0.89126784, -0.5208127, -8.356532, 0)
 surface_material_override/0 = ExtResource("2_etixn")
 surface_material_override/1 = ExtResource("3_xi0fh")
@@ -21,7 +21,7 @@ surface_material_override/1 = ExtResource("3_xi0fh")
 transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, -0.03429493, 3.2137413, 0.6064371)
 shape = SubResource("BoxShape3D_0o8wd")
 
-[node name="Base2_010" parent="." index="1" unique_id=1360306321]
+[node name="Base2_010" parent="." index="1" unique_id=392884589]
 material_override = ExtResource("4_ev4na")
 
 [node name="End" type="Marker3D" parent="." index="2" unique_id=1205032803]

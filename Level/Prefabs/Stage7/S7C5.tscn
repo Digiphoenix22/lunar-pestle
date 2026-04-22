@@ -1,27 +1,29 @@
 [gd_scene format=3 uid="uid://dqpnv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://b1g5okqh421u2" path="res://Level/Models/Chunk6.glb" id="1_m7ead"]
-[ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="2_0o8wd"]
+[ext_resource type="Material" uid="uid://d05sjyfauefuc" path="res://Materials/TestMat2.tres" id="2_rx6mo"]
 [ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="3_xi0fh"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="4_5vvrp"]
+[ext_resource type="Material" uid="uid://bu0sf8l2q1sqj" path="res://Materials/SUPEREVILground.tres" id="4_rx6mo"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0o8wd"]
-size = Vector3(5.7422333, 1.2671432, 22.44006)
+size = Vector3(10.302757, 1.2671432, 22.44006)
 
 [node name="Chunk6" unique_id=1246025710 instance=ExtResource("1_m7ead")]
 
-[node name="Large Crater_004" parent="." index="0" unique_id=715159942]
-surface_material_override/0 = ExtResource("2_0o8wd")
+[node name="Large Crater_004" parent="." index="0" unique_id=1802069375]
+transform = Transform3D(-1.1920919e-07, 0, 9.046361, 0, 19.056625, 0, -0.99999905, 0, -1.0784104e-06, -0.5208127, -47.330154, -16.779602)
+surface_material_override/0 = ExtResource("2_rx6mo")
 surface_material_override/1 = ExtResource("3_xi0fh")
+metadata/_edit_group_ = true
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Large Crater_004" index="0" unique_id=1826270210 groups=["obstacle"]]
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Large Crater_004/StaticBody3D" index="0" unique_id=664059722]
-transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, -0.03429493, 3.2137413, 0.6064371)
+transform = Transform3D(1.0000001, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, -2.3145561, 3.2137413, 0.606437)
 shape = SubResource("BoxShape3D_0o8wd")
 
-[node name="Base2_010" parent="." index="1" unique_id=1360306321]
-material_override = ExtResource("4_5vvrp")
+[node name="Base2_010" parent="." index="1" unique_id=392884589]
+material_override = ExtResource("4_rx6mo")
 
 [node name="End" type="Marker3D" parent="." index="2" unique_id=-1089934493]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -19.971386)

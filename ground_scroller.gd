@@ -4,7 +4,7 @@ const CHUNK_LENGTH := 40.0
 const CHUNK_COUNT  := 10
 const STAGE_OBSTACLE_CHANCE := [0.4, 0.55, 0.65, 0.75, 0.85, 0.90, 0.95]
 const CHUNK_WEIGHTS := [
-	[90, 10,  0,  0,  0,  0,  0],  # player stage 1
+	[85, 10,  0,  0,  0,  0,  5],  # player stage 1
 	[15, 70, 15,  0,  0,  0,  0],  # player stage 2
 	[ 0, 20, 60, 20,  0,  0,  0],  # player stage 3
 	[ 0,  0, 20, 60, 20,  0,  0],  # player stage 4
@@ -13,8 +13,8 @@ const CHUNK_WEIGHTS := [
 	[ 0,  0,  0,  0,  0, 30, 70],  # player stage 7
 ]
 # Min/max plain breathing-room chunks forced between obstacles per player stage
-const MIN_PLAINS := [1, 1, 1, 0, 0, 0, 0]
-const MAX_PLAINS := [4, 3, 2, 1, 1, 1, 0]
+const MIN_PLAINS := [1, 1, 1, 0, 0, 1, 2]
+const MAX_PLAINS := [4, 3, 2, 1, 1, 5, 8]
 
 var obstacle_chance  := 0.4
 var scroll_speed     := 0.0

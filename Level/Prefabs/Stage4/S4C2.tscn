@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dnpkv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://c621a30bu6cln" path="res://Level/Models/Chunk2.glb" id="1_ggw2f"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_oi3tp"]
+[ext_resource type="Material" uid="uid://u63jo7l4rxqn" path="res://Materials/Stage4Ground.tres" id="2_y855u"]
 [ext_resource type="Material" uid="uid://c5hwbssv2rrt5" path="res://Materials/Crater.tres" id="3_g5l3i"]
 [ext_resource type="Material" uid="uid://buocudrhkd4px" path="res://Materials/CraterHole.tres" id="4_g5l3i"]
 
@@ -11,10 +11,10 @@ radius = 0.6826172
 
 [node name="Chunk2" unique_id=868272714 instance=ExtResource("1_ggw2f")]
 
-[node name="Base2_004" parent="." index="0" unique_id=777302883]
-material_override = ExtResource("2_oi3tp")
+[node name="Base2_004" parent="." index="0" unique_id=1122842218]
+material_override = ExtResource("2_y855u")
 
-[node name="Circle_002" parent="." index="1" unique_id=675979914]
+[node name="Circle_002" parent="." index="1" unique_id=771046271]
 surface_material_override/0 = ExtResource("3_g5l3i")
 surface_material_override/1 = ExtResource("4_g5l3i")
 

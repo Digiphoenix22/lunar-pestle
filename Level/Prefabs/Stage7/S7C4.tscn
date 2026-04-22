@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dqpmv1k80gq77"]
 
 [ext_resource type="PackedScene" uid="uid://dgheh5258bt5e" path="res://Level/Models/Chunk4.glb" id="1_qf0g4"]
-[ext_resource type="Material" uid="uid://dyec3m4ackege" path="res://Materials/Ground.tres" id="2_nyff4"]
+[ext_resource type="Material" uid="uid://bu0sf8l2q1sqj" path="res://Materials/SUPEREVILground.tres" id="2_eqxxr"]
 [ext_resource type="Material" uid="uid://nxoxe82cs34e" path="res://Materials/BigCrater.tres" id="3_nyff4"]
 [ext_resource type="Material" uid="uid://cnbn3v5kgh3ip" path="res://Materials/BigCraterHole.tres" id="4_emi2a"]
 
@@ -10,10 +10,10 @@ size = Vector3(14.807198, 0.63079834, 35.974777)
 
 [node name="Chunk4" unique_id=1618891521 instance=ExtResource("1_qf0g4")]
 
-[node name="Base2_008" parent="." index="0" unique_id=433072300]
-material_override = ExtResource("2_nyff4")
+[node name="Base2_008" parent="." index="0" unique_id=1253587031]
+material_override = ExtResource("2_eqxxr")
 
-[node name="Large Crater_005" parent="." index="1" unique_id=201284596]
+[node name="Large Crater_005" parent="." index="1" unique_id=1538470013]
 surface_material_override/0 = ExtResource("3_nyff4")
 surface_material_override/1 = ExtResource("4_emi2a")
 

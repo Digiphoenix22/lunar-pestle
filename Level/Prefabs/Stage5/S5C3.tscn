@@ -15,10 +15,10 @@ size = Vector3(1, 0.63079834, 0.6229248)
 
 [node name="Chunk3" unique_id=1549515789 instance=ExtResource("1_3ec7x")]
 
-[node name="Base2_005" parent="." index="0" unique_id=520404081]
+[node name="Base2_005" parent="." index="0" unique_id=81764322]
 material_override = ExtResource("2_n1qcc")
 
-[node name="Middle thing_001" parent="." index="1" unique_id=1684990038]
+[node name="Middle thing_001" parent="." index="1" unique_id=909505481]
 transform = Transform3D(8.004607, 7.1730494, 0, 0, 0, -10.74832, -7.1730494, 8.004607, 0, -153.78796, 4.182877, 12.66832)
 material_override = ExtResource("3_8v2yp")
 
@@ -45,7 +45,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.188969)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 20)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." index="4" unique_id=2089953456]
-transform = Transform3D(0.8983038, 0, 0.43937483, 0, 1, 0, -0.43937483, 0, 0.8983038, -10.696777, 7.5, -1)
+transform = Transform3D(0.8983038, 0, 0.43937483, 0, 1, 0, -0.43937483, 0, 0.8983038, -10.696777, 4.5, -1)
 size = Vector3(19.606445, 10, 19)
 material = ExtResource("3_8v2yp")
 
