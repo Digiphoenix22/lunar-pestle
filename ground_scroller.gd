@@ -24,7 +24,7 @@ const SPEED_EASE     := 0.5
 var plain_template: Node3D = null
 var _stage_templates: Dictionary = {}
 var _current_stage: int = 1
-var _plains_remaining: int = 2  # start with some breathing room
+var _plains_remaining: int = 5  # start with some breathing room
 
 func _ready() -> void:
 	var chunks_root = load("res://chunks.tscn").instantiate()

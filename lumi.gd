@@ -14,8 +14,9 @@ const MAYA_JUMP_FORCE     := 48.0
 const MAYA_FLOAT_DURATION := 1.0
 const MAYA_GRAVITY_MULT   := 0.25
 
-const BOOST_DURATION := 5.0
-const BOOST_MULT     := 5.0
+const BOOST_DURATION   := 5.0
+const BOOST_MULT       := 5.0
+const FAST_FALL_SPEED  := 55.0
 
 const STAGE_SCORES := [0, 1000, 2000, 3500, 5000, 7500, 10000]
 const STAGE_SPEED  := [80.0, 90.0, 105.0, 120.0, 135.0, 155.0, 275.0]
@@ -786,6 +787,9 @@ func _physics_process(delta: float) -> void:
 			add_child(snd)
 			snd.play()
 			snd.finished.connect(snd.queue_free)
+
+	if Input.is_action_just_pressed("ui_down") and not is_on_floor():
+		velocity.y = -FAST_FALL_SPEED
 
 	if _dash_cooldown > 0:
 		_dash_cooldown -= delta
