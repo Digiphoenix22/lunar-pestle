@@ -18,6 +18,11 @@ func _ready() -> void:
 	tutorial_toggle.button_pressed = SaveData.get_show_tutorial()
 	tutorial_toggle.toggled.connect(func(on): SaveData.set_show_tutorial(on))
 
+	var fs_toggle = $Panel/VBox/FullscreenRow/FullscreenToggle
+	fs_toggle.button_pressed = DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
+	fs_toggle.toggled.connect(func(on: bool):
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if on else DisplayServer.WINDOW_MODE_WINDOWED))
+
 	$Panel/VBox/CreditsButton.pressed.connect(func(): $CreditsPanel.visible = true)
 	$CreditsPanel/CloseButton.pressed.connect(func(): $CreditsPanel.visible = false)
 

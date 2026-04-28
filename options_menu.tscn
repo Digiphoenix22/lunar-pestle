@@ -107,6 +107,19 @@ text = "Show Tutorial"
 layout_mode = 2
 button_pressed = true
 
+[node name="FullscreenRow" type="HBoxContainer" parent="Panel/VBox" unique_id=111500001]
+layout_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="Panel/VBox/FullscreenRow" unique_id=111500002]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("3_reg")
+theme_override_font_sizes/font_size = 30
+text = "Fullscreen"
+
+[node name="FullscreenToggle" type="CheckButton" parent="Panel/VBox/FullscreenRow" unique_id=111500003]
+layout_mode = 2
+
 [node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1661937268]
 layout_mode = 2
 
